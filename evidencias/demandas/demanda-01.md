@@ -1,7 +1,3 @@
-> **Status: PENDENTE DE EXECUÇÃO.** Este texto foi commitado por Paulo Carvalho (commit `acbf03c`, "Salva demanda 01: Solution Design + Data Mapping da Cromatta Química") como conteúdo de `demanda.md`, mas a execução via `/executar-demanda 01` não aconteceu: não há entrada correspondente em `evidencias/log.md`, nem PDF `02_Solution_Design_Cromatta_Quimica_Squad02.pdf` em `entregaveis/`. Arquivado aqui (sem marcar como concluído) para não perder o texto ao sobrepor `demanda.md` com a Demanda 02, que foi solicitada para execução imediata.
-
----
-
 # Demanda atual — 01
 
 > Ver [docs/como-executar-demandas.md](docs/como-executar-demandas.md) para o fluxo. Depois de revisar este arquivo, rodar `/executar-demanda 01`.
@@ -13,6 +9,8 @@ Antes de configurar via Claude, o time precisa de um desenho técnico único par
 ## Objetivo
 
 Produzir o PDF `02_Solution_Design_Cromatta_Quimica_Squad02.pdf`, incluindo o Data Mapping, para orientar todos os prompts do Claude nas tarefas seguintes.
+
+**Requisitos visuais (documento corporativo):** usar a logo do cliente (pasta `imgs/`) e a paleta de cores oficial da marca (`imgs/05_Cromatta_Paleta_de_Cores.png`) na diagramação do PDF — não é um documento de texto simples, é um entregável corporativo com identidade visual da Cromatta.
 
 ## O que fazer
 
@@ -26,6 +24,7 @@ Produzir o PDF `02_Solution_Design_Cromatta_Quimica_Squad02.pdf`, incluindo o Da
 
 - [ ] Diagrama de objetos e Data Mapping completos e revisados.
 - [ ] Modelo de segurança documentado e compatível com o que foi implementado na Tarefa 02.
+- [ ] PDF usa a logo e as cores da marca Cromatta (`imgs/`), com layout de documento corporativo.
 
 ## Notas para quem for executar
 

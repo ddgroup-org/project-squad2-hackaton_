@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>{TITULO_DOCUMENTO} — Cromatta Química</title>
+
+<!--
+  TEMPLATE OFICIAL DE DOCUMENTO CORPORATIVO — CROMATTA QUÍMICA (A4 / PDF)
+  ========================================================================
+
+  PROCEDÊNCIA
+  ------------------------------------------------------------------------
+  * Criado para o hackathon (Squad 02) a partir do Solution Design real
+    (entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.pdf).
+  * Usa a paleta de cores oficial da marca (imgs/05_Cromatta_Paleta_de_Cores.png)
+    e a logo principal (imgs/01_Cromatta_Logo_Principal_Horizontal.png).
+  * É o modelo padrão para QUALQUER documento corporativo/entregável em PDF
+    deste projeto (BRD final, roteiro de demo, relatório de apresentação
+    etc.) — não recriar um estilo novo a cada documento.
+
+  REGRA DE USO
+  ------------------------------------------------------------------------
+  * Substituir apenas o CONTEÚDO entre chaves {} e o conteúdo dentro de
+    <section>...</section>.
+  * NÃO alterar as variáveis de cor em :root, nem as classes existentes
+    (.cover, .header-bar, .sec-title, .sec-h, .sub-h, .callout, .grid3,
+    table/th/td, .footer-note) — são a identidade visual do documento.
+  * Adicionar quantas <section> forem necessárias; cada uma quebra de
+    página automaticamente (page-break-after: always).
+  * O arquivo .html de trabalho pode viver em qualquer lugar (ex.: pasta
+    temporária) — só o PDF final entra no repositório, em `entregaveis/`.
+  * O caminho da logo em <img src="file://..."> precisa ser ABSOLUTO
+    (ex.: file:///Users/.../cromatta/imgs/01_Cromatta_Logo_Principal_Horizontal.png),
+    porque o Chrome headless resolve o HTML como arquivo local.
+
+  COMO GERAR O PDF (Chrome headless — sem dependência externa)
+  ------------------------------------------------------------------------
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+    --headless=new --disable-gpu --no-pdf-header-footer \
+    --print-to-pdf="/caminho/absoluto/entregaveis/NOME_DO_DOCUMENTO.pdf" \
+    --virtual-time-budget=10000 \
+    "file:///caminho/absoluto/do/arquivo.html"
+
+  Ver docs/como-gerar-documentos.md para o passo a passo completo.
+-->
+
+<style>
+  :root {
+    --azul-noite: #0D1B2A;
+    --grafite: #1C1F26;
+    --azul-petroleo: #0E3D4D;
+    --teal: #009699;
+    --cobalto: #1E5BFF;
+    --magenta: #B0166D;
+    --cobre: #B87333;
+    --ouro: #D4AF37;
+    --cinza-claro: #E6E7EA;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: var(--grafite);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  @page { size: A4; margin: 0; }
+  section {
+    page-break-after: always;
+    padding: 20mm 16mm 16mm 16mm;
+    min-height: 277mm;
+    position: relative;
+  }
+  section:last-child { page-break-after: auto; }
+
+  /* ---- Capa ---- */
+  .cover {
+    background: linear-gradient(160deg, var(--azul-noite) 0%, var(--azul-petroleo) 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+  }
+  .cover .logo-card {
+    background: #F4F1EC;
+    border-radius: 6px;
+    padding: 14px 28px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  .cover .logo-card img { width: 320px; display: block; }
+  .cover h1 {
+    margin: 40px 0 6px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: .5px;
+  }
+  .cover .accent-line {
+    width: 90px;
+    height: 3px;
+    background: var(--ouro);
+    margin: 14px 0;
+  }
+  .cover h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--cinza-claro);
+    letter-spacing: .5px;
+  }
+  .cover .meta {
+    margin-top: 60px;
+    font-size: 11px;
+    color: var(--cinza-claro);
+    line-height: 1.9;
+  }
+  .cover .meta b { color: white; }
+
+  /* ---- Estrutura de seção ---- */
+  .header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--azul-noite);
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+  }
+  .header-bar .brand {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--azul-petroleo);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .header-bar .doc-code {
+    font-size: 9px;
+    color: #8a8f98;
+  }
+  .sec-title {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cobre);
+    font-weight: 700;
+    margin: 0 0 2px;
+  }
+  h1.sec-h {
+    font-size: 21px;
+    color: var(--azul-noite);
+    margin: 0 0 16px;
+    font-weight: 700;
+  }
+  h3.sub-h {
+    font-size: 13px;
+    color: var(--azul-petroleo);
+    margin: 22px 0 8px;
+    font-weight: 700;
+    border-left: 4px solid var(--teal);
+    padding-left: 8px;
+  }
+  p { margin: 0 0 10px; }
+  .footer-note {
+    position: absolute;
+    bottom: 10mm;
+    left: 16mm;
+    right: 16mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5px;
+    color: #9aa0a8;
+    border-top: 1px solid var(--cinza-claro);
+    padding-top: 6px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 10.5px; }
+  th { background: var(--azul-noite); color: white; text-align: left; padding: 7px 8px; font-weight: 600; }
+  td { padding: 6px 8px; border-bottom: 1px solid var(--cinza-claro); vertical-align: top; }
+  tr:nth-child(even) td { background: #F7F7F8; }
+  .tag { display: inline-block; background: var(--cinza-claro); color: var(--azul-noite); border-radius: 3px; padding: 1px 6px; font-size: 9px; font-weight: 600; }
+
+  .callout {
+    border-left: 4px solid var(--cobre);
+    background: #FBF3EA;
+    padding: 10px 14px;
+    font-size: 10.5px;
+    margin-bottom: 16px;
+  }
+  .callout b { color: var(--cobre); }
+  .callout.ok { border-left-color: var(--teal); background: #EAF6F6; }
+  .callout.ok b { color: var(--teal); }
+
+  .grid3 { display: flex; gap: 10px; margin-bottom: 14px; }
+  .grid3 .card {
+    flex: 1;
+    background: #F7F7F8;
+    border-radius: 4px;
+    padding: 10px 12px;
+    border-top: 3px solid var(--cobalto);
+  }
+  .grid3 .card h4 { margin: 0 0 6px; font-size: 11px; color: var(--azul-noite); }
+  .grid3 .card p { font-size: 9.5px; margin: 0; color: #444; }
+
+  ol.steps li, ul.plain li { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ===================== CAPA — não alterar estrutura, só o texto ===================== -->
+<section class="cover">
+  <div class="logo-card">
+    <img src="file:///Users/paulocarvalho/Desktop/cromatta/imgs/01_Cromatta_Logo_Principal_Horizontal.png" alt="Cromatta Química">
+  </div>
+  <h1>{TITULO_DOCUMENTO}</h1>
+  <div class="accent-line"></div>
+  <h2>{SUBTITULO_DOCUMENTO}</h2>
+  <div class="meta">
+    <div><b>Documento:</b> {CODIGO_DOCUMENTO}</div>
+    <div><b>Squad:</b> 02 · <b>Cliente simulado:</b> Cromatta Química</div>
+    <div><b>Status:</b> {STATUS_DOCUMENTO}</div>
+    <div><b>Repositório:</b> github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026</div>
+  </div>
+</section>
+
+<!-- ===================== SEÇÃO DE EXEMPLO — copiar este bloco para cada seção ===================== -->
+<section>
+  <div class="header-bar">
+    <div class="brand">Cromatta Química · {TITULO_DOCUMENTO}</div>
+    <div class="doc-code">{CODIGO_DOCUMENTO}</div>
+  </div>
+  <div class="sec-title">Seção N</div>
+  <h1 class="sec-h">{TITULO_DA_SECAO}</h1>
+
+  <h3 class="sub-h">{SUBTÍTULO INTERNO, OPCIONAL}</h3>
+  <p>{PARÁGRAFO DE TEXTO CORRIDO}</p>
+
+  <!-- callout de atenção (cobre) ou de confirmação/ok (teal) -->
+  <div class="callout"><b>{DESTAQUE}:</b> {TEXTO DO ALERTA/OBSERVAÇÃO IMPORTANTE}</div>
+  <div class="callout ok"><b>{DESTAQUE}:</b> {TEXTO DE CONFIRMAÇÃO/STATUS POSITIVO}</div>
+
+  <!-- 3 cards lado a lado, útil para resumir fontes/opções/responsáveis -->
+  <div class="grid3">
+    <div class="card"><h4>{TÍTULO CARD 1}</h4><p>{TEXTO CURTO}</p></div>
+    <div class="card"><h4>{TÍTULO CARD 2}</h4><p>{TEXTO CURTO}</p></div>
+    <div class="card"><h4>{TÍTULO CARD 3}</h4><p>{TEXTO CURTO}</p></div>
+  </div>
+
+  <!-- tabela padrão -->
+  <table>
+    <tr><th>{COLUNA 1}</th><th>{COLUNA 2}</th><th>{COLUNA 3}</th></tr>
+    <tr><td>{...}</td><td>{...}</td><td>{...}</td></tr>
+  </table>
+
+  <div class="footer-note"><span>{TITULO_DOCUMENTO} — Cromatta Química — Squad 02</span><span>Seção N de TOTAL</span></div>
+</section>
+
+<!--
+  Padrão de diagrama de objetos (SVG inline): ver o código-fonte de
+  entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.pdf (arquivo de
+  trabalho arquivado em evidencias/demandas/) para o exemplo completo de
+  caixas + setas coloridas por tipo de objeto. Reaproveitar a mesma
+  estrutura (rect + text + line/marker de seta) em vez de recriar do zero.
+-->
+
+</body>
+</html>
