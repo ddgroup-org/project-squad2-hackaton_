@@ -23,6 +23,7 @@ Nesta mesma pasta/repositório (`SQUAD_02_HACKATON_DDGROUP_2026`) convivem:
 - **Planejamento:** este arquivo, `project-context.md`, `business-scenario.md`, `architecture.md`, `decisions/` (e as cópias em `docs/`).
 - **Projeto Salesforce DX:** `sfdx-project.json`, `force-app/`, `config/`, `manifest/`, `scripts/` — estrutura gerada via `sf project generate`, pronta para receber a metadata da execução.
 - **Execução de demandas + evidência:** `demanda.md` (tarefa atual), `.claude/commands/executar-demanda.md` (comando `/executar-demanda`), `evidencias/` (log + demandas arquivadas + prints).
+- **MCP:** `.mcp.json` (Salesforce DX MCP Server) — ver [docs/mcp.md](docs/mcp.md).
 
 O trabalho é guiado pelos documentos de requisitos deste repositório (`business-scenario.md` + `architecture.md`, derivados de `docs/transcricao.md`) — não há mais prompts autocontidos separados em `demands/` (descontinuado). No lugar disso, cada unidade de trabalho é uma "demanda" local (ver seção "Fluxo de trabalho" abaixo).
 
@@ -38,6 +39,7 @@ O trabalho é guiado pelos documentos de requisitos deste repositório (`busines
    - Quando usar a exceção, registrar o que foi feito manualmente e por quê (uma nota ou ADR) — nunca fazer silenciosamente, senão o tech lead (sem acesso à org) não tem como saber que aquilo não veio do fluxo padrão.
 2. **Antes de qualquer `git push`, sempre fazer `sf project retrieve start` (ou equivalente) primeiro.** A metadata commitada precisa refletir o estado real da org — nunca commitar/dar push às cegas sem confirmar o que a org realmente tem. Sem esse fluxo, o tech lead (sem acesso à org) acaba revisando um histórico que pode não corresponder à realidade.
 3. **Não presumir requisito de negócio não confirmado.** Os documentos de requisitos (`business-scenario.md`, `architecture.md`) já cobrem o que foi levantado com o cliente; qualquer requisito ambíguo ou não coberto ali é uma pendência a confirmar (ver seção "Pendências abertas" em `project-context.md`), não uma suposição a preencher silenciosamente.
+4. **Validar decisões e implementações também via MCP.** Este repositório tem o Salesforce DX MCP Server configurado em `.mcp.json` (ver [docs/mcp.md](docs/mcp.md)). Antes de considerar uma demanda concluída, usar as ferramentas de MCP para confirmar o estado real da org — `run_soql_query` para checar dados, o toolset `metadata` para confirmar o que foi de fato deployado, `testing` para rodar testes — não validar só porque um comando `sf` não retornou erro.
 
 ## Fluxo de trabalho neste cofre
 

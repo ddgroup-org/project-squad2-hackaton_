@@ -69,6 +69,7 @@ quimicahackaton/
 ├── README.md                              este arquivo
 ├── CLAUDE.md                              instruções para uma sessão de IA aberta *neste* cofre
 ├── demanda.md                             tarefa atual a ser executada (ver "Como executar uma demanda")
+├── .mcp.json                               Salesforce DX MCP Server (ver docs/mcp.md)
 ├── .claude/
 │   ├── agents/                            cópia fiel dos 7 agentes da Salesforce-AI-Base — ver nota abaixo
 │   └── commands/executar-demanda.md       comando `/executar-demanda`
@@ -83,6 +84,7 @@ quimicahackaton/
     ├── transcricao.md                     transcrição condensada da reunião de levantamento de requisitos
     ├── architecture.md                    clouds, modelo de dados, segurança, automações
     ├── como-executar-demandas.md          fluxo passo a passo de demanda.md → /executar-demanda
+    ├── mcp.md                              setup e regra de validação via MCP
     └── decisions/
         ├── README.md
         ├── 0001-modelo-conta-b2b-b2c-sem-person-accounts.md
@@ -118,6 +120,7 @@ Por ora, **skills** (`start-salesforce-demand`, `review-apex`, etc.) não foram 
 - **Repositório:** [github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026](https://github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026)
 - **Visibilidade:** público — o conteúdo é o levantamento de requisitos de um cliente simulado (role-play) do hackathon, não dados reais de produção.
 - **Estrutura:** unificada — planejamento, requisitos, decisões e o projeto Salesforce DX (`force-app/`, `sfdx-project.json`, `manifest/`) vivem no mesmo repositório e histórico Git, para que o tech lead revise tudo em um único lugar.
+- **Tudo aqui é para o time usar:** prompts (`demanda.md`, `.claude/commands/`), agentes (`.claude/agents/`), regras (`CLAUDE.md`) e configuração de MCP (`.mcp.json`) são versionados e enviados ao repositório — qualquer dev do squad clona e já tem o mesmo ambiente/regras, sem precisar reconfigurar nada além de autorizar seu próprio acesso à org (ver [docs/mcp.md](docs/mcp.md)).
 
 ---
 
@@ -135,7 +138,8 @@ O desafio de negócio **já é real** (não mais uma suposição fictícia): foi
 
 1. Escreva a tarefa em [`demanda.md`](demanda.md).
 2. Rode `/executar-demanda NN` no Claude Code, dentro desta pasta.
-3. Evidência (log + demanda arquivada) é gerada automaticamente; screenshot é manual, via `scripts/capturar-print.sh`.
+3. O comando valida o resultado via MCP (SOQL/metadata) antes de considerar concluído, além do que já é checado via CLI.
+4. Evidência (log + demanda arquivada) é gerada automaticamente; screenshot é manual, via `scripts/capturar-print.sh`.
 
 Passo a passo completo: [docs/como-executar-demandas.md](docs/como-executar-demandas.md).
 
