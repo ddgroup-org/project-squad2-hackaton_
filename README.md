@@ -140,7 +140,7 @@ O desafio de negócio **já é real** (não mais uma suposição fictícia): foi
 
 - **Resumo estruturado, pronto para uso na implementação:** [docs/business-scenario.md](docs/business-scenario.md) e [docs/architecture.md](docs/architecture.md).
 - **Fonte completa (transcrição condensada por tema):** [docs/transcricao.md](docs/transcricao.md) — usar quando o resumo estruturado parecer incompleto ou ambíguo.
-- **Org:** já autorizada (alias `cromatta-hackathon`), dedicada ao hackathon.
+- **Org:** já autorizada (alias `hackaton2`), dedicada ao hackathon.
 
 ---
 

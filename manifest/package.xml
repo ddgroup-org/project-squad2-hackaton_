@@ -33,23 +33,24 @@
         <name>StaticResource</name>
     </types>
     <types>
-        <members>*</members>
-        <name>PermissionSet</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>Account</members>
+        <members>Opportunity</members>
+        <members>Case</members>
+        <members>User</members>
         <name>CustomObject</name>
     </types>
     <types>
-        <members>*</members>
-        <name>Flow</name>
+        <members>Administrador_Comercial</members>
+        <members>Vendedor</members>
+        <members>Laboratorio</members>
+        <name>PermissionSet</name>
     </types>
     <types>
-        <members>*</members>
-        <name>SharingRules</name>
+        <members>Admin</members>
+        <name>Profile</name>
     </types>
     <types>
-        <members>*</members>
+        <members>Laboratorio</members>
         <name>Queue</name>
     </types>
     <version>67.0</version>
