@@ -68,7 +68,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.StatusAprovacaoDesconto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.VolumeMinimoMensal__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.PrecoBaseAprovado__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>StatusAprovacaoDesconto__c</fullName>
+    <description>Atualizado automaticamente pelo Approval Process &quot;Aprovacao_Desconto_Oportunidade&quot; — Pendente ao submeter, Aprovado/Rejeitado ao final. A aprovação é sempre do Administrador Comercial (Gabriel Jacob), conforme business-scenario.md (&quot;aprovação final é sempre do cliente/dono da empresa&quot;). Ver demanda-11.</description>
+    <label>Status da Aprovação de Desconto</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pendente</fullName>
+                <default>false</default>
+                <label>Pendente</label>
+            </value>
+            <value>
+                <fullName>Aprovado</fullName>
+                <default>false</default>
+                <label>Aprovado</label>
+            </value>
+            <value>
+                <fullName>Rejeitado</fullName>
+                <default>false</default>
+                <label>Rejeitado</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

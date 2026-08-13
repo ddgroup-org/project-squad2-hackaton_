@@ -102,6 +102,10 @@
                 <behavior>Edit</behavior>
                 <field>CotacaoDolarReferencia__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>StatusAprovacaoDesconto__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>

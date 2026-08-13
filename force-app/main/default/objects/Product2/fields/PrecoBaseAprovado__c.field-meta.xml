@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PrecoBaseAprovado__c</fullName>
+    <description>Preço-base do produto (referência de tabela), sujeito a reajuste com aprovação pessoal de Gabriel Jacob — ver Approval Process Product2.Aprovacao_Reajuste_Preco. Distinto de PricebookEntry.UnitPrice (preço de lista efetivo no Pricebook): este campo é a referência que, quando reajustada, precisa de aprovação antes de ser refletida no Pricebook. `PricebookEntry` não suporta Approval Process nesta plataforma — por isso o processo de aprovação vive em Product2, conforme alternativa já prevista na demanda-11 (&quot;ou campo de tabela&quot;).</description>
+    <label>Preço-Base Aprovado</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

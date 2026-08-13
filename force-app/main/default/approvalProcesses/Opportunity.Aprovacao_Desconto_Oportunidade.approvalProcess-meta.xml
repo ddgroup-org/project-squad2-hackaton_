@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>PrecoFinal__c</field>
+        <field>Amount</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Status_Aprovacao_Aprovado</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>gabriel.jacob.cromatta@ddgroup.com.br</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>Aprovação do Administrador Comercial</label>
+        <name>Aprovacao_Administrador_Comercial</name>
+        <rejectionActions>
+            <action>
+                <name>Status_Aprovacao_Rejeitado</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>Toda alteração de preço/desconto que viole a margem mínima de 15% sobre o custo (representada por PrecoFinal__c &lt; Amount, já que Amount reflete o preço de lista com a margem de 15% embutida — ver demanda-07/PricebookEntry.UnitPrice) deve passar pela aprovação pessoal de Gabriel Jacob. Ver business-scenario.md/BRD 4.3 e demanda-11.</description>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+    NOT(ISNULL(PrecoFinal__c)),
+    PrecoFinal__c &lt; Amount
+)</formula>
+    </entryCriteria>
+    <finalApprovalRecordLock>true</finalApprovalRecordLock>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Status_Aprovacao_Pendente</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Aprovação de Desconto - Oportunidade</label>
+    <processOrder>1</processOrder>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

@@ -42,3 +42,15 @@ Esta sessão (Claude) não fez essa alteração. Não foi identificada a origem 
 | --- | --- |
 | Não corrigir agora, só documentar como pendência | O usuário confirmou explicitamente que a correção deveria ser feita imediatamente, já que a divergência quebra um requisito de negócio já validado — deixar a org inconsistente com o design documentado por mais tempo não trazia benefício. |
 | Investigar a causa raiz antes de corrigir | Sem acesso a Setup Audit Trail nesta sessão; a correção declarativa é idempotente e de baixo risco, então não há necessidade de bloquear a correção à espera de uma investigação que pode não ser conclusiva. |
+
+## Recorrência (demanda-11)
+
+O mesmo problema se repetiu: o `sf project retrieve start --manifest manifest/package.xml` executado durante a demanda-11 trouxe novamente `sharingModel=Private` para Account, Case e Opportunity. Desta vez havia acesso ao Setup Audit Trail (`SELECT CreatedDate, CreatedBy.Name, Action, Display FROM SetupAuditTrail`), o que permitiu reconstruir a linha do tempo real (todos os horários em UTC, 2026-08-13):
+
+- `17:17:58`–`17:18:49` — `owdUpdateStarted`/`owdInternalUpdateStartedForEntity`: Account, Case e Opportunity alterados de `Public Read Only` para `Private`.
+- `17:26:21`–`17:30:58` — sequência de 3 `owdUpdateStarted`/`Finished` (um por objeto): Account, Case e Opportunity revertidos de volta para `Public Read Only`. **Esta é provavelmente a correção da demanda-10** já registrada acima.
+- `17:34:29`–`17:35:29` — novo ciclo: Account, Case e Opportunity alterados **de novo** de `Public Read Only` para `Private`. Este é o estado que a demanda-11 encontrou e corrigiu (mesma correção: redeploy do `sharingModel=Read` a partir do metadata já commitado, sem alteração manual na UI; confirmado via nova consulta Tooling/retrieve após o redeploy).
+
+Todos os eventos do Setup Audit Trail aparecem atribuídos a `Ricardo Custodio` — mas esse é o usuário de integração usado por **toda** chamada da Metadata API neste org (não necessariamente a pessoa/sessão que disparou o deploy), então o `CreatedBy` não distingue qual sessão/squad member causou a reversão. O padrão de dois ciclos completos de ida-e-volta em ~17 minutos é consistente com deploys concorrentes de metadata de Account/Case/Opportunity vindos de sessões diferentes (ex.: outro membro do squad com uma cópia local desatualizada do `Account.object-meta.xml`/`Case.object-meta.xml`/`Opportunity.object-meta.xml`, sem o `sharingModel=Read` já commitado) — a causa raiz ainda não tem autoria confirmada, mas a hipótese de concorrência entre sessões é mais forte agora do que na primeira ocorrência.
+
+**Recomendação reforçada:** qualquer sessão que for deployar metadata de `CustomObject` para Account/Case/Opportunity deve rodar `git pull` imediatamente antes do deploy (não só antes do push) e confirmar que o arquivo local tem `sharingModel=Read` antes de enviar — para não sobrescrever a configuração com uma cópia local desatualizada.

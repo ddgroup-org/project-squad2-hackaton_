@@ -99,7 +99,17 @@
         <members>Amostra_Reprovada_Cria_Case</members>
         <members>Amostra_Cobranca_Retorno</members>
         <members>Lead_BeforeSave_PreencheCompany</members>
+        <members>Alerta_Concentracao_Receita</members>
         <name>Flow</name>
+    </types>
+    <types>
+        <members>Opportunity.Aprovacao_Desconto_Oportunidade</members>
+        <members>Product2.Aprovacao_Reajuste_Preco</members>
+        <name>ApprovalProcess</name>
+    </types>
+    <types>
+        <members>Opportunity</members>
+        <name>Workflow</name>
     </types>
     <version>67.0</version>
 </Package>

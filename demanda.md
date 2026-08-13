@@ -4,8 +4,4 @@
 
 ## O que fazer
 
-(descreva aqui a tarefa)
-
 ## Critério de aceite
-
-(descreva aqui, se souber — senão o Claude usa os critérios gerais de `business-scenario.md`/`architecture.md`)
