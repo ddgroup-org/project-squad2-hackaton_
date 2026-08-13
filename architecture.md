@@ -12,7 +12,7 @@ source_of_truth: true
 
 # Arquitetura
 
-> Baseada nos requisitos reais levantados com o cliente (Cromatta Química) — ver [business-scenario.md](business-scenario.md) e a fonte completa em [docs/transcricao.md](docs/transcricao.md).
+> Baseada nos requisitos reais levantados com o cliente (Cromatta Química) — ver [business-scenario.md](business-scenario.md), a fonte completa em [docs/transcricao.md](docs/transcricao.md), e o **BRD oficial aprovado** em [entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf](entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf) — o BRD prevalece onde houver divergência com versões anteriores deste documento (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md)).
 
 ## Regra de implementação (herdada das regras do hackathon)
 
@@ -30,70 +30,79 @@ Knowledge, Omni-Channel e Entitlements **não são requisitos do cliente** — n
 ## Modelo de dados
 
 ```text
-Account (Record Type: Business Account [PJ] | Individual Customer [PF])
-  │                                            — ver ADR 0001
-  ├── Contact (1:N em Business Account · 1:1 em Individual Customer)
+Account (TipoPessoa__c: PF | PJ — sem Record Type, ver ADR 0003)
+  │
+  ├── Contact (1:N, tanto para PF quanto PJ — ver BRD 3.3)
   │
   ├── Lead
-  │     campos: origem (feira | indicação | prospecção ativa/porta a porta | internet),
-  │             linha de interesse (Cromata | Flecha | Jato)
+  │     campos: OrigemCadastro__c/LeadSource (Internet | Feira do Setor |
+  │             Indicação | Prospecção Ativa), LinhaDeInteresse__c
+  │             (Cromata | Flexa | Jato), CNPJ_CPF__c
   │     → convertido em Account + Contact + Opportunity
   │
-  ├── Opportunity (Record Type: Produto Existente | Produto Novo/Em Desenvolvimento)
+  ├── Opportunity (RecordType: Caminho A — Produto Existente |
+  │     Caminho B — Produto Novo — ver BRD 3.4.1 para os estágios de cada)
   │     campos próprios:
-  │       - Linha de Produto (Cromata | Flecha | Jato)
-  │       - Indicador de urgência (ex.: problema com fornecedor atual)
-  │       - Motivo de perda (picklist, obrigatório ao marcar Closed Lost)
-  │       - Compromisso de volume recorrente (checkbox + volume mínimo mensal)
-  │       - Valor final de venda (preenchido manualmente pelo comercial — sem cálculo automático via câmbio no v1)
+  │       - LinhaDeProduto__c (Cromata | Flexa | Jato)
+  │       - IndicadorDeUrgencia__c (ex.: problema com fornecedor atual)
+  │       - MotivoDaPerda__c (picklist, obrigatório ao marcar Closed Lost)
+  │       - PossuiContratoRecorrente__c + VolumeMinimoMensal__c
+  │       - Amount/PrecoVendido__c (preenchido manualmente pelo comercial —
+  │           sem cálculo automático via câmbio no v1, ver ADR 0002)
   │     ├── OpportunityLineItem → Product2 / PricebookEntry
-  │     └── Amostra__c (objeto customizado, Master-Detail em Opportunity,
-  │           Lookup em Product2) — produto, quantidade, data de envio,
-  │           resultado, nº da tentativa, custo estimado — decisão fechada
-  │           no Solution Design (entregaveis/02_Solution_Design_*.pdf)
+  │     └── Amostra__c (objeto customizado, **Lookup** em Opportunity e em
+  │           Product2 — não Master-Detail; ver BRD 3.5.2) — peso/volume
+  │           enviado, data de envio, nº da tentativa (auto-incremento),
+  │           resultado (Em Teste | Aprovada | Reprovada), custo estimado
   │
-  └── Case (Record Type: Amostra/Teste | Pós-venda)
-        - Amostra/Teste: criado quando uma amostra é reprovada; roteado para
-          Queue "Laboratório", atribuído ao químico responsável pela linha
-        - Pós-venda: reclamação/qualidade em cliente recorrente já ativo
+  └── Case (RecordType: Envio e Teste de Amostra | Pós-Venda/Reclamação de
+        Qualidade de Lote — ver BRD 3.7)
+        - Envio e Teste de Amostra: criado quando uma amostra é registrada
+          como Reprovada; roteado para Queue "Laboratório" (Sérgio e André)
+        - Pós-Venda: reclamação/qualidade em cliente recorrente já ativo
         campos:
-          - Causa técnica de reprovação (picklist): incompatibilidade com
+          - AmostraId__c (Lookup em Amostra__c, quando aplicável)
+          - CausaTecnicaDeReprovacao__c (picklist): incompatibilidade com
             substrato, incompatibilidade com a base do cliente, instabilidade
             do produto, entupimento de cabeçote, aspecto/aparência fora do
-            esperado, outra
-          - Histórico de tentativas (contador ou relação a registros de amostra)
-          - Visita técnica agendada (checkbox + data)
+            esperado
+          - MarcacaoDeVisitaTecnica__c (checkbox + data)
+          - PrazoDeResposta__c: 10 dias úteis (amostra) | 5 dias (pós-venda)
 
-Product2 (Linha: Cromata | Flecha | Jato) → PricebookEntry → Standard Price Book
+Product2 (LinhaDeProduto__c: Cromata | Flexa | Jato) → PricebookEntry → Standard Price Book
 ```
 
 Decisões que sustentam este modelo:
-- Contas B2B/B2C via Record Type, sem Person Accounts — [ADR 0001](decisions/0001-modelo-conta-b2b-b2c-sem-person-accounts.md).
+- Account como objeto único com `TipoPessoa__c`, sem Record Type — [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md) (substitui a [ADR 0001](decisions/0001-modelo-conta-b2b-b2c-sem-person-accounts.md)).
 - Sem integração de ERP nem motor de precificação automático no v1 — [ADR 0002](decisions/0002-sem-integracao-erp-precificacao-v1.md).
+- Reconciliação de metadata criada fora do fluxo Claude — [ADR 0004](decisions/0004-reconciliacao-permissionsets-fora-do-fluxo.md).
 
 ## Segurança e acessos
 
 Requisito do cliente: **vendedores veem todos os registros, mas só editam os próprios**; o dono da empresa vê e valida tudo.
 
-- **OWD: Public Read Only** em Account, Opportunity e Case — isso já entrega "lê tudo, edita só o próprio" nativamente (owner mantém edição), sem precisar de sharing rules extras.
-- **Permission Sets:**
-  - **Vendedor** — CRUD em Lead/Account/Opportunity/Case que possui, leitura nos demais, sem acesso a aprovação de preço.
-  - **Químico/Laboratório** — acesso à fila de Case "Laboratório", CRUD em Case, leitura em Opportunity/Account relacionados.
-  - **Gestor** (dono da empresa) — acesso total, aprovador do fluxo de preço/desconto, visão de todos os relatórios/dashboards.
+- **OWD: Public Read Only** em Account, Opportunity, Case e Amostra__c — isso já entrega "lê tudo, edita só o próprio" nativamente (owner mantém edição), sem precisar de sharing rules extras. Amostra__c precisa de OWD próprio (não herda de ninguém, pois a relação com Opportunity é Lookup, não Master-Detail).
+- **Permission Sets (nomenclatura do BRD, seção 2.2):**
+  - **Vendedor** — Camila, Ronaldo, Marcelo, Diego, Bruno, Thiago. CRUD em Lead/Account/Opportunity/Case que possui, leitura nos demais, sem acesso a aprovação de preço. **Já existe na org** (ver ADR 0004).
+  - **Laboratório / Químico** — Sérgio e André. Acesso à fila de Case "Laboratório", CRUD em Case, leitura em Opportunity/Account relacionados. **Já existe na org** (API name `Laboratorio`, ver ADR 0004).
+  - **Administrador Comercial** — Gabriel Jacob (dono da empresa). Acesso total, aprovador do fluxo de preço/desconto, visão de todos os relatórios/dashboards. **Ainda não criado** — este nome substitui "Gestor", usado em versões anteriores deste documento antes do BRD existir.
 
 ## Automação — o que precisa existir (derivado dos requisitos)
 
 Ordem de preferência sempre: 1) configuração declarativa → 2) Flow → 3) Approval Process → 4) Apex/LWC só se 1–3 forem comprovadamente insuficientes. Tudo via Claude/IA (ver regra no topo).
 
-1. **Approval Process de preço/desconto** na Opportunity — aprovação sempre do Gestor, tanto no preço-base do produto quanto no desconto por volume da oportunidade.
-2. **Validation Rule / Flow** exigindo Motivo de Perda ao marcar Opportunity como Closed Lost.
-3. **Record-Triggered Flow** (em `Amostra__c`): quando uma amostra registrada é marcada como reprovada → cria Case (Record Type Amostra/Teste), atribuído à Queue Laboratório, roteado ao químico da linha correspondente; se já for a 3ª+ tentativa, sinalizar (ex.: campo ou flag de atenção).
-4. **Assignment/roteamento** de Case por linha de produto → químico responsável.
-5. **Relatório/Dashboard de clientes inativos** — sem pedido há 60+ dias.
-6. **Alerta de concentração de risco** — quando um vendedor (ou cliente) concentra uma fatia desproporcional da receita (ex.: >50%), notificar o Gestor. Caminho mais simples: Flow agendado (scheduled) que calcula a % por vendedor/período e dispara Email Alert quando o limite é ultrapassado — validar esse limite com o cliente antes de fixar um número (hoje só sabemos que 60% já é tratado como alarmante).
-7. **Dashboards de gestão comercial:**
-   - Diário: o que cada vendedor fechou desde o dia anterior, oportunidades travadas, prioridades do dia.
-   - Mensal: faturamento vs. meta, ranking por vendedor e por linha de produto, status dos clientes mais estratégicos, meta do mês seguinte.
+1. **Approval Process de preço/desconto** na Opportunity — aprovação sempre do Administrador Comercial (Gabriel Jacob), tanto no preço-base do produto quanto no desconto por volume da oportunidade (BRD 4.3).
+2. **Validation Rule / Flow** exigindo `MotivoDaPerda__c` ao marcar Opportunity como Closed Lost.
+3. **Record-Triggered Flow** (em `Amostra__c`): quando uma amostra registrada é marcada como Reprovada → cria Case (RecordType "Envio e Teste de Amostra"), atribuído à Queue "Laboratório", roteado ao químico da linha correspondente (BRD 3.5.1, 4.6).
+4. **Status de carteira do cliente** (`StatusCarteira__c`): Ativo (compra nos últimos 60 dias) / Inativo (mais de 60 dias) — alimenta o relatório de clientes inativos (BRD 3.1.2, 4.2).
+5. **Alerta de concentração de receita**: quando um vendedor ou cliente ultrapassa **40%** do volume total de vendas da carteira, notificar o Administrador Comercial (Chatter/e-mail) — limite oficial confirmado no BRD 4.1, não é mais estimativa.
+6. **SLA de resposta por tipo de Case**: cobrança automática ao cliente em 10 dias úteis sem retorno de teste de amostra; prazo de resposta de 5 dias para casos de pós-venda (BRD 4.4).
+7. **Dashboards de gestão comercial** (BRD Parte 6):
+   - Diário: o que cada vendedor fechou desde ontem, oportunidades travadas, amostras pendentes de retorno.
+   - Mensal: faturamento vs. meta, ranking por vendedor e por linha de produto, status dos clientes mais estratégicos.
+   - Metas por vendedor, nas 3 camadas (resultado / comercial / atividade — BRD 4.7).
+
+Priorização entre caso comercial e caso técnico simultâneos: **A CONFIRMAR** com o cliente — premissa assumida no BRD é ordem de chegada combinada ao Indicador de Urgência (BRD 4.6), não uma regra definitiva.
 
 ## Rastreabilidade — como o tech lead revisa sem acesso à org
 

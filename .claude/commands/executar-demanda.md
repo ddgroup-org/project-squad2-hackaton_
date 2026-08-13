@@ -14,6 +14,22 @@ Você vai executar a demanda descrita no arquivo `demanda.md` (raiz deste reposi
 
 Implemente exatamente o que `demanda.md` pede, seguindo a ordem de preferência declarativa (config → Flow → Approval Process → Apex/LWC só se necessário) descrita em `architecture.md`.
 
+## Roteamento de agentes especialistas (obrigatório)
+
+Este repositório tem 7 agentes copiados em `.claude/agents/` (ver `CLAUDE.md`). Acionar via Agent tool o(s) agente(s) que corresponde(m) ao **tipo de conteúdo da demanda**, sempre antes do passo de validação final — não pular esta etapa só porque "parece simples":
+
+| Conteúdo da demanda | Agente |
+| --- | --- |
+| Decisão arquitetural, modelo de dados, Solution Design, avaliação de alternativas | `salesforce-architect` |
+| Implementação em si (analisar/projetar/codar a demanda) | `salesforce-developer` |
+| Classe/trigger Apex criado ou alterado | `apex-code-reviewer` |
+| Lightning Web Component criado ou alterado | `lwc-code-reviewer` |
+| Flow / automação declarativa criada ou alterada | `flow-reviewer` |
+| Qualquer alteração que toque CRUD/FLS/sharing/Permission Set/credenciais | `security-reviewer` |
+| Empacotamento final antes de um push maior (não há UAT/Produção aqui, mas serve para revisar o conjunto de metadata antes de subir) | `deployment-reviewer` |
+
+Uma demanda pode acionar mais de um agente (ex.: `flow-reviewer` + `security-reviewer` se o Flow tocar em dados sensíveis). Se nenhum se aplicar claramente, registrar por quê e seguir sem agente.
+
 ## Ao final
 
 1. **Valide via MCP também**, não só pela CLI: use as ferramentas do Salesforce DX MCP Server (toolset `data` — ex. `run_soql_query` — e toolset `metadata`) para confirmar que o que foi implementado realmente está na org, condizente com o que `demanda.md` pediu. Se algo não bater, corrija antes de seguir para o commit.

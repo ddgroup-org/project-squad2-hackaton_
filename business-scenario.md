@@ -12,7 +12,7 @@ source_of_truth: true
 
 # Cenário de negócio
 
-> **Este cenário é REAL**, levantado com o cliente simulado do hackathon (role-play) na reunião de kickoff. Fonte completa, com todo o contexto e citações originais: [docs/transcricao.md](docs/transcricao.md). Este documento aqui é o resumo estruturado para uso direto pelos prompts/execução — se algo parecer incompleto ou ambíguo, checar a transcrição antes de assumir.
+> **Este cenário é REAL**, levantado com o cliente simulado do hackathon (role-play) na reunião de kickoff. Fonte completa, com todo o contexto e citações originais: [docs/transcricao.md](docs/transcricao.md). O **BRD oficial** — [entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf](entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf), v1.0, aprovado pelo cliente e pelo tech lead — é a fonte de verdade mais recente e **prevalece** sobre este resumo onde houver divergência (nomenclatura de campos, thresholds, prazos). Este documento aqui continua sendo o resumo estruturado de apoio.
 
 ## Empresa
 
@@ -21,17 +21,17 @@ source_of_truth: true
 ## Linhas de produto
 
 1. **Cromata** — tintas e vernizes, e dispersão de pigmento (matéria-prima para outros fabricantes de tinta).
-2. **Flecha** — produtos de manutenção de couros e calçados (hidratação de couro, limpeza de calçado/tênis/veludo).
+2. **Flexa** — produtos de manutenção de couros e calçados (hidratação de couro, limpeza de calçado/tênis/veludo). *(grafado "Flecha" na transcrição da reunião; "Flexa" é a grafia oficial do BRD — usar esta.)*
 3. **Jato** — tintas para impressão a jato de tinta (impressoras).
 
 Cada Lead/Oportunidade/Produto está associado a uma dessas três linhas.
 
 ## Clientes
 
-- **PJ (pessoa jurídica):** maior parte do negócio — outras indústrias, fábricas, marcas que revendem (ex.: marca "Democrata" revende kits de limpeza de calçado da linha Flecha).
+- **PJ (pessoa jurídica):** maior parte do negócio — outras indústrias, fábricas, marcas que revendem (ex.: marca "Democrata" revende kits de limpeza de calçado da linha Flexa).
 - **PF (pessoa física):** venda direta via site próprio — volume menor, mas existe.
 
-Mapeamento para o modelo de Account já decidido: PJ → **Business Account**, PF → **Individual Customer** (ver [ADR 0001](decisions/0001-modelo-conta-b2b-b2c-sem-person-accounts.md)).
+Mapeamento para o modelo de Account (BRD 3.1): **um único objeto Account**, com o campo `TipoPessoa__c` (PF | PJ) — sem Record Type (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md), que substitui a ADR 0001).
 
 ## Time comercial
 
@@ -39,19 +39,19 @@ Mapeamento para o modelo de Account já decidido: PJ → **Business Account**, P
 
 | Vendedor | Linha | Vínculo | Meta de novos clientes |
 | --- | --- | --- | --- |
-| Camila | Flecha | Interna | 2/mês |
+| Camila | Flexa | Interna | 2/mês |
 | Ronaldo | Cromata | Representante externo (não CLT, atende outras empresas também) | 1/trimestre |
 | Marcelo | Cromata | Interna, foco em abrir contas | 2/mês |
 | Diego | Jato | Interna | 2/mês |
 | Bruno | Jato | Interna | 2/mês |
 | Thiago | Jato | Interna | 2/mês |
 
-Dois químicos respondem pela fila do laboratório (nomes a confirmar — ver pendências).
+Dois químicos respondem pela fila do laboratório: **Sérgio e André** — confirmado no BRD (seção 1.2.1), pendência resolvida.
 
 ## Dores atuais do negócio (ditas pelo cliente)
 
 - Faturamento em queda recente.
-- **Concentração de receita:** Camila (Flecha) responde por ~60% da receita — risco alto se ela saísse ou o cliente cancelasse. O cliente quer ser **avisado** quando um vendedor/cliente concentrar risco alto demais.
+- **Concentração de receita:** Camila (Flexa) responde por ~60% da receita — risco alto se ela saísse ou o cliente cancelasse. O cliente quer ser **avisado** quando um vendedor/cliente ultrapassar **40%** do volume total de vendas da carteira (threshold oficial confirmado no BRD 4.1).
 - Nenhuma gestão comercial formal (sem metas, sem ritual de acompanhamento).
 - ERP existente tem dados, mas não é analisado/usado.
 - Processo de amostra/teste sem rastro — hoje é feito "de boca a boca"/WhatsApp, sem prazo, sem histórico de tentativas, sem visibilidade de custo por amostra.
@@ -94,20 +94,30 @@ Vendedores **veem todos os registros, mas só editam os próprios**. O dono da e
 - **Caso de amostra (pré-venda):** aberto quando uma amostra é reprovada na primeira tentativa, para registrar histórico que hoje só existe na memória do vendedor/químico. Roteado para fila do laboratório, atribuído ao químico responsável.
 - **Caso de pós-venda:** tipo separado, para clientes recorrentes já ativos — reclamação de produto, lote entregue com defeito, etc. (raro, mas existe).
 - Sem time formal de atendimento ao cliente — hoje o próprio vendedor responde dúvidas via WhatsApp, baixo volume, não é prioridade modelar como fluxo formal no v1.
-- Prazos de referência dados pelo cliente: ~15 dias para produção de amostra (meta interna); cobrança ao cliente a cada 10 dias úteis sem retorno de teste; ~5 dias úteis para retorno sobre amostra reprovada.
-- Priorização entre chamados comerciais e técnicos: **não definida pelo cliente** — tratar como fila única até definição contrária (ver pendências).
+- **SLA oficial (BRD 4.4):** 10 dias úteis para cobrança automática ao cliente sem retorno de teste de amostra; 5 dias para resposta em casos de pós-venda.
+- Priorização entre chamados comerciais e técnicos: **A CONFIRMAR** com o cliente (BRD 1.3.3, item 4) — premissa assumida no BRD: ordem de chegada combinada ao Indicador de Urgência, até confirmação formal.
 
 ## Fora de escopo do v1 (ideias explícitas para v2)
 
 - Motor de precificação automático vinculado a câmbio (USD) e custo de matéria-prima.
 - Integração em tempo real com o ERP do cliente.
 - Time formal de customer service.
-- Person Accounts — deliberadamente descartado, ver [ADR 0001](decisions/0001-modelo-conta-b2b-b2c-sem-person-accounts.md).
+- Person Accounts — habilitado na org (fora do fluxo Claude, ver ADR 0004), mas **não utilizado** pelo modelo de dados deste projeto — ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md).
 - Portal self-service (Experience Cloud) — fora do prazo de 1 dia, a menos que sobre tempo.
 
 ## Pendências a confirmar com o cliente
 
-- Nomes exatos dos dois químicos responsáveis pela fila do laboratório (transcrição ambígua).
-- Lista de produtos (hoje só no ERP) e lista de vendedores com papéis/acessos detalhados — cliente combinou compartilhar, ainda não recebido.
-- Regra de priorização entre chamados comerciais vs. técnicos no Service Cloud.
-- Identidade visual: cliente não tinha nenhuma pronta no momento da reunião e autorizou o squad a criar — assets já criados estão na pasta `imgs/` (raiz do repositório).
+Lista oficial (BRD 1.3.3) — substitui a lista anterior deste documento:
+
+| # | Item | Status |
+| --- | --- | --- |
+| 1 | Lista completa de produtos do catálogo técnico, com custos atuais | PENDENTE — catálogo de exemplo usado no v1 |
+| 2 | Campos obrigatórios de cadastro — PF (nome, CPF, e-mail) e PJ (CNPJ, razão social, e-mail financeiro, responsável pelo fechamento) | A CONFIRMAR |
+| 3 | Volumetria atual do negócio (clientes ativos, volume médio de casos/mês) | PENDENTE |
+| 4 | Critério oficial de priorização entre caso comercial e caso técnico simultâneos | A CONFIRMAR |
+| 5 | Quantidade mínima de produto ou prazo mínimo de contrato por cliente | PENDENTE |
+| 6 | Acesso ao Salesforce das pessoas que hoje calculam o preço interno | A CONFIRMAR |
+| 7 | Tipo de licença/perfil adequado para Ronaldo (representante externo, não CLT) | A CONFIRMAR |
+| 8 | Meta numérica de faturamento mensal da empresa | PENDENTE |
+
+Resolvidas desde a última versão: nomes dos químicos (Sérgio e André, confirmados no BRD) e identidade visual (assets criados, estão em `imgs/`).

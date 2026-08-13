@@ -11,11 +11,13 @@ applies_to:
 
 # Como gerar documentos corporativos (PDF)
 
-Todo entregável em PDF deste hackathon (Solution Design, BRD final, roteiro de demo, relatório da apresentação etc.) deve usar o **modelo oficial da Cromatta**, não um estilo novo por documento.
+Todo entregável em PDF deste hackathon (Solution Design, BRD final, roteiro de demo, relatório da apresentação etc.) deve usar o **modelo oficial DDGroup × Cromatta**, não um estilo novo por documento.
 
 ## Modelo
 
-[`templates/documento-corporativo-cromatta.html`](../templates/documento-corporativo-cromatta.html) — HTML + CSS com a identidade visual da marca (logo e paleta de cores em `imgs/`). Contém no topo do arquivo as regras de uso (o que pode e o que não pode ser alterado) e um bloco de seção de exemplo para copiar.
+[`templates/documento-corporativo-cromatta.html`](../templates/documento-corporativo-cromatta.html) — HTML + CSS com a identidade visual das duas marcas: logo da Cromatta e logo da DDGroup na capa (`imgs/01_Cromatta_Logo_Principal_Horizontal.png` e `imgs/DDGroup.png`), paleta de cores oficial da Cromatta. Contém no topo do arquivo as regras de uso (o que pode e o que não pode ser alterado) e um bloco de seção de exemplo para copiar.
+
+**Footer obrigatório em toda seção (exceto a capa):** nome de quem gerou o documento, cargo, empresa, data de geração e a marca "CONFIDENCIAL" — já vem como bloco `.footer-note` pronto no template, só preencher os placeholders (`{NOME_GERADOR}`, `{CARGO_GERADOR}`, `{EMPRESA_GERADOR}`, `{DATA_GERACAO}`). Valores padrão sugeridos no comentário do próprio template (Paulo Carvalho, Tech Lead, DDGroup) — ajustar se outra pessoa gerar o documento.
 
 Exemplo real e completo já implementado (capa, diagrama de objetos em SVG, tabelas, callouts): [`entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.html`](../entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.html) — este é o código-fonte que gerou o primeiro Solution Design; use como referência de como aplicar o modelo na prática, especialmente o padrão de diagrama SVG (caixas + setas coloridas por tipo de objeto).
 

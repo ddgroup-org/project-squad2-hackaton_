@@ -2,21 +2,22 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>{TITULO_DOCUMENTO} — Cromatta Química</title>
+<title>{TITULO_DOCUMENTO} — DDGroup × Cromatta Química</title>
 
 <!--
-  TEMPLATE OFICIAL DE DOCUMENTO CORPORATIVO — CROMATTA QUÍMICA (A4 / PDF)
-  ========================================================================
+  TEMPLATE OFICIAL DE DOCUMENTO CORPORATIVO — DDGROUP × CROMATTA QUÍMICA (A4 / PDF)
+  ==================================================================================
 
   PROCEDÊNCIA
   ------------------------------------------------------------------------
   * Criado para o hackathon (Squad 02) a partir do Solution Design real
     (entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.pdf).
-  * Usa a paleta de cores oficial da marca (imgs/05_Cromatta_Paleta_de_Cores.png)
-    e a logo principal (imgs/01_Cromatta_Logo_Principal_Horizontal.png).
+  * Usa a paleta de cores oficial da marca Cromatta (imgs/05_Cromatta_Paleta_de_Cores.png),
+    a logo da Cromatta (imgs/01_Cromatta_Logo_Principal_Horizontal.png)
+    e a logo da DDGroup (imgs/DDGroup.png) — os dois lados do projeto (consultoria + cliente).
   * É o modelo padrão para QUALQUER documento corporativo/entregável em PDF
-    deste projeto (BRD final, roteiro de demo, relatório de apresentação
-    etc.) — não recriar um estilo novo a cada documento.
+    deste projeto (BRD final, Solution Design, roteiro de demo, relatório de
+    apresentação etc.) — não recriar um estilo novo a cada documento.
 
   REGRA DE USO
   ------------------------------------------------------------------------
@@ -27,9 +28,13 @@
     table/th/td, .footer-note) — são a identidade visual do documento.
   * Adicionar quantas <section> forem necessárias; cada uma quebra de
     página automaticamente (page-break-after: always).
+  * TODA seção (menos a capa) leva o footer padrão no final — copiar o bloco
+    `.footer-note` tal como está, só preenchendo os placeholders. Campos
+    obrigatórios do footer: nome de quem gerou, cargo, empresa, data e a
+    marca CONFIDENCIAL — não omitir em nenhuma página.
   * O arquivo .html de trabalho pode viver em qualquer lugar (ex.: pasta
     temporária) — só o PDF final entra no repositório, em `entregaveis/`.
-  * O caminho da logo em <img src="file://..."> precisa ser ABSOLUTO
+  * Os caminhos de logo em <img src="file://..."> precisam ser ABSOLUTOS
     (ex.: file:///Users/.../cromatta/imgs/01_Cromatta_Logo_Principal_Horizontal.png),
     porque o Chrome headless resolve o HTML como arquivo local.
 
@@ -67,7 +72,7 @@
   @page { size: A4; margin: 0; }
   section {
     page-break-after: always;
-    padding: 20mm 16mm 16mm 16mm;
+    padding: 20mm 16mm 20mm 16mm;
     min-height: 277mm;
     position: relative;
   }
@@ -84,13 +89,26 @@
     text-align: center;
     padding: 0;
   }
+  .cover .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
   .cover .logo-card {
     background: #F4F1EC;
     border-radius: 6px;
-    padding: 14px 28px;
+    padding: 14px 24px;
     box-shadow: 0 8px 30px rgba(0,0,0,.35);
+    display: flex;
+    align-items: center;
   }
-  .cover .logo-card img { width: 320px; display: block; }
+  .cover .logo-card img.cromatta { width: 240px; display: block; }
+  .cover .logo-card img.ddgroup { width: 130px; display: block; }
+  .cover .logo-x {
+    font-size: 22px;
+    color: var(--ouro);
+    font-weight: 300;
+  }
   .cover h1 {
     margin: 40px 0 6px;
     font-size: 30px;
@@ -161,6 +179,8 @@
     padding-left: 8px;
   }
   p { margin: 0 0 10px; }
+
+  /* ---- Footer padrão (obrigatório em toda seção, exceto capa) ---- */
   .footer-note {
     position: absolute;
     bottom: 10mm;
@@ -168,10 +188,22 @@
     right: 16mm;
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
     font-size: 8.5px;
     color: #9aa0a8;
     border-top: 1px solid var(--cinza-claro);
     padding-top: 6px;
+  }
+  .footer-note .who { text-align: left; }
+  .footer-note .who b { color: var(--grafite); }
+  .footer-note .when { text-align: center; white-space: nowrap; }
+  .footer-note .confidential {
+    text-align: right;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--cobre);
+    white-space: nowrap;
   }
 
   table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 10.5px; }
@@ -209,8 +241,14 @@
 
 <!-- ===================== CAPA — não alterar estrutura, só o texto ===================== -->
 <section class="cover">
-  <div class="logo-card">
-    <img src="file:///Users/paulocarvalho/Desktop/cromatta/imgs/01_Cromatta_Logo_Principal_Horizontal.png" alt="Cromatta Química">
+  <div class="logo-row">
+    <div class="logo-card">
+      <img class="cromatta" src="file:///Users/paulocarvalho/Desktop/cromatta/imgs/01_Cromatta_Logo_Principal_Horizontal.png" alt="Cromatta Química">
+    </div>
+    <span class="logo-x">×</span>
+    <div class="logo-card">
+      <img class="ddgroup" src="file:///Users/paulocarvalho/Desktop/cromatta/imgs/DDGroup.png" alt="DDGroup">
+    </div>
   </div>
   <h1>{TITULO_DOCUMENTO}</h1>
   <div class="accent-line"></div>
@@ -226,7 +264,7 @@
 <!-- ===================== SEÇÃO DE EXEMPLO — copiar este bloco para cada seção ===================== -->
 <section>
   <div class="header-bar">
-    <div class="brand">Cromatta Química · {TITULO_DOCUMENTO}</div>
+    <div class="brand">DDGroup × Cromatta Química · {TITULO_DOCUMENTO}</div>
     <div class="doc-code">{CODIGO_DOCUMENTO}</div>
   </div>
   <div class="sec-title">Seção N</div>
@@ -252,15 +290,25 @@
     <tr><td>{...}</td><td>{...}</td><td>{...}</td></tr>
   </table>
 
-  <div class="footer-note"><span>{TITULO_DOCUMENTO} — Cromatta Química — Squad 02</span><span>Seção N de TOTAL</span></div>
+  <!-- FOOTER PADRÃO — obrigatório em toda seção, sempre com estes 3 blocos -->
+  <div class="footer-note">
+    <span class="who"><b>{NOME_GERADOR}</b> — {CARGO_GERADOR}, {EMPRESA_GERADOR}</span>
+    <span class="when">{DATA_GERACAO}</span>
+    <span class="confidential">CONFIDENCIAL</span>
+  </div>
 </section>
 
 <!--
   Padrão de diagrama de objetos (SVG inline): ver o código-fonte de
-  entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.pdf (arquivo de
-  trabalho arquivado em evidencias/demandas/) para o exemplo completo de
-  caixas + setas coloridas por tipo de objeto. Reaproveitar a mesma
-  estrutura (rect + text + line/marker de seta) em vez de recriar do zero.
+  entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.html para o exemplo
+  completo de caixas + setas coloridas por tipo de objeto. Reaproveitar a
+  mesma estrutura (rect + text + line/marker de seta) em vez de recriar do zero.
+
+  VALORES PADRÃO SUGERIDOS PARA O FOOTER (ajustar se outra pessoa gerar o doc):
+  {NOME_GERADOR}   = Paulo Carvalho
+  {CARGO_GERADOR}  = Tech Lead
+  {EMPRESA_GERADOR}= DDGroup
+  {DATA_GERACAO}   = data de geração do PDF, formato DD/MM/AAAA
 -->
 
 </body>

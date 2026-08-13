@@ -27,7 +27,7 @@ Nesta mesma pasta/repositório (`SQUAD_02_HACKATON_DDGROUP_2026`) convivem:
 - **Agentes, skills, conhecimento técnico e templates** copiados da Salesforce-AI-Base: `.claude/agents/`, `.claude/skills/`, `knowledge/`, `runbooks/`, `templates/` — ver seção "Recursos copiados da Salesforce-AI-Base" abaixo.
 - **Documentos corporativos (PDF):** `templates/documento-corporativo-cromatta.html` — ver [docs/como-gerar-documentos.md](docs/como-gerar-documentos.md).
 
-O trabalho é guiado pelos documentos de requisitos deste repositório (`business-scenario.md` + `architecture.md`, derivados de `docs/transcricao.md`) — não há mais prompts autocontidos separados em `demands/` (descontinuado). No lugar disso, cada unidade de trabalho é uma "demanda" local (ver seção "Fluxo de trabalho" abaixo).
+O trabalho é guiado pelos documentos de requisitos deste repositório: o **BRD oficial** (`entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf`, aprovado pelo cliente e pelo tech lead) é a fonte de verdade mais recente; `business-scenario.md` + `architecture.md` (derivados de `docs/transcricao.md`) são o resumo estruturado de apoio, atualizados para acompanhar o BRD onde há divergência. Não há mais prompts autocontidos separados em `demands/` (descontinuado). No lugar disso, cada unidade de trabalho é uma "demanda" local (ver seção "Fluxo de trabalho" abaixo).
 
 ## O que esta pasta não é
 
@@ -59,7 +59,7 @@ Critério de 25% da nota (ver `project-context.md`). O fluxo `/executar-demanda`
 
 Para não recriar do zero o que a base global já resolve bem, foram copiados (não referenciados por caminho relativo, para funcionar mesmo fora da máquina de quem tem a Salesforce-AI-Base clonada):
 
-- `.claude/agents/` — os 7 agentes de revisão (salesforce-developer, salesforce-architect, apex-code-reviewer, lwc-code-reviewer, flow-reviewer, security-reviewer, deployment-reviewer).
+- `.claude/agents/` — os 7 agentes de revisão (salesforce-developer, salesforce-architect, apex-code-reviewer, lwc-code-reviewer, flow-reviewer, security-reviewer, deployment-reviewer). **Uso obrigatório por demanda:** `/executar-demanda` roteia para o agente certo por tipo de conteúdo — ver tabela em `.claude/commands/executar-demanda.md`.
 - `.claude/skills/` — `review-apex`, `review-lwc`, `start-salesforce-demand`, `salesforce-preflight-check`, `validate-change-scope`.
 - `knowledge/` — padrões técnicos (Apex, Flow, LWC, testes, nomenclatura, segurança) que os agentes/skills acima referenciam internamente.
 - `runbooks/` — recuperação de operações Git/metadata que deram errado.
