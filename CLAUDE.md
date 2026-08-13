@@ -18,7 +18,7 @@ Este arquivo vale para uma sessão de IA aberta **dentro desta pasta** (`~/Deskt
 
 Planejamento e execução de um hackathon Salesforce de 1 dia (Sales Cloud + Service Cloud) para o cliente simulado **Cromatta Química** (cenário REAL, não fictício). Ver [docs/project-context.md](docs/project-context.md), [docs/business-scenario.md](docs/business-scenario.md) e a transcrição completa da reunião de requisitos em [docs/transcricao.md](docs/transcricao.md).
 
-Nesta mesma pasta/repositório (`Squad2-Cromatta-quimica`) convivem:
+Nesta mesma pasta/repositório (`SQUAD_02_HACKATON_DDGROUP_2026`) convivem:
 
 - **Planejamento:** este arquivo, `project-context.md`, `business-scenario.md`, `architecture.md`, `decisions/` (e as cópias em `docs/`).
 - **Projeto Salesforce DX:** `sfdx-project.json`, `force-app/`, `config/`, `manifest/`, `scripts/` — estrutura gerada via `sf project generate`, pronta para receber a metadata da execução.

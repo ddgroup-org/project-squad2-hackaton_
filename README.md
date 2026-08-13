@@ -103,7 +103,7 @@ Por ora, **skills** (`start-salesforce-demand`, `review-apex`, etc.) não foram 
 
 ## Publicação (GitHub)
 
-- **Repositório:** [github.com/inaldojunior-a11y/Squad2-Cromatta-quimica](https://github.com/inaldojunior-a11y/Squad2-Cromatta-quimica)
+- **Repositório:** [github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026](https://github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026)
 - **Visibilidade:** público — o conteúdo é o levantamento de requisitos de um cliente simulado (role-play) do hackathon, não dados reais de produção.
 - **Estrutura:** unificada — planejamento, requisitos, decisões e o projeto Salesforce DX (`force-app/`, `sfdx-project.json`, `manifest/`) vivem no mesmo repositório e histórico Git, para que o tech lead revise tudo em um único lugar.
 

@@ -15,7 +15,7 @@
 - **Regra principal: nenhuma configuração manual no Salesforce.** Tudo deve ser feito via Claude/IA. Só fazer manual o que for comprovadamente impossível via IA (ex.: configuração de bot fora do Salesforce).
 - **Duração:** 1 dia. Agenda: 8h–9h/9h30 abertura + briefing com o cliente; 9h–17h execução; 17h30–18h30 apresentações (15 min por squad, 4 squads).
 - **Papéis por squad:** GP, Tech Lead (referência técnica/arquiteto — não desenvolve, orienta o time), Dev(s) (implementam), e uma pessoa focada em uso de IA por squad.
-- **Squads e responsáveis por IA:** Squad 1, Squad 2 (**Inaldo** — nosso squad, repositório `Squad2-Cromatta-quimica`), Squad 3 (Kadu), Squad 4 (Raquel).
+- **Squads e responsáveis por IA:** Squad 1, Squad 2 (**Inaldo** — nosso squad, repositório `SQUAD_02_HACKATON_DDGROUP_2026`), Squad 3 (Kadu), Squad 4 (Raquel).
 - **Mentores** (Diogo Vidal, Anna Pasolini, Letícia Silveira, João) — não vinculados a um squad específico, disponíveis a todos via canal de dúvidas no Slack.
 - **Dúvidas para o cliente:** centralizadas em canal único de dúvidas, para que todos os squads recebam a mesma informação ao mesmo tempo (o cliente não quer responder a mesma coisa diferente para squads diferentes).
 - **Governança de uso de IA/tokens:** cada squad deve gerenciar seu próprio consumo (plano pago com limite de tokens). Dica dada: limpar o contexto da sessão periodicamente para economizar; documentar na apresentação final como o squad geriu esse consumo.

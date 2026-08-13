@@ -66,7 +66,7 @@ Confirmados na reunião de kickoff (ver [docs/transcricao.md](docs/transcricao.m
 
 ## Pendências abertas
 
-**Resolvido:** o repositório Git compartilhado para o projeto Salesforce já existe — [github.com/inaldojunior-a11y/Squad2-Cromatta-quimica](https://github.com/inaldojunior-a11y/Squad2-Cromatta-quimica), o mesmo repositório deste cofre. **Resolvido:** o desafio de negócio já é real (Cromatta Química), não mais fictício.
+**Resolvido:** o repositório Git compartilhado para o projeto Salesforce já existe — [github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026](https://github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026), o mesmo repositório deste cofre. **Resolvido:** o desafio de negócio já é real (Cromatta Química), não mais fictício.
 
 | Pendência | Responsável por confirmar |
 | --- | --- |
