@@ -22,9 +22,9 @@ Este repositório tem o **Salesforce DX MCP Server** oficial (`@salesforce/mcp`)
 ## Setup necessário para cada dev (isso NÃO fica salvo no repositório)
 
 1. Ter o Salesforce CLI instalado (`sf`).
-2. Autorizar a org do hackathon localmente e marcar como default:
+2. Autorizar a org do hackathon localmente e marcar como default (alias em uso: `hackaton2`):
    ```
-   sf org login web --alias cromatta-hackathon --set-default
+   sf org login web --alias hackaton2 --set-default
    ```
 3. Abrir este repositório no Claude Code. Na primeira vez, o Claude Code vai pedir aprovação para rodar o servidor MCP declarado em `.mcp.json` — isso é uma proteção de segurança do próprio Claude Code (roda `npx @salesforce/mcp`, então precisa de confirmação explícita), aprovar uma vez é suficiente.
 4. Node.js precisa estar disponível no PATH (o `.mcp.json` usa `npx -y @salesforce/mcp`, que baixa/executa o pacote automaticamente — não precisa instalar nada manualmente).
