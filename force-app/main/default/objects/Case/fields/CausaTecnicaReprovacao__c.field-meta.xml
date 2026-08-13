@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CausaTecnicaReprovacao__c</fullName>
+    <description>Causa técnica identificada pelo químico para a reprovação da amostra — ver business-scenario.md/BRD 3.7. Aplicável a Cases do Record Type &quot;Envio e Teste de Amostra&quot;. Ver demanda-09.</description>
+    <label>Causa Técnica de Reprovação</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Incompatibilidade com Substrato</fullName>
+                <default>false</default>
+                <label>Incompatibilidade com Substrato</label>
+            </value>
+            <value>
+                <fullName>Incompatibilidade com Base do Cliente</fullName>
+                <default>false</default>
+                <label>Incompatibilidade com Base do Cliente</label>
+            </value>
+            <value>
+                <fullName>Instabilidade do Produto</fullName>
+                <default>false</default>
+                <label>Instabilidade do Produto</label>
+            </value>
+            <value>
+                <fullName>Entupimento de Cabeçote</fullName>
+                <default>false</default>
+                <label>Entupimento de Cabeçote</label>
+            </value>
+            <value>
+                <fullName>Aspecto/Aparência Fora do Esperado</fullName>
+                <default>false</default>
+                <label>Aspecto/Aparência Fora do Esperado</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

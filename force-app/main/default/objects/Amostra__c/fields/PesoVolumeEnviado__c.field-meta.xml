@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PesoVolumeEnviado__c</fullName>
+    <description>Peso ou volume da amostra enviada, incluindo unidade (ex.: &quot;500g&quot;, &quot;2L&quot;) — texto livre para acomodar diferentes unidades entre linhas de produto. Ver demanda-09.</description>
+    <externalId>false</externalId>
+    <label>Peso/Volume Enviado</label>
+    <length>40</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
