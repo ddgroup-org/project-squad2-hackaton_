@@ -75,7 +75,11 @@ Product2 (LinhaDeProduto__c: Cromata | Flexa | Jato) → PricebookEntry → Stan
 Decisões que sustentam este modelo:
 - Account como objeto único com `TipoPessoa__c`, sem Record Type — [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md) (substitui a [ADR 0001](decisions/0001-modelo-conta-b2b-b2c-sem-person-accounts.md)).
 - Sem integração de ERP nem motor de precificação automático no v1 — [ADR 0002](decisions/0002-sem-integracao-erp-precificacao-v1.md).
-- Reconciliação de metadata criada fora do fluxo Claude — [ADR 0004](decisions/0004-reconciliacao-permissionsets-fora-do-fluxo.md).
+- Correção de registro sobre a origem dos Permission Sets (demanda 02, executada corretamente via Claude por Inaldo Junior) — [ADR 0004](decisions/0004-reconciliacao-permissionsets-fora-do-fluxo.md).
+
+**Pontos reais em aberto (não relacionados ao engano corrigido na ADR 0004):**
+- Record Type `Business_Account` existe na org, origem não identificada em nenhuma demanda registrada — órfão desde a ADR 0003, não usar em nova automação.
+- `User.Linha_de_Produto__c` (já deployado, demanda 02) usa a grafia "Flecha/Cromata"; o BRD oficial usa "Flexa/Cromata" — precisa de uma demanda de correção do picklist antes de mais dados serem cadastrados.
 
 ## Segurança e acessos
 
@@ -85,7 +89,9 @@ Requisito do cliente: **vendedores veem todos os registros, mas só editam os pr
 - **Permission Sets (nomenclatura do BRD, seção 2.2):**
   - **Vendedor** — Camila, Ronaldo, Marcelo, Diego, Bruno, Thiago. CRUD em Lead/Account/Opportunity/Case que possui, leitura nos demais, sem acesso a aprovação de preço. **Já existe na org** (ver ADR 0004).
   - **Laboratório / Químico** — Sérgio e André. Acesso à fila de Case "Laboratório", CRUD em Case, leitura em Opportunity/Account relacionados. **Já existe na org** (API name `Laboratorio`, ver ADR 0004).
-  - **Administrador Comercial** — Gabriel Jacob (dono da empresa). Acesso total, aprovador do fluxo de preço/desconto, visão de todos os relatórios/dashboards. **Ainda não criado** — este nome substitui "Gestor", usado em versões anteriores deste documento antes do BRD existir.
+  - **Administrador Comercial** — Gabriel Jacob (dono da empresa). Acesso total, aprovador do fluxo de preço/desconto, visão de todos os relatórios/dashboards. **Já existe na org** (demanda 02) — este nome substitui "Gestor", usado em versões anteriores deste documento antes do BRD existir.
+
+Todos os 9 usuários (6 vendedores + 2 químicos + Gabriel Jacob) já estão cadastrados com o Permission Set correspondente atribuído (demanda 02). Queue "Laboratório" também já existe, com Sérgio e André como membros. Pendente do critério de aceite da demanda 02: teste de login real como Vendedor confirmando "lê tudo, edita só o próprio" na UI (manual, não é etapa de configuração via Claude).
 
 ## Automação — o que precisa existir (derivado dos requisitos)
 
