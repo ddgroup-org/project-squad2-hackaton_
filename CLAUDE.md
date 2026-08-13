@@ -32,7 +32,9 @@ O trabalho é guiado pelos documentos de requisitos deste repositório (`busines
 
 ## Regras centrais deste projeto
 
-1. **Nenhuma configuração manual na UI do Salesforce — tudo via Claude/IA.** Essa é a regra de maior peso na avaliação do hackathon (25% da nota, ver `project-context.md`). Configuração manual só é aceitável quando comprovadamente impossível via IA — e isso deve ser registrado como decisão explícita (ex.: uma nota ou ADR), nunca feito silenciosamente.
+1. **Tudo via Claude/IA — nunca configuração manual na UI do Salesforce, como padrão.** Essa é a regra de maior peso na avaliação do hackathon (25% da nota, ver `project-context.md`).
+   - **Exceção explícita:** o que não for possível fazer via Claude, pode ser feito direto na org. A exceção é sobre viabilidade técnica (ex.: algo que a ferramenta não suporta), não sobre preferência ou economia de tempo — antes de ir para a UI, tentar de fato via Claude primeiro.
+   - Quando usar a exceção, registrar o que foi feito manualmente e por quê (uma nota ou ADR) — nunca fazer silenciosamente, senão o tech lead (sem acesso à org) não tem como saber que aquilo não veio do fluxo padrão.
 2. **Antes de qualquer `git push`, sempre fazer `sf project retrieve start` (ou equivalente) primeiro.** A metadata commitada precisa refletir o estado real da org — nunca commitar/dar push às cegas sem confirmar o que a org realmente tem. Sem esse fluxo, o tech lead (sem acesso à org) acaba revisando um histórico que pode não corresponder à realidade.
 3. **Não presumir requisito de negócio não confirmado.** Os documentos de requisitos (`business-scenario.md`, `architecture.md`) já cobrem o que foi levantado com o cliente; qualquer requisito ambíguo ou não coberto ali é uma pendência a confirmar (ver seção "Pendências abertas" em `project-context.md`), não uma suposição a preencher silenciosamente.
 

@@ -34,7 +34,7 @@ Consequência direta: o tech lead não pode validar nada olhando a org. A única
 ## Restrições conhecidas
 
 - **Duração:** 1 dia.
-- **Regra de ouro do hackathon: nenhuma configuração manual na UI do Salesforce.** Tudo deve ser feito via Claude/IA — é o critério de maior peso na avaliação (25%). Configuração manual só é aceitável quando comprovadamente impossível via IA, e isso deve ficar registrado como decisão explícita.
+- **Regra de ouro do hackathon: tudo via Claude/IA, como padrão** — é o critério de maior peso na avaliação (25%). **Exceção explícita:** o que não for possível fazer via Claude pode ser feito direto na UI da org (a exceção é sobre viabilidade técnica, não preferência) — sempre registrando o que foi feito manualmente e por quê.
 - Dentro do que pode ser feito via Claude: prioriza-se configuração declarativa (campos, record types, Flows, layouts, relatórios) sobre código customizado (Apex/LWC). Código customizado só quando a automação for inviável de forma declarativa, com justificativa registrada.
 - **Org:** ainda não existe; será criada no início da execução (Developer Edition, Trailhead Playground ou Scratch Org). **Nunca** uma org de produção real ou com dados reais de clientes.
 - **Execução:** um único dev, sozinho, com base no documento de requisitos (`business-scenario.md` + `architecture.md`, ambos derivados de `transcricao.md`) — não há trilhas paralelas de equipe.

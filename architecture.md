@@ -16,7 +16,9 @@ source_of_truth: true
 
 ## Regra de implementação (herdada das regras do hackathon)
 
-**Nenhuma configuração deve ser feita manualmente na UI do Salesforce — tudo via Claude/IA** (declarativo via Flow/metadata deployado, nunca clique-clique na org). Essa é a regra de maior peso na avaliação do hackathon (25% da nota). Só é aceitável fazer manual o que for comprovadamente impossível via IA — e isso deve ser registrado como decisão, não feito silenciosamente.
+**Tudo via Claude/IA, como padrão** (declarativo via Flow/metadata deployado, nunca clique-clique na org). Essa é a regra de maior peso na avaliação do hackathon (25% da nota).
+
+**Exceção explícita:** o que não for possível fazer via Claude pode ser feito direto na org — a exceção é sobre viabilidade técnica, não preferência. Registrar sempre o que foi feito manualmente e por quê (nota ou ADR), nunca silenciosamente.
 
 ## Clouds envolvidas
 
