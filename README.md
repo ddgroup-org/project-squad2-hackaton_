@@ -49,7 +49,7 @@ e manter os requisitos atualizados          repositório, populando force-app/
         nenhuma configuração manual na UI do Salesforce
                     │
                     ▼
-        sf project retrieve start (sempre antes de dar push)
+        sf project retrieve start → git pull (sempre nessa ordem antes de dar push)
                     │
                     ▼
         commit + push neste mesmo repositório (force-app/, manifest/, config/)
@@ -58,7 +58,7 @@ e manter os requisitos atualizados          repositório, populando force-app/
         Tech lead revisa pelo Git (não pela org)
 ```
 
-Como o tech lead **não tem acesso à org**, a única forma de revisão é este mesmo repositório Git, onde o dev faz commit/push da metadata a cada etapa. **Antes de qualquer push, sempre fazer retrieve primeiro** — sem isso, o histórico commitado pode não refletir o estado real da org.
+Como o tech lead **não tem acesso à org**, a única forma de revisão é este mesmo repositório Git, onde o dev faz commit/push da metadata a cada etapa. **Antes de qualquer push, sempre fazer retrieve da org e depois `git pull`** — sem isso, o histórico commitado pode não refletir o estado real da org, ou o push de alguém pode sobrescrever o de outra pessoa (o repositório é compartilhado pelo squad).
 
 ---
 
@@ -71,8 +71,15 @@ quimicahackaton/
 ├── demanda.md                             tarefa atual a ser executada (ver "Como executar uma demanda")
 ├── .mcp.json                               Salesforce DX MCP Server (ver docs/mcp.md)
 ├── .claude/
-│   ├── agents/                            cópia fiel dos 7 agentes da Salesforce-AI-Base — ver nota abaixo
+│   ├── agents/                            7 agentes de revisão, copiados da Salesforce-AI-Base
+│   ├── skills/                            5 skills copiadas (preflight, escopo, review-apex/lwc, start-demand)
 │   └── commands/executar-demanda.md       comando `/executar-demanda`
+├── knowledge/                              padrões técnicos (Apex, Flow, LWC, testes, nomenclatura, segurança)
+├── runbooks/                                recuperação de operações Git/metadata que deram errado
+├── templates/
+│   ├── documento-corporativo-cromatta.html modelo oficial p/ qualquer PDF deste projeto
+│   └── ...                                 templates genéricos da Salesforce-AI-Base (referência)
+├── entregaveis/                            PDFs entregues (ex.: Solution Design) + fonte .html de cada um
 ├── evidencias/                             evidência de uso do Claude/IA (25% da nota)
 │   ├── README.md
 │   ├── log.md                             uma linha por demanda executada
@@ -84,6 +91,7 @@ quimicahackaton/
     ├── transcricao.md                     transcrição condensada da reunião de levantamento de requisitos
     ├── architecture.md                    clouds, modelo de dados, segurança, automações
     ├── como-executar-demandas.md          fluxo passo a passo de demanda.md → /executar-demanda
+    ├── como-gerar-documentos.md            como usar templates/documento-corporativo-cromatta.html
     ├── mcp.md                              setup e regra de validação via MCP
     └── decisions/
         ├── README.md
@@ -107,13 +115,15 @@ quimicahackaton/
 
 ---
 
-## Agentes (.claude/agents/)
+## Agentes, skills e conhecimento técnico (copiados da Salesforce-AI-Base)
 
-Cópia literal dos 7 agentes da [Salesforce-AI-Base](../Salesforce-AI-Base/.claude/agents/) (`salesforce-developer`, `salesforce-architect`, `apex-code-reviewer`, `lwc-code-reviewer`, `flow-reviewer`, `security-reviewer`, `deployment-reviewer`), copiados sem alteração — a base de origem não foi tocada.
+Copiados sem alteração da [Salesforce-AI-Base](../Salesforce-AI-Base/) — a base de origem não foi tocada:
 
-**Limitação conhecida:** cada agente referencia internamente `../../knowledge/*.md` e `../../templates/*.md`, pastas que **não existem** neste cofre. Quando um agente tentar consultar esses arquivos numa sessão que rodar aqui, vai encontrar um caminho inexistente — isso não bloqueia a execução, apenas empobrece o agente em relação à versão completa da base. Se isso incomodar, a solução é trazer `knowledge/` também (deliberadamente adiado).
+- **`.claude/agents/`** — os 7 agentes de revisão (`salesforce-developer`, `salesforce-architect`, `apex-code-reviewer`, `lwc-code-reviewer`, `flow-reviewer`, `security-reviewer`, `deployment-reviewer`).
+- **`.claude/skills/`** — `review-apex`, `review-lwc`, `start-salesforce-demand`, `salesforce-preflight-check`, `validate-change-scope`.
+- **`knowledge/`** e **`runbooks/`** — padrões técnicos e recuperação de operações, referenciados internamente pelos agentes/skills acima (por isso foram trazidos também — sem eles, os links internos ficariam mortos).
 
-Por ora, **skills** (`start-salesforce-demand`, `review-apex`, etc.) não foram copiadas — só agentes, por instrução explícita. Podem ser adicionadas depois, se fizer falta.
+**Atenção — não copiado 1:1 no comportamento:** esses arquivos assumem um modelo enterprise com múltiplos ambientes (dev/UAT/produção) e Pull Requests. Este hackathon usa **uma única branch e um único org** — onde houver menção a branch-base, UAT, Produção ou PR, isso não se aplica aqui; as regras deste `CLAUDE.md` prevalecem (ver seção "Recursos copiados da Salesforce-AI-Base" em `CLAUDE.md`).
 
 ## Publicação (GitHub)
 
@@ -142,6 +152,10 @@ O desafio de negócio **já é real** (não mais uma suposição fictícia): foi
 4. Evidência (log + demanda arquivada) é gerada automaticamente; screenshot é manual, via `scripts/capturar-print.sh`.
 
 Passo a passo completo: [docs/como-executar-demandas.md](docs/como-executar-demandas.md).
+
+## Documentos corporativos (PDF)
+
+Todo entregável em PDF (Solution Design, BRD final, roteiro de demo etc.) usa o modelo oficial da marca — [`templates/documento-corporativo-cromatta.html`](templates/documento-corporativo-cromatta.html) — nunca um estilo novo por documento. Gerado via Chrome headless (já instalado, sem dependência nova). Passo a passo: [docs/como-gerar-documentos.md](docs/como-gerar-documentos.md). Exemplo real: [`entregaveis/`](entregaveis/).
 
 ---
 

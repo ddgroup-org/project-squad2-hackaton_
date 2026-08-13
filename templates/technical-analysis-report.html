@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise técnica Salesforce — {TITULO_DA_ANALISE}</title>
+
+<!--
+  TEMPLATE GENÉRICO DE DOCUMENTAÇÃO TÉCNICA SALESFORCE — A4 / PDF
+  ================================================================
+
+  PROCEDÊNCIA E LIMITAÇÕES — LEIA ANTES DE USAR
+  ----------------------------------------------------------------
+  * Este é um TEMPLATE GENÉRICO, construído para a Salesforce-AI-Base.
+  * NÃO possui identidade visual de nenhum cliente, empresa ou organização.
+  * Foi RECONSTRUÍDO a partir de requisitos e de fragmentos parciais.
+    Não é reprodução exata de nenhum documento preexistente.
+  * NÃO é — e não deve ser apresentado como — um template oficial,
+    homologado ou equivalente a um modelo corporativo completo.
+  * Está SUJEITO A SUBSTITUIÇÃO integral caso um arquivo oficial
+    completo venha a ser fornecido. Quando isso ocorrer, este arquivo
+    deve ser substituído, não mesclado.
+  * A estrutura de seções reflete o que a base exige de uma análise
+    técnica; a apresentação visual é uma escolha neutra, não um padrão.
+
+  USO
+  ----------------------------------------------------------------
+  Substituir apenas o CONTEÚDO TEXTUAL entre os marcadores {}.
+  Não alterar CSS, variáveis de :root, classes, regras de @page,
+  regras de @media print nem o comportamento do rodapé fixo.
+
+  Para adequar a um projeto, ajustar somente as variáveis de :root.
+
+  O documento preenchido é artefato de projeto: salvar em
+  {PROJECT_ROOT}/docs/technical-analysis/ — NUNCA na Salesforce-AI-Base.
+
+  Estrutura de seções: .section > .section-title + .section-body
+  Blocos disponíveis: .alert, .badge, .validation-item, .rec-box,
+  .dep-grid/.dep-item, .flow-diagram/.flow-node/.flow-arrow, table.
+-->
+
+<style>
+  :root {
+    --brand:        #1f3a5f;
+    --brand-dark:   #172c47;
+    --brand-darker: #0f1d30;
+    --accent:       #2f6f8f;
+    --text:         #1c1c1c;
+    --text-muted:   #5a5a5a;
+    --border:       #d8dde3;
+    --surface:      #ffffff;
+    --surface-alt:  #f5f7f9;
+    --ok:           #1e7a46;
+    --ok-bg:        #e8f5ee;
+    --info:         #1f5f8f;
+    --info-bg:      #e9f1f8;
+    --warn:         #8a5a00;
+    --warn-bg:      #fdf3e2;
+    --error:        #a11f28;
+    --error-bg:     #fbeaec;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 0 0 18mm 0;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--surface-alt);
+    color: var(--text);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Cabeçalho */
+  .doc-header {
+    background: var(--brand);
+    color: #fff;
+    padding: 14mm 14mm 10mm 14mm;
+  }
+  .doc-header .eyebrow {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.72);
+    margin-bottom: 6px;
+  }
+  .doc-header h1 {
+    margin: 0 0 4px 0;
+    font-size: 22px;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+  .doc-header .subtitle {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255,255,255,.82);
+  }
+
+  /* Corpo */
+  .doc-body {
+    flex: 1 0 auto;
+    padding: 10mm 14mm 12mm 14mm;
+  }
+
+  /* Ficha do documento */
+  .doc-meta {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8mm;
+    font-size: 11px;
+  }
+  .doc-meta th,
+  .doc-meta td {
+    border: 1px solid var(--border);
+    padding: 5px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .doc-meta th {
+    background: var(--surface-alt);
+    width: 26%;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  /* Seções */
+  .section {
+    margin-bottom: 7mm;
+    page-break-inside: auto;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brand-dark);
+    border-bottom: 2px solid var(--brand);
+    padding-bottom: 4px;
+    margin: 0 0 5px 0;
+    page-break-after: avoid;
+  }
+  .section-body { font-size: 12px; }
+  .section-body p { margin: 0 0 7px 0; }
+  .section-body ul,
+  .section-body ol { margin: 0 0 7px 0; padding-left: 18px; }
+  .section-body li { margin-bottom: 3px; }
+
+  /* Tabelas de conteúdo */
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 8px 0;
+    font-size: 10.5px;
+    table-layout: fixed;
+  }
+  table.data th,
+  table.data td {
+    border: 1px solid var(--border);
+    padding: 5px 7px;
+    text-align: left;
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  table.data th {
+    background: var(--brand-dark);
+    color: #fff;
+    font-weight: 600;
+  }
+  table.data tbody tr:nth-child(even) { background: var(--surface-alt); }
+
+  /* Alertas */
+  .alert {
+    border-left: 4px solid var(--info);
+    background: var(--info-bg);
+    padding: 8px 11px;
+    margin: 6px 0 9px 0;
+    font-size: 11.5px;
+    page-break-inside: avoid;
+  }
+  .alert-error {
+    border-left-color: var(--error);
+    background: var(--error-bg);
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .badge-ok       { background: var(--ok-bg);    color: var(--ok);    border-color: var(--ok); }
+  .badge-info     { background: var(--info-bg);  color: var(--info);  border-color: var(--info); }
+  .badge-warn     { background: var(--warn-bg);  color: var(--warn);  border-color: var(--warn); }
+  .badge-obsolete { background: var(--error-bg); color: var(--error); border-color: var(--error); }
+
+  /* Itens de validação */
+  .validation-item {
+    border-left: 3px solid var(--border);
+    background: var(--surface-alt);
+    padding: 7px 10px;
+    margin: 5px 0;
+    font-size: 11.5px;
+    page-break-inside: avoid;
+  }
+  .validation-item.ok    { border-left-color: var(--ok);    background: var(--ok-bg); }
+  .validation-item.info  { border-left-color: var(--info);  background: var(--info-bg); }
+  .validation-item.warn  { border-left-color: var(--warn);  background: var(--warn-bg); }
+  .validation-item.error { border-left-color: var(--error); background: var(--error-bg); }
+  .validation-item strong { display: block; margin-bottom: 2px; }
+
+  /* Caixa de recomendação */
+  .rec-box {
+    border: 1px solid var(--accent);
+    border-top: 3px solid var(--accent);
+    background: var(--surface);
+    padding: 10px 12px;
+    margin: 7px 0;
+    page-break-inside: avoid;
+  }
+  .rec-box h3 {
+    margin: 0 0 5px 0;
+    font-size: 12px;
+    color: var(--brand-dark);
+  }
+
+  /* Grade de dependências */
+  .dep-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin: 6px 0 8px 0;
+  }
+  .dep-item {
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    padding: 7px 9px;
+    font-size: 11px;
+    page-break-inside: avoid;
+  }
+  .dep-item strong { display: block; color: var(--brand-dark); margin-bottom: 2px; }
+
+  /* Diagrama de fluxo textual */
+  .flow-diagram {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    margin: 7px 0 9px 0;
+    page-break-inside: avoid;
+  }
+  .flow-node {
+    border: 1px solid var(--accent);
+    background: var(--info-bg);
+    color: var(--brand-dark);
+    padding: 5px 9px;
+    font-size: 10.5px;
+    font-weight: 600;
+    border-radius: 3px;
+  }
+  .flow-arrow { color: var(--text-muted); font-size: 12px; }
+
+  code, .mono {
+    font-family: "SF Mono", Consolas, "Courier New", monospace;
+    font-size: 10.5px;
+    background: var(--surface-alt);
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+  pre.mono {
+    display: block;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Rodapé */
+  .doc-footer {
+    flex-shrink: 0;
+    background: var(--brand-darker);
+    color: rgba(255,255,255,.5);
+    padding: 6px 6mm;
+    font-size: 9px;
+    line-height: 1.25;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .doc-footer span {
+    display: inline-block;
+    max-width: 100%;
+    text-align: center;
+  }
+  .doc-footer strong { color: rgba(255,255,255,.8); }
+
+  @media print {
+    body { background: #fff; }
+    .page { width: auto; min-height: auto; margin: 0; }
+
+    .doc-header {
+      background: var(--brand) !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    table.data th {
+      background: var(--brand-dark) !important;
+      color: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .alert, .badge, .validation-item, .rec-box, .dep-item, .flow-node {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .section-title { page-break-after: avoid; }
+    .section       { page-break-inside: auto; }
+    table.data     { page-break-inside: auto; }
+    table.data tr  { page-break-inside: avoid; }
+    h1, h2, h3     { page-break-after: avoid; }
+
+    .doc-body { padding-bottom: 14mm; }
+
+    .doc-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 999;
+      min-height: 8mm;
+      padding: 1.3mm 6mm;
+      background: var(--brand-darker) !important;
+      color: rgba(255,255,255,.5) !important;
+      font-size: 7pt;
+      line-height: 1.2;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .doc-footer span {
+      display: inline-block;
+      max-width: 194mm;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .doc-footer strong { color: rgba(255,255,255,.8) !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- CABEÇALHO -->
+  <header class="doc-header">
+    <div class="eyebrow">Documentação Salesforce &nbsp;·&nbsp; Interno / Confidencial</div>
+    <h1>{TITULO_DA_ANALISE}</h1>
+    <p class="subtitle">{SUBTITULO_OU_TIPO_DE_DOCUMENTO}</p>
+  </header>
+
+  <main class="doc-body">
+
+    <!-- FICHA DO DOCUMENTO -->
+    <table class="doc-meta">
+      <tbody>
+        <tr><th>Demanda</th><td>{ID_DEMANDA}</td></tr>
+        <tr><th>Cliente / Projeto</th><td>{Cliente/Projeto}</td></tr>
+        <tr><th>Org analisada / Ambiente</th><td>{ORG_OU_AMBIENTE}</td></tr>
+        <tr><th>Autor</th><td>Paulo Carvalho — Desenvolvedor Salesforce / Arquiteto Salesforce</td></tr>
+        <tr><th>Data</th><td><span data-generated-date></span></td></tr>
+        <tr><th>Versão</th><td>{VERSAO}</td></tr>
+        <tr><th>Status do artefato</th><td><span class="badge badge-info">{STATUS_DO_ARTEFATO}</span></td></tr>
+        <tr><th>Classificação</th><td>Interno / Confidencial</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert">
+      <strong>Escopo deste documento.</strong> {ALERTA_INICIAL_SOBRE_ESCOPO_E_LIMITES_DA_ANALISE}
+    </div>
+
+    <!-- 01 | RESUMO EXECUTIVO -->
+    <section class="section">
+      <h2 class="section-title">01 | Resumo executivo</h2>
+      <div class="section-body">
+        <p>{LEITURA_OBJETIVA_PARA_LIDERANCA}</p>
+      </div>
+    </section>
+
+    <!-- 02 | CONTEXTO DA DEMANDA -->
+    <section class="section">
+      <h2 class="section-title">02 | Contexto da demanda</h2>
+      <div class="section-body">
+        <p>{QUAL_E_A_NECESSIDADE_E_O_PROBLEMA}</p>
+      </div>
+    </section>
+
+    <!-- 03 | ESCOPO -->
+    <section class="section">
+      <h2 class="section-title">03 | Escopo</h2>
+      <div class="section-body">
+        <p><strong>Incluído:</strong> {O_QUE_ESTA_INCLUIDO}</p>
+        <p><strong>Fora do escopo:</strong> {O_QUE_NAO_FOI_ANALISADO_E_POR_QUE}</p>
+      </div>
+    </section>
+
+    <!-- 04 | FICHA TÉCNICA -->
+    <section class="section">
+      <h2 class="section-title">04 | Ficha técnica</h2>
+      <div class="section-body">
+        <table class="data">
+          <thead>
+            <tr><th style="width:18%">Tipo</th><th style="width:32%">Componente (API Name)</th><th style="width:32%">Papel na análise</th><th style="width:18%">Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>{TIPO}</td><td class="mono">{API_NAME}</td><td>{PAPEL}</td><td><span class="badge badge-ok">{STATUS}</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 05 | SITUAÇÃO ATUAL -->
+    <section class="section">
+      <h2 class="section-title">05 | Situação atual</h2>
+      <div class="section-body">
+        <p>{COMO_FUNCIONA_HOJE_COM_BASE_EM_EVIDENCIA}</p>
+        <div class="flow-diagram">
+          <span class="flow-node">{ETAPA_1}</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-node">{ETAPA_2}</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-node">{ETAPA_3}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 | ANÁLISE REALIZADA -->
+    <section class="section">
+      <h2 class="section-title">06 | Análise realizada / Solução proposta</h2>
+      <div class="section-body">
+        <p>{ANALISE_TECNICA_OU_SOLUCAO}</p>
+        <table class="data">
+          <thead>
+            <tr><th style="width:16%">Alternativa</th><th style="width:10%">Aderência</th><th style="width:12%">Complexidade</th><th style="width:12%">Escalabilidade</th><th style="width:10%">Segurança</th><th style="width:12%">Manutenção</th><th style="width:8%">Risco</th><th style="width:20%">Recomendação</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>{ALTERNATIVA}</td><td>{VALOR}</td><td>{VALOR}</td><td>{VALOR}</td><td>{VALOR}</td><td>{VALOR}</td><td>{VALOR}</td><td>{RECOMENDACAO}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 07 | DEPENDÊNCIAS E IMPACTOS -->
+    <section class="section">
+      <h2 class="section-title">07 | Dependências e impactos</h2>
+      <div class="section-body">
+        <div class="dep-grid">
+          <div class="dep-item"><strong>{ARTEFATO_ORIGEM}</strong>{TIPO_DE_DEPENDENCIA} &rarr; {ARTEFATO_DEPENDENTE}</div>
+          <div class="dep-item"><strong>{ARTEFATO_ORIGEM}</strong>{TIPO_DE_DEPENDENCIA} &rarr; {ARTEFATO_DEPENDENTE}</div>
+        </div>
+        <table class="data">
+          <thead>
+            <tr><th style="width:20%">Origem</th><th style="width:20%">Dependente</th><th style="width:16%">Tipo</th><th style="width:14%">Risco de regressão</th><th style="width:30%">Evidência</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">{ORIGEM}</td><td class="mono">{DEPENDENTE}</td><td>{TIPO}</td><td>{RISCO}</td><td>{EVIDENCIA}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 08 | VALIDAÇÃO TÉCNICA E ARQUITETURAL -->
+    <section class="section">
+      <h2 class="section-title">08 | Validação técnica e arquitetural</h2>
+      <div class="section-body">
+        <div class="validation-item ok"><strong>Validação confirmada</strong>{DESCRICAO_DA_VALIDACAO_POSITIVA}</div>
+        <div class="validation-item info"><strong>Observação técnica</strong>{OBSERVACAO}</div>
+        <div class="validation-item warn"><strong>Ponto de atenção</strong>{PONTO_DE_ATENCAO_COM_CAUSA_E_RECOMENDACAO}</div>
+        <div class="validation-item error"><strong>Risco crítico</strong>{RISCO_COM_CAUSA_CONSEQUENCIA_E_RECOMENDACAO}</div>
+      </div>
+    </section>
+
+    <!-- 09 | SEGURANÇA, PERMISSÕES E GOVERNANÇA -->
+    <section class="section">
+      <h2 class="section-title">09 | Segurança, permissões e governança</h2>
+      <div class="section-body">
+        <ul>
+          <li><strong>Sharing e contexto de execução:</strong> {ANALISE}</li>
+          <li><strong>CRUD e FLS:</strong> {ANALISE}</li>
+          <li><strong>Permissionamento:</strong> {ANALISE}</li>
+          <li><strong>Exposição de dados:</strong> {ANALISE}</li>
+          <li><strong>Licenciamento:</strong> {CONFIRMADO_OU_PENDENTE}</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 10 | CRITÉRIOS DE ACEITE -->
+    <section class="section">
+      <h2 class="section-title">10 | Critérios de aceite</h2>
+      <div class="section-body">
+        <table class="data">
+          <thead><tr><th style="width:6%">#</th><th style="width:60%">Critério</th><th style="width:34%">Verificação</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Dado que {CONTEXTO}, quando {ACAO}, então {RESULTADO_ESPERADO}.</td><td>{COMO_VERIFICAR}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 11 | PLANEJAMENTO DE TESTES -->
+    <section class="section">
+      <h2 class="section-title">11 | Planejamento de testes</h2>
+      <div class="section-body">
+        <table class="data">
+          <thead>
+            <tr><th style="width:18%">Cenário</th><th style="width:12%">Perfil</th><th style="width:18%">Pré-condição</th><th style="width:22%">Passos</th><th style="width:18%">Resultado esperado</th><th style="width:12%">Evidência</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>{CENARIO}</td><td>{PERFIL}</td><td>{PRE_CONDICAO}</td><td>{PASSOS}</td><td>{RESULTADO}</td><td>{EVIDENCIA}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 12 | RISCOS, PONTOS DE ATENÇÃO E ROLLBACK -->
+    <section class="section">
+      <h2 class="section-title">12 | Riscos, pontos de atenção e rollback</h2>
+      <div class="section-body">
+        <table class="data">
+          <thead><tr><th style="width:6%">#</th><th style="width:26%">Risco</th><th style="width:12%">Severidade</th><th style="width:28%">Consequência</th><th style="width:28%">Recomendação</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>{RISCO}</td><td><span class="badge badge-warn">{SEVERIDADE}</span></td><td>{CONSEQUENCIA}</td><td>{RECOMENDACAO}</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Rollback:</strong> {O_QUE_REVERTER_COMO_E_EM_QUAL_AMBIENTE}</p>
+        <p><strong>Efeitos não reversíveis automaticamente:</strong> {EFEITOS}</p>
+      </div>
+    </section>
+
+    <!-- 13 | EVIDÊNCIAS ANALISADAS -->
+    <section class="section">
+      <h2 class="section-title">13 | Evidências analisadas</h2>
+      <div class="section-body">
+        <table class="data">
+          <thead><tr><th style="width:18%">Tipo</th><th style="width:30%">Fonte</th><th style="width:28%">Resultado</th><th style="width:24%">Observação</th></tr></thead>
+          <tbody>
+            <tr><td>Metadata</td><td>{COMPONENTE_RECUPERADO}</td><td>{RESULTADO}</td><td>{OBSERVACAO}</td></tr>
+            <tr><td>Consulta</td><td>{CONSULTA_REALIZADA}</td><td>{RESULTADO}</td><td>{OBSERVACAO}</td></tr>
+            <tr><td>Setup</td><td>{VERIFICACAO_REALIZADA}</td><td>{RESULTADO}</td><td>{OBSERVACAO}</td></tr>
+            <tr><td>Teste</td><td>{TESTE_EXECUTADO}</td><td>{RESULTADO_REAL}</td><td>{OBSERVACAO}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 14 | LIMITAÇÕES DA ANÁLISE -->
+    <section class="section">
+      <h2 class="section-title">14 | Limitações da análise</h2>
+      <div class="section-body">
+        <table class="data">
+          <thead><tr><th style="width:26%">Não validado</th><th style="width:22%">Motivo</th><th style="width:22%">Risco residual</th><th style="width:20%">Validação necessária</th><th style="width:10%">Responsável</th></tr></thead>
+          <tbody>
+            <tr><td>{ITEM}</td><td>{MOTIVO}</td><td>{RISCO}</td><td>{VALIDACAO}</td><td>{RESPONSAVEL}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 15 | RECOMENDAÇÃO TÉCNICA -->
+    <section class="section">
+      <h2 class="section-title">15 | Recomendação técnica</h2>
+      <div class="section-body">
+        <div class="rec-box">
+          <h3>Decisão: {DECISAO_TECNICA}</h3>
+          <p>{JUSTIFICATIVA_TECNICA}</p>
+          <p><strong>Fontes oficiais consultadas:</strong> {DOCUMENTACAO_CONSULTADA}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 | PRÓXIMOS PASSOS -->
+    <section class="section">
+      <h2 class="section-title">16 | Próximos passos</h2>
+      <div class="section-body">
+        <table class="data">
+          <thead><tr><th style="width:24%">Prioridade</th><th style="width:56%">Ação</th><th style="width:20%">Responsável</th></tr></thead>
+          <tbody>
+            <tr><td>Imediato</td><td>{ACAO}</td><td>{RESPONSAVEL}</td></tr>
+            <tr><td>Antes do deploy</td><td>{ACAO}</td><td>{RESPONSAVEL}</td></tr>
+            <tr><td>Durante validação em UAT</td><td>{ACAO}</td><td>{RESPONSAVEL}</td></tr>
+            <tr><td>Pós-produção</td><td>{ACAO}</td><td>{RESPONSAVEL}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <div class="doc-footer">
+    <span>
+      <strong>{Cliente/Projeto} &nbsp;–&nbsp; Documentação Salesforce &nbsp;–&nbsp;
+      Documento gerado em <span data-footer-date></span> por Paulo Carvalho
+      &nbsp;–&nbsp; Uso Confidencial &nbsp;–&nbsp; Org analisada: {ORG_OU_AMBIENTE}</strong>
+    </span>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    const generatedDate = new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(new Date());
+
+    document
+      .querySelectorAll('[data-generated-date], [data-footer-date]')
+      .forEach((element) => {
+        element.textContent = generatedDate;
+      });
+  })();
+</script>
+</body>
+</html>

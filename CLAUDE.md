@@ -24,6 +24,8 @@ Nesta mesma pasta/repositório (`SQUAD_02_HACKATON_DDGROUP_2026`) convivem:
 - **Projeto Salesforce DX:** `sfdx-project.json`, `force-app/`, `config/`, `manifest/`, `scripts/` — estrutura gerada via `sf project generate`, pronta para receber a metadata da execução.
 - **Execução de demandas + evidência:** `demanda.md` (tarefa atual), `.claude/commands/executar-demanda.md` (comando `/executar-demanda`), `evidencias/` (log + demandas arquivadas + prints).
 - **MCP:** `.mcp.json` (Salesforce DX MCP Server) — ver [docs/mcp.md](docs/mcp.md).
+- **Agentes, skills, conhecimento técnico e templates** copiados da Salesforce-AI-Base: `.claude/agents/`, `.claude/skills/`, `knowledge/`, `runbooks/`, `templates/` — ver seção "Recursos copiados da Salesforce-AI-Base" abaixo.
+- **Documentos corporativos (PDF):** `templates/documento-corporativo-cromatta.html` — ver [docs/como-gerar-documentos.md](docs/como-gerar-documentos.md).
 
 O trabalho é guiado pelos documentos de requisitos deste repositório (`business-scenario.md` + `architecture.md`, derivados de `docs/transcricao.md`) — não há mais prompts autocontidos separados em `demands/` (descontinuado). No lugar disso, cada unidade de trabalho é uma "demanda" local (ver seção "Fluxo de trabalho" abaixo).
 
@@ -37,7 +39,7 @@ O trabalho é guiado pelos documentos de requisitos deste repositório (`busines
 1. **Tudo via Claude/IA — nunca configuração manual na UI do Salesforce, como padrão.** Essa é a regra de maior peso na avaliação do hackathon (25% da nota, ver `project-context.md`).
    - **Exceção explícita:** o que não for possível fazer via Claude, pode ser feito direto na org. A exceção é sobre viabilidade técnica (ex.: algo que a ferramenta não suporta), não sobre preferência ou economia de tempo — antes de ir para a UI, tentar de fato via Claude primeiro.
    - Quando usar a exceção, registrar o que foi feito manualmente e por quê (uma nota ou ADR) — nunca fazer silenciosamente, senão o tech lead (sem acesso à org) não tem como saber que aquilo não veio do fluxo padrão.
-2. **Antes de qualquer `git push`, sempre fazer `sf project retrieve start` (ou equivalente) primeiro.** A metadata commitada precisa refletir o estado real da org — nunca commitar/dar push às cegas sem confirmar o que a org realmente tem. Sem esse fluxo, o tech lead (sem acesso à org) acaba revisando um histórico que pode não corresponder à realidade.
+2. **Antes de qualquer `git push`: retrieve da org + pull do GitHub, sempre nessa ordem, para não perder nada.** `sf project retrieve start` (ou equivalente) primeiro, para a metadata commitada refletir o estado real da org; depois `git pull` (ou `git pull --rebase`) para trazer o que outros devs já enviaram ao remoto, antes de commitar e só então dar push. Nunca commitar/dar push às cegas sem os dois passos. Sem isso, o tech lead (sem acesso à org) acaba revisando um histórico que pode não corresponder à realidade, ou o push de alguém sobrescreve o trabalho de outra pessoa.
 3. **Não presumir requisito de negócio não confirmado.** Os documentos de requisitos (`business-scenario.md`, `architecture.md`) já cobrem o que foi levantado com o cliente; qualquer requisito ambíguo ou não coberto ali é uma pendência a confirmar (ver seção "Pendências abertas" em `project-context.md`), não uma suposição a preencher silenciosamente.
 4. **Validar decisões e implementações também via MCP.** Este repositório tem o Salesforce DX MCP Server configurado em `.mcp.json` (ver [docs/mcp.md](docs/mcp.md)). Antes de considerar uma demanda concluída, usar as ferramentas de MCP para confirmar o estado real da org — `run_soql_query` para checar dados, o toolset `metadata` para confirmar o que foi de fato deployado, `testing` para rodar testes — não validar só porque um comando `sf` não retornou erro.
 
@@ -46,12 +48,24 @@ O trabalho é guiado pelos documentos de requisitos deste repositório (`busines
 1. Se surgir informação nova do cliente, atualizar `docs/business-scenario.md` (e a cópia na raiz) e, se for uma decisão estrutural relevante, registrar como ADR em `decisions/`.
 2. Unidade de trabalho = **demanda**: escrever a tarefa em `demanda.md` e rodar `/executar-demanda NN` — ver [docs/como-executar-demandas.md](docs/como-executar-demandas.md). Isso já cobre os passos 3–4 abaixo automaticamente (retrieve antes do push, arquivamento da demanda, log de evidência).
 3. Implementar com base em `business-scenario.md` + `architecture.md` — toda automação/config via Claude (regra central 1).
-4. Antes de cada `git push`: `sf project retrieve start`, revisar o diff, comitar, só então dar push (regra central 2).
+4. Antes de cada `git push`: `sf project retrieve start`, depois `git pull`, revisar o diff, comitar, só então dar push (regra central 2).
 5. Registrar decisões arquiteturais relevantes em `decisions/` (ADR) e desvios de execução onde fizer sentido.
 
 ## Evidência de uso do Claude/IA
 
 Critério de 25% da nota (ver `project-context.md`). O fluxo `/executar-demanda` (item 2 acima) já gera evidência automaticamente em `evidencias/log.md` e `evidencias/demandas/`. Para uma captura de tela deliberada da org/execução, usar `scripts/capturar-print.sh <rótulo>` — nunca automático, porque o repositório é público (ver `evidencias/README.md`).
+
+## Recursos copiados da Salesforce-AI-Base
+
+Para não recriar do zero o que a base global já resolve bem, foram copiados (não referenciados por caminho relativo, para funcionar mesmo fora da máquina de quem tem a Salesforce-AI-Base clonada):
+
+- `.claude/agents/` — os 7 agentes de revisão (salesforce-developer, salesforce-architect, apex-code-reviewer, lwc-code-reviewer, flow-reviewer, security-reviewer, deployment-reviewer).
+- `.claude/skills/` — `review-apex`, `review-lwc`, `start-salesforce-demand`, `salesforce-preflight-check`, `validate-change-scope`.
+- `knowledge/` — padrões técnicos (Apex, Flow, LWC, testes, nomenclatura, segurança) que os agentes/skills acima referenciam internamente.
+- `runbooks/` — recuperação de operações Git/metadata que deram errado.
+- `templates/` — modelo genérico de análise técnica e templates de Pull Request da base (referência; o modelo de documento deste projeto é `documento-corporativo-cromatta.html`, não estes).
+
+**Precedência — importante:** esses arquivos foram escritos para um modelo enterprise com múltiplos ambientes (dev/UAT/produção), feature branches e Pull Requests. **Este hackathon usa uma única branch (`main`) e uma única org** (`cromatta-hackathon`) — não há UAT, não há Produção, não há branch por demanda. Onde o conteúdo copiado mencionar branch-base, promoção, UAT ou Pull Request, isso **não se aplica aqui**; as regras deste `CLAUDE.md` e o fluxo `demanda.md` → `/executar-demanda` prevalecem (mesmo princípio de `knowledge/instruction-precedence.md`: regra do projeto > regra global). O valor real desses arquivos aqui está nos padrões técnicos (Apex/Flow/LWC/testes/segurança) e no espírito de preflight/validação de escopo — não no modelo de branches.
 
 ## Onde salvar o que for produzido durante o hackathon
 
