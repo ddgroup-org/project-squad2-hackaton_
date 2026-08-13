@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Caminho_A_Produto_Existente</fullName>
+    <active>true</active>
+    <businessProcess>Caminho_A_Produto_Existente</businessProcess>
+    <description>Produto já existe, custo conhecido — cota preço direto, envia amostra para validação do cliente, fecha ou perde. Ver business-scenario.md/BRD 3.4.1 e demanda-08.</description>
+    <label>Caminho A - Produto Existente</label>
+    <picklistValues>
+        <picklist>ForecastCategoryName</picklist>
+        <values>
+            <fullName>Best Case</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Closed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Commit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Omitted</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pipeline</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>LeadSource</picklist>
+        <values>
+            <fullName>Cold Call</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Community</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Data%2Ecom</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inbound Call</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Marketing Event</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partner</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Referral</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Salesforce IoT</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Social Media</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Website</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>MotivoDaPerda__c</picklist>
+        <values>
+            <fullName>Desistência por Demora</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Incompatibilidade Técnica</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outro</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prazo Curto</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Preço Alto</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Add-On Business</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Existing Business</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New Business</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Services</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

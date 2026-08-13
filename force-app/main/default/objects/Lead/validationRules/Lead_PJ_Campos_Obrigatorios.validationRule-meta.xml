@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_PJ_Campos_Obrigatorios</fullName>
+    <active>true</active>
+    <description>Para Lead Pessoa Jurídica (TipoPessoa__c = PJ), exige CNPJ_CPF__c (CNPJ), Company (Razão Social), EmailFinanceiro__c e ResponsavelFechamento__c — ver demanda-06.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(TipoPessoa__c, &quot;PJ&quot;),
+    OR(
+        ISBLANK(CNPJ_CPF__c),
+        ISBLANK(Company),
+        ISBLANK(EmailFinanceiro__c),
+        ISBLANK(ResponsavelFechamento__c)
+    )
+)</errorConditionFormula>
+    <errorMessage>Para Lead Pessoa Jurídica, CNPJ (CNPJ_CPF__c), Razão Social (Company), E-mail Financeiro e Responsável pelo Fechamento são obrigatórios.</errorMessage>
+</ValidationRule>

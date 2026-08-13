@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CNPJ_CPF__c</fullName>
+    <description>Documento fiscal do lead — CNPJ (PJ) ou CPF (PF). Texto livre (sem máscara/validação de formato no v1). Mapeado para Account.CNPJ_CPF__c na conversão — ver demanda-06.</description>
+    <externalId>false</externalId>
+    <label>CNPJ/CPF</label>
+    <length>20</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Qualification</fullName>
+        <color>#33CCFF</color>
+        <default>false</default>
+        <label>Qualification</label>
+        <closed>false</closed>
+        <forecastCategory>Pipeline</forecastCategory>
+        <probability>20</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Discovery</fullName>
+        <color>#3366FF</color>
+        <default>false</default>
+        <label>Discovery</label>
+        <closed>false</closed>
+        <forecastCategory>BestCase</forecastCategory>
+        <probability>35</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Proposal/Quote</fullName>
+        <color>#000099</color>
+        <default>false</default>
+        <label>Proposal/Quote</label>
+        <closed>false</closed>
+        <forecastCategory>BestCase</forecastCategory>
+        <probability>75</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Negotiation</fullName>
+        <color>#000066</color>
+        <default>false</default>
+        <label>Negotiation</label>
+        <closed>false</closed>
+        <forecastCategory>Forecast</forecastCategory>
+        <probability>90</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Prospecção</fullName>
+        <color>#33CCFF</color>
+        <default>false</default>
+        <label>Prospecção</label>
+        <closed>false</closed>
+        <forecastCategory>Pipeline</forecastCategory>
+        <probability>10</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Apresentação de Catálogo Técnico</fullName>
+        <color>#3366FF</color>
+        <default>false</default>
+        <label>Apresentação de Catálogo Técnico</label>
+        <closed>false</closed>
+        <forecastCategory>Pipeline</forecastCategory>
+        <probability>25</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Apresentação de Custo</fullName>
+        <color>#000099</color>
+        <default>false</default>
+        <label>Apresentação de Custo</label>
+        <closed>false</closed>
+        <forecastCategory>BestCase</forecastCategory>
+        <probability>50</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Negociação</fullName>
+        <color>#000066</color>
+        <default>false</default>
+        <label>Negociação</label>
+        <closed>false</closed>
+        <forecastCategory>Forecast</forecastCategory>
+        <probability>75</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Levantamento Técnico</fullName>
+        <color>#3366FF</color>
+        <default>false</default>
+        <label>Levantamento Técnico</label>
+        <closed>false</closed>
+        <forecastCategory>Pipeline</forecastCategory>
+        <probability>15</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Desenvolvimento/Envio de Amostra</fullName>
+        <color>#996600</color>
+        <default>false</default>
+        <label>Desenvolvimento/Envio de Amostra</label>
+        <closed>false</closed>
+        <forecastCategory>Pipeline</forecastCategory>
+        <probability>30</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Ajustes</fullName>
+        <color>#CC6600</color>
+        <default>false</default>
+        <label>Ajustes</label>
+        <closed>false</closed>
+        <forecastCategory>BestCase</forecastCategory>
+        <probability>45</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Formação de Preço</fullName>
+        <color>#000099</color>
+        <default>false</default>
+        <label>Formação de Preço</label>
+        <closed>false</closed>
+        <forecastCategory>BestCase</forecastCategory>
+        <probability>60</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Closed Won</fullName>
+        <color>#78C953</color>
+        <default>false</default>
+        <label>Closed Won</label>
+        <closed>true</closed>
+        <forecastCategory>Closed</forecastCategory>
+        <probability>100</probability>
+        <won>true</won>
+    </standardValue>
+    <standardValue>
+        <fullName>Closed Lost</fullName>
+        <color>#FF0000</color>
+        <default>false</default>
+        <label>Closed Lost</label>
+        <closed>true</closed>
+        <forecastCategory>Omitted</forecastCategory>
+        <probability>0</probability>
+        <won>false</won>
+    </standardValue>
+</StandardValueSet>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_PF_Campos_Obrigatorios</fullName>
+    <active>true</active>
+    <description>Para Lead Pessoa Física (TipoPessoa__c = PF), exige Nome (LastName), CNPJ_CPF__c (CPF) e E-mail — ver demanda-06.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(TipoPessoa__c, &quot;PF&quot;),
+    OR(
+        ISBLANK(LastName),
+        ISBLANK(CNPJ_CPF__c),
+        ISBLANK(Email)
+    )
+)</errorConditionFormula>
+    <errorMessage>Para Lead Pessoa Física, Nome, CPF (CNPJ_CPF__c) e E-mail são obrigatórios.</errorMessage>
+</ValidationRule>

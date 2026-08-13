@@ -38,6 +38,7 @@
         <members>Case</members>
         <members>User</members>
         <members>Contact</members>
+        <members>Lead</members>
         <name>CustomObject</name>
     </types>
     <types>
@@ -48,11 +49,41 @@
     </types>
     <types>
         <members>Admin</members>
+        <members>Standard</members>
         <name>Profile</name>
     </types>
     <types>
         <members>Laboratorio</members>
         <name>Queue</name>
+    </types>
+    <types>
+        <members>Account-Account Layout</members>
+        <members>Contact-Contact Layout</members>
+        <members>Lead-Lead Layout</members>
+        <members>Opportunity-Opportunity Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>LeadConvertSettings</members>
+        <name>LeadConvertSettings</name>
+    </types>
+    <types>
+        <members>LeadConfig</members>
+        <name>Settings</name>
+    </types>
+    <types>
+        <members>Opportunity.Caminho_A_Produto_Existente</members>
+        <members>Opportunity.Caminho_B_Produto_Novo</members>
+        <name>RecordType</name>
+    </types>
+    <types>
+        <members>Opportunity.Caminho_A_Produto_Existente</members>
+        <members>Opportunity.Caminho_B_Produto_Novo</members>
+        <name>BusinessProcess</name>
+    </types>
+    <types>
+        <members>OpportunityStage</members>
+        <name>StandardValueSet</name>
     </types>
     <version>67.0</version>
 </Package>

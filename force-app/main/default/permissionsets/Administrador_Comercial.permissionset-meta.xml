@@ -3,6 +3,26 @@
     <description>Gabriel Jacob (dono da empresa) — acesso total a Lead/Account/Contact/Opportunity/Case/Product2, aprova preços e valida relatórios. Ver demanda-02 e architecture.md (papel &quot;Gestor&quot;).</description>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.IndicadorUrgencia__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.MotivoDaPerda__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.PossuiContratoRecorrente__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.VolumeMinimoMensal__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>User.Linha_de_Produto__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -68,4 +88,12 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <recordType>Opportunity.Caminho_A_Produto_Existente</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Opportunity.Caminho_B_Produto_Novo</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
 </PermissionSet>

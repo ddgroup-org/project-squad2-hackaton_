@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OrigemProspeccao__c</fullName>
+    <description>Como este Lead chegou até a Cromatta — ver business-scenario.md/BRD 3.1.2. Valores alinhados a Account.OrigemCadastro__c (demanda-05), com o rótulo completo &quot;Prospecção Ativa/Porta a Porta&quot; pedido nesta demanda.</description>
+    <label>Origem de Prospecção</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Internet</fullName>
+                <default>false</default>
+                <label>Internet</label>
+            </value>
+            <value>
+                <fullName>Feira do Setor</fullName>
+                <default>false</default>
+                <label>Feira do Setor</label>
+            </value>
+            <value>
+                <fullName>Indicação</fullName>
+                <default>false</default>
+                <label>Indicação</label>
+            </value>
+            <value>
+                <fullName>Prospecção Ativa/Porta a Porta</fullName>
+                <default>false</default>
+                <label>Prospecção Ativa/Porta a Porta</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
