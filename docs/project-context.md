@@ -54,7 +54,7 @@ Confirmados na reunião de kickoff (ver [transcricao.md](transcricao.md)):
 
 - **BRD** (documento de levantamento de requisitos) — este repositório (`business-scenario.md` + `transcricao.md`) cobre esse papel.
 - **Solution Design** — este repositório (`architecture.md`) cobre esse papel.
-- **Repositório GitHub** com evidência do uso do Claude — este mesmo repositório.
+- **Repositório GitHub** com evidência do uso do Claude — este mesmo repositório, pasta [`evidencias/`](../evidencias/README.md) (gerada automaticamente pelo fluxo `/executar-demanda`, ver [como-executar-demandas.md](como-executar-demandas.md)).
 - **Backlog organizado** no Tarefai.
 - **Apresentação final** (PPT + demo ao vivo dos principais fluxos: oportunidade, cases).
 

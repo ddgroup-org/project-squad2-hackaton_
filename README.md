@@ -42,6 +42,9 @@ e manter os requisitos atualizados          repositório, populando force-app/
         (requisitos, derivados de docs/transcricao.md)
                     │
                     ▼
+        escrever a tarefa em demanda.md → rodar /executar-demanda NN
+                    │
+                    ▼
         dev executa — regra de ouro: tudo via Claude/IA,
         nenhuma configuração manual na UI do Salesforce
                     │
@@ -65,13 +68,21 @@ Como o tech lead **não tem acesso à org**, a única forma de revisão é este 
 quimicahackaton/
 ├── README.md                              este arquivo
 ├── CLAUDE.md                              instruções para uma sessão de IA aberta *neste* cofre
+├── demanda.md                             tarefa atual a ser executada (ver "Como executar uma demanda")
 ├── .claude/
-│   └── agents/                            cópia fiel dos 7 agentes da Salesforce-AI-Base — ver nota abaixo
+│   ├── agents/                            cópia fiel dos 7 agentes da Salesforce-AI-Base — ver nota abaixo
+│   └── commands/executar-demanda.md       comando `/executar-demanda`
+├── evidencias/                             evidência de uso do Claude/IA (25% da nota)
+│   ├── README.md
+│   ├── log.md                             uma linha por demanda executada
+│   ├── demandas/                           demanda.md arquivado a cada execução
+│   └── prints/                             screenshots (manuais, via scripts/capturar-print.sh)
 └── docs/
     ├── project-context.md                 objetivo do hackathon, papéis, critérios de avaliação, entregáveis
     ├── business-scenario.md               cenário REAL do cliente (Cromatta Química) — resumo estruturado
     ├── transcricao.md                     transcrição condensada da reunião de levantamento de requisitos
     ├── architecture.md                    clouds, modelo de dados, segurança, automações
+    ├── como-executar-demandas.md          fluxo passo a passo de demanda.md → /executar-demanda
     └── decisions/
         ├── README.md
         ├── 0001-modelo-conta-b2b-b2c-sem-person-accounts.md
@@ -86,7 +97,8 @@ quimicahackaton/
 ├── force-app/main/default/                metadata da org — populada durante a execução
 ├── config/project-scratch-def.json
 ├── manifest/package.xml
-├── scripts/                                apex/soql de apoio
+├── scripts/
+│   └── capturar-print.sh                  screenshot manual para evidencias/prints/
 ├── imgs/                                   logos, paleta de cores, moodboard da marca Cromatta
 └── package.json, .forceignore, .gitignore, .vscode/, etc. — tooling padrão SFDX
 ```
@@ -115,7 +127,17 @@ O desafio de negócio **já é real** (não mais uma suposição fictícia): foi
 
 - **Resumo estruturado, pronto para uso na implementação:** [docs/business-scenario.md](docs/business-scenario.md) e [docs/architecture.md](docs/architecture.md).
 - **Fonte completa (transcrição condensada por tema):** [docs/transcricao.md](docs/transcricao.md) — usar quando o resumo estruturado parecer incompleto ou ambíguo.
-- A org ainda não existe — nenhum dado de ambiente real foi presumido além de "Developer Edition, Trailhead Playground ou Scratch Org, nunca produção".
+- **Org:** já autorizada (alias `cromatta-hackathon`), dedicada ao hackathon.
+
+---
+
+## Como executar uma demanda
+
+1. Escreva a tarefa em [`demanda.md`](demanda.md).
+2. Rode `/executar-demanda NN` no Claude Code, dentro desta pasta.
+3. Evidência (log + demanda arquivada) é gerada automaticamente; screenshot é manual, via `scripts/capturar-print.sh`.
+
+Passo a passo completo: [docs/como-executar-demandas.md](docs/como-executar-demandas.md).
 
 ---
 

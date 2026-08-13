@@ -22,8 +22,9 @@ Nesta mesma pasta/repositório (`SQUAD_02_HACKATON_DDGROUP_2026`) convivem:
 
 - **Planejamento:** este arquivo, `project-context.md`, `business-scenario.md`, `architecture.md`, `decisions/` (e as cópias em `docs/`).
 - **Projeto Salesforce DX:** `sfdx-project.json`, `force-app/`, `config/`, `manifest/`, `scripts/` — estrutura gerada via `sf project generate`, pronta para receber a metadata da execução.
+- **Execução de demandas + evidência:** `demanda.md` (tarefa atual), `.claude/commands/executar-demanda.md` (comando `/executar-demanda`), `evidencias/` (log + demandas arquivadas + prints).
 
-O trabalho é guiado pelos documentos de requisitos deste repositório (`business-scenario.md` + `architecture.md`, derivados de `docs/transcricao.md`) — não há mais prompts autocontidos separados em `demands/` (descontinuado).
+O trabalho é guiado pelos documentos de requisitos deste repositório (`business-scenario.md` + `architecture.md`, derivados de `docs/transcricao.md`) — não há mais prompts autocontidos separados em `demands/` (descontinuado). No lugar disso, cada unidade de trabalho é uma "demanda" local (ver seção "Fluxo de trabalho" abaixo).
 
 ## O que esta pasta não é
 
@@ -41,9 +42,14 @@ O trabalho é guiado pelos documentos de requisitos deste repositório (`busines
 ## Fluxo de trabalho neste cofre
 
 1. Se surgir informação nova do cliente, atualizar `docs/business-scenario.md` (e a cópia na raiz) e, se for uma decisão estrutural relevante, registrar como ADR em `decisions/`.
-2. Implementar com base em `business-scenario.md` + `architecture.md` — toda automação/config via Claude (regra central 1).
-3. Antes de cada `git push`: `sf project retrieve start`, revisar o diff, comitar, só então dar push (regra central 2).
-4. Registrar decisões arquiteturais relevantes em `decisions/` (ADR) e desvios de execução onde fizer sentido.
+2. Unidade de trabalho = **demanda**: escrever a tarefa em `demanda.md` e rodar `/executar-demanda NN` — ver [docs/como-executar-demandas.md](docs/como-executar-demandas.md). Isso já cobre os passos 3–4 abaixo automaticamente (retrieve antes do push, arquivamento da demanda, log de evidência).
+3. Implementar com base em `business-scenario.md` + `architecture.md` — toda automação/config via Claude (regra central 1).
+4. Antes de cada `git push`: `sf project retrieve start`, revisar o diff, comitar, só então dar push (regra central 2).
+5. Registrar decisões arquiteturais relevantes em `decisions/` (ADR) e desvios de execução onde fizer sentido.
+
+## Evidência de uso do Claude/IA
+
+Critério de 25% da nota (ver `project-context.md`). O fluxo `/executar-demanda` (item 2 acima) já gera evidência automaticamente em `evidencias/log.md` e `evidencias/demandas/`. Para uma captura de tela deliberada da org/execução, usar `scripts/capturar-print.sh <rótulo>` — nunca automático, porque o repositório é público (ver `evidencias/README.md`).
 
 ## Onde salvar o que for produzido durante o hackathon
 
