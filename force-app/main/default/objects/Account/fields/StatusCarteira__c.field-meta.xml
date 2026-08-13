@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>StatusCarteira__c</fullName>
+    <description>&quot;Ativo&quot; se UltimaCompra__c está a até 60 dias de hoje, &quot;Inativo&quot; se passou de 60 dias, &quot;Sem Compras&quot; se UltimaCompra__c está vazio. Ver business-scenario.md (&quot;clientes inativos: sem pedido há 60+ dias&quot;).</description>
+    <externalId>false</externalId>
+    <formula>IF(
+    ISBLANK(UltimaCompra__c),
+    &quot;Sem Compras&quot;,
+    IF(
+        (TODAY() - UltimaCompra__c) &lt;= 60,
+        &quot;Ativo&quot;,
+        &quot;Inativo&quot;
+    )
+)</formula>
+    <label>Status da Carteira</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

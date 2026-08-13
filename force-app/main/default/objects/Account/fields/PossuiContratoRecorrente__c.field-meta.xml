@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PossuiContratoRecorrente__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Indica se a Conta tem compromisso de volume recorrente (contrato mensal) negociado — ver business-scenario.md, seção de regras de preço.</description>
+    <label>Possui Contrato Recorrente</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

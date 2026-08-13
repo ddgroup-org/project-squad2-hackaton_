@@ -37,6 +37,7 @@
         <members>Opportunity</members>
         <members>Case</members>
         <members>User</members>
+        <members>Contact</members>
         <name>CustomObject</name>
     </types>
     <types>

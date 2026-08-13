@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cargo__c</fullName>
+    <description>Papel do contato do cliente no processo de compra — vendedor precisa saber se está falando com quem decide ou com o time técnico (business-scenario.md: &quot;vende para o time técnico do cliente&quot;).</description>
+    <label>Cargo</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Comprador</fullName>
+                <default>false</default>
+                <label>Comprador</label>
+            </value>
+            <value>
+                <fullName>Químico</fullName>
+                <default>false</default>
+                <label>Químico</label>
+            </value>
+            <value>
+                <fullName>Decisor</fullName>
+                <default>false</default>
+                <label>Decisor</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

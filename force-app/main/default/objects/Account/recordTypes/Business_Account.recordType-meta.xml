@@ -178,6 +178,40 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>LinhaDeProduto__c</picklist>
+        <values>
+            <fullName>Cromata</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Flecha</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jato</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>OrigemCadastro__c</picklist>
+        <values>
+            <fullName>Feira</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Indicação</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Internet</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prospecção Ativa</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Ownership</picklist>
         <values>
             <fullName>Other</fullName>
@@ -208,6 +242,17 @@
         </values>
         <values>
             <fullName>Warm</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>TipoPessoa__c</picklist>
+        <values>
+            <fullName>PF</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PJ</fullName>
             <default>false</default>
         </values>
     </picklistValues>

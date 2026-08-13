@@ -2,6 +2,51 @@
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Time comercial da Cromatta — vê todos os registros de Lead/Account/Opportunity/Case (via OWD Public Read Only) mas só edita os que possui como Owner (viewAllRecords/modifyAllRecords desligados de propósito). Ver demanda-02 e architecture.md.</description>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.CNPJ_CPF__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.LinhaDeProduto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.OrigemCadastro__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.PossuiContratoRecorrente__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.StatusCarteira__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.TipoPessoa__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.UltimaCompra__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.VolumeMinimoMensal__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Contact.Cargo__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>User.Linha_de_Produto__c</field>
         <readable>true</readable>
