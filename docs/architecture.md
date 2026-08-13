@@ -4,7 +4,7 @@ category: "architecture"
 status: "active"
 version: "1.0"
 last_reviewed: "2026-08-13"
-owner: "Paulo Carvalho"
+owner: "Tech lead"
 applies_to:
   - quimicahackaton
 source_of_truth: true
@@ -17,7 +17,7 @@ source_of_truth: true
 - **Sales Cloud** — Lead, Opportunity, Product2/PriceBook2, Quote (se licença disponível).
 - **Service Cloud** — Case, Queue/Omni-Channel (se licença disponível), Knowledge (se licença disponível), Entitlement (se licença disponível).
 
-Licenças de Knowledge, Omni-Channel e Entitlements **não são garantidas** em todo Developer Edition/Trailhead Playground — cada prompt que depende delas traz um caminho alternativo declarativo mais simples, para não bloquear o hackathon por licenciamento.
+Licenças de Knowledge, Omni-Channel e Entitlements **não são garantidas** em todo Developer Edition/Trailhead Playground — o documento de requisitos deve trazer um caminho alternativo declarativo mais simples para os itens que dependem delas, para não bloquear o hackathon por licenciamento.
 
 ## Modelo de dados — visão geral
 
@@ -45,7 +45,7 @@ Se o hackathon exigir isolamento real de dados entre B2B e B2C, isso é uma deci
 
 ## Automação — critério de escolha
 
-Ordem de preferência, do mais simples ao mais custoso, seguida em todos os prompts:
+Ordem de preferência, do mais simples ao mais custoso, seguida em toda a execução:
 
 ```text
 1. Configuração declarativa (campo, record type, layout, list view)
@@ -57,11 +57,13 @@ Ordem de preferência, do mais simples ao mais custoso, seguida em todos os prom
 ## Rastreabilidade — como o tech lead revisa sem acesso à org
 
 ```text
-Dev executor cria repositório Git (Prompt 00)
+Repositório Git já existe (este mesmo repositório, force-app/ + manifest/)
         ↓
-Cada prompt concluído → retrieve da metadata alterada → commit → push
+Antes de cada push: sf project retrieve start (nunca commitar às cegas)
         ↓
-Paulo revisa via git log / git diff / Pull Request — nunca logando na org
+commit → push
+        ↓
+Tech lead revisa via git log / git diff / Pull Request — nunca logando na org
 ```
 
-Sem esse fluxo, o hackathon fica sem nenhum ponto de verificação para o tech lead — por isso essa exigência aparece em todo prompt de `docs/demands/`, não apenas no primeiro.
+Sem esse fluxo, o hackathon fica sem nenhum ponto de verificação para o tech lead — por isso retrieve-antes-de-push é regra em toda a execução, não apenas na primeira etapa.

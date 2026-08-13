@@ -4,7 +4,7 @@ category: "context"
 status: "active"
 version: "1.0"
 last_reviewed: "2026-08-13"
-owner: "Paulo Carvalho"
+owner: "Tech lead"
 applies_to:
   - quimicahackaton
 source_of_truth: true
@@ -25,18 +25,18 @@ Hackathon de **1 dia** para construir, do zero, uma solução Salesforce demonst
 
 | Papel | Quem | Acesso à org | Acesso a este cofre |
 | --- | --- | --- | --- |
-| Tech lead | Paulo Carvalho | **Não** | Sim |
+| Tech lead | — | **Não** | Sim |
 | Dev executor | outra pessoa | Sim | **Não** |
 | Agente executor | Claude Code, em sessão própria do dev | via ferramentas do dev | **Não** |
 
-Consequência direta: Paulo não pode validar nada olhando a org. A única forma de acompanhamento é o **repositório Git do projeto Salesforce**, que o dev cria no Prompt 00 e deve manter atualizado via commit/push a cada etapa.
+Consequência direta: o tech lead não pode validar nada olhando a org. A única forma de acompanhamento é este mesmo **repositório Git** (planejamento + projeto Salesforce DX unificados), que o dev deve manter atualizado via commit/push a cada etapa.
 
 ## Restrições conhecidas
 
 - **Duração:** 1 dia — prioriza-se configuração declarativa (campos, record types, Flows, layouts, relatórios) sobre código customizado (Apex/LWC). Código customizado só quando a automação for inviável de forma declarativa, com justificativa registrada.
-- **Org:** ainda não existe; será criada no Prompt 00 (Developer Edition, Trailhead Playground ou Scratch Org). **Nunca** uma org de produção real ou com dados reais de clientes.
-- **Execução:** um único dev, sozinho, rodando os prompts em sequência — não há trilhas paralelas de equipe.
-- **Sem supervisão em tempo real do tech lead** — os prompts precisam ser suficientemente específicos para que o agente decida sozinho dentro do escopo autorizado, em vez de travar esperando validação humana que não vai chegar a tempo.
+- **Org:** ainda não existe; será criada no início da execução (Developer Edition, Trailhead Playground ou Scratch Org). **Nunca** uma org de produção real ou com dados reais de clientes.
+- **Execução:** um único dev, sozinho, com base no documento de requisitos — não há trilhas paralelas de equipe.
+- **Sem supervisão em tempo real do tech lead** — o documento de requisitos precisa ser suficientemente específico para que o agente decida sozinho dentro do escopo autorizado, em vez de travar esperando validação humana que não vai chegar a tempo.
 
 ## Critérios de sucesso do hackathon
 
@@ -48,9 +48,11 @@ Pendente de confirmação com a organização do hackathon (regras de julgamento
 
 ## Pendências abertas
 
+**Resolvido:** o repositório Git compartilhado para o projeto Salesforce já existe — [github.com/inaldojunior-a11y/Squad2-Cromatta-quimica](https://github.com/inaldojunior-a11y/Squad2-Cromatta-quimica), o mesmo repositório deste cofre.
+
 | Pendência | Responsável por confirmar |
 | --- | --- |
-| Regras/critérios de julgamento do hackathon | Paulo, junto à organização |
-| Se o desafio de negócio é fictício (assumido) ou já definido pela organização | Paulo |
-| Licenças disponíveis na org (Service Cloud, Omni-Channel, Knowledge, Entitlements) | Dev executor, no Prompt 00 |
-| Repositório Git compartilhado (novo ou existente) para o projeto Salesforce | Paulo + dev executor, antes do Prompt 00 |
+| Regras/critérios de julgamento do hackathon | Tech lead, junto à organização |
+| Se o desafio de negócio é fictício (assumido) ou já definido pela organização | Tech lead |
+| Licenças disponíveis na org (Service Cloud, Omni-Channel, Knowledge, Entitlements) | Dev executor, no início da execução |
+| Documento de requisitos (ainda não adicionado a este repositório) | Tech lead |

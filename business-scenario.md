@@ -4,7 +4,7 @@ category: "context"
 status: "active"
 version: "1.0"
 last_reviewed: "2026-08-13"
-owner: "Paulo Carvalho"
+owner: "Tech lead"
 applies_to:
   - quimicahackaton
 source_of_truth: true
@@ -12,7 +12,7 @@ source_of_truth: true
 
 # Cenário de negócio
 
-> **Este cenário é fictício e foi assumido por ausência de um desafio de negócio detalhado.** Se o hackathon já define uma empresa, produto ou desafio real, substituir todo o conteúdo abaixo antes de enviar qualquer prompt em `docs/demands/` — eles citam estes nomes e estas regras diretamente.
+> **Este cenário é fictício e foi assumido por ausência de um desafio de negócio detalhado.** Se o hackathon já define uma empresa, produto ou desafio real, substituir todo o conteúdo abaixo antes de começar a execução — o documento de requisitos deve citar estes nomes e estas regras diretamente, ou os reais, se já definidos.
 
 ## Empresa fictícia
 
@@ -71,6 +71,6 @@ Ele justifica, de forma simples e demonstrável em 1 dia:
 
 ## Fora de escopo do cenário (por ora)
 
-- Portal self-service (Experience Cloud) para B2B ou B2C — fora do prazo de 1 dia, a menos que sobre tempo depois do Prompt 06.
+- Portal self-service (Experience Cloud) para B2B ou B2C — fora do prazo de 1 dia, a menos que sobre tempo depois do restante do escopo.
 - Integração com e-commerce real ou ERP — tratada apenas como automação interna simulada, se necessário.
 - Person Accounts — deliberadamente descartado, ver ADR 0001.

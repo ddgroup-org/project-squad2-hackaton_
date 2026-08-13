@@ -4,7 +4,7 @@ category: "decision"
 status: "active"
 version: "1.0"
 last_reviewed: "2026-08-13"
-owner: "Paulo Carvalho"
+owner: "Tech lead"
 applies_to:
   - quimicahackaton
 ---
