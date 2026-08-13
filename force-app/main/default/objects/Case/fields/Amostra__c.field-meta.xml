@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Amostra__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Amostra que originou este Case (quando o Case foi criado automaticamente por reprovação — ver Flow Amostra_Reprovada_Cria_Case). Ver demanda-09.</description>
+    <label>Amostra</label>
+    <referenceTo>Amostra__c</referenceTo>
+    <relationshipLabel>Cases</relationshipLabel>
+    <relationshipName>Cases</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

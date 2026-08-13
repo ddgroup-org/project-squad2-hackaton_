@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Decision_Ainda_Em_Teste</name>
+        <label>Ainda está Em Teste?</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <defaultConnectorLabel>Não — já teve resultado, não cobrar</defaultConnectorLabel>
+        <rules>
+            <name>Continua_Em_Teste</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Resultado__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Em Teste</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Task_Cobranca</targetReference>
+            </connector>
+            <label>Continua Em Teste</label>
+        </rules>
+    </decisions>
+    <description>Cria uma Task de cobrança de retorno 10 dias após o envio de uma amostra ainda &quot;Em Teste&quot; — ver demanda-09, architecture.md (PrazoDeResposta__c: 10 dias úteis para amostra) e business-scenario.md. Usa Scheduled Path (offset relativo a DataEnvio__c) em vez de Scheduled Flow separado, para reagendar automaticamente se DataEnvio__c mudar.</description>
+    <environments>Default</environments>
+    <interviewLabel>Amostra Cobranca Retorno {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Amostra - Cobrança de Retorno (10 dias)</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Task_Cobranca</name>
+        <label>Criar Task de Cobrança de Retorno</label>
+        <locationX>50</locationX>
+        <locationY>218</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <stringValue>Amostra enviada há 10 dias sem retorno do cliente sobre o resultado do teste. Fazer contato de cobrança. Task criada automaticamente pelo Flow Amostra_Cobranca_Retorno.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Cobrança de retorno — amostra sem resposta em 10 dias</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Resultado__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Em Teste</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DataEnvio__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Amostra__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <scheduledPaths>
+            <name>Dez_Dias_Apos_Envio</name>
+            <connector>
+                <targetReference>Decision_Ainda_Em_Teste</targetReference>
+            </connector>
+            <label>10 dias após o envio</label>
+            <offsetNumber>10</offsetNumber>
+            <offsetUnit>Days</offsetUnit>
+            <recordField>DataEnvio__c</recordField>
+            <timeSource>RecordField</timeSource>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

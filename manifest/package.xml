@@ -41,6 +41,7 @@
         <members>Lead</members>
         <members>Product2</members>
         <members>OpportunityLineItem</members>
+        <members>Amostra__c</members>
         <name>CustomObject</name>
     </types>
     <types>
@@ -65,6 +66,8 @@
         <members>Opportunity-Opportunity Layout</members>
         <members>Product2-Product Layout</members>
         <members>OpportunityLineItem-Opportunity Product Layout</members>
+        <members>Case-Case Layout</members>
+        <members>Amostra__c-Amostra Layout</members>
         <name>Layout</name>
     </types>
     <types>
@@ -78,17 +81,24 @@
     <types>
         <members>Opportunity.Caminho_A_Produto_Existente</members>
         <members>Opportunity.Caminho_B_Produto_Novo</members>
+        <members>Case.Envio_e_Teste_de_Amostra</members>
         <name>RecordType</name>
     </types>
     <types>
         <members>Opportunity.Caminho_A_Produto_Existente</members>
         <members>Opportunity.Caminho_B_Produto_Novo</members>
+        <members>Case.Envio_e_Teste_de_Amostra</members>
         <name>BusinessProcess</name>
     </types>
     <types>
         <members>OpportunityStage</members>
         <members>Product2Family</members>
         <name>StandardValueSet</name>
+    </types>
+    <types>
+        <members>Amostra_Reprovada_Cria_Case</members>
+        <members>Amostra_Cobranca_Retorno</members>
+        <name>Flow</name>
     </types>
     <version>67.0</version>
 </Package>
