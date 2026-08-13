@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CotacaoDolarReferencia__c</fullName>
+    <description>Cotação do dólar (USD) utilizada como referência na negociação — apenas informativo, sem cálculo automático vinculado (ver ADR 0002: v1 não terá motor de precificação automático via câmbio).</description>
+    <externalId>false</externalId>
+    <label>Cotação Dólar de Referência</label>
+    <precision>10</precision>
+    <required>false</required>
+    <scale>4</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

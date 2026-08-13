@@ -78,6 +78,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.CotacaoDolarReferencia__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.IndicadorUrgencia__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -89,6 +94,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.PossuiContratoRecorrente__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.PrecoFinal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

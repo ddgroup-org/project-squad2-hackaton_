@@ -776,6 +776,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.CotacaoDolarReferencia__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.Description</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -817,6 +822,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.PossuiContratoRecorrente__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.PrecoFinal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -48,3 +48,15 @@
    - Opportunity fechada como `Closed Lost` **com** `MotivoDaPerda__c = "Preço Alto"` → sucesso, sem bloqueio.
    - Registros de teste (Account + 3 Opportunities) removidos da org após validação — não fazem parte do dataset real da Cromatta.
 9. **Descoberta de metadata:** `BusinessProcess` é filho de `CustomObject` (vive em `objects/Opportunity/businessProcesses/`, não em uma pasta `businessProcesses/` na raiz de `force-app`) e exige `<fullName>` explícito — diferente do que a primeira tentativa assumiu, corrigido por tentativa/erro e confirmado no deploy final.
+
+---
+
+## Complemento — 2 campos financeiros informativos (via Claude/CLI + Apex, org `hackaton2`)
+
+**Status: concluído.**
+
+1. **2 novos campos em Opportunity:** `PrecoFinal__c` (Currency, preço final negociado e aprovado) e `CotacaoDolarReferencia__c` (Number, 10.4, cotação do dólar apenas informativa — sem cálculo automático vinculado, consistente com a [ADR 0002](../../decisions/0002-sem-integracao-erp-precificacao-v1.md), que já definia que o v1 não teria motor de precificação automático via câmbio).
+2. **Page Layout:** os 2 campos foram adicionados à mesma seção "Dados Comerciais Cromatta" do layout único de Opportunity (`Opportunity-Opportunity Layout`) já usado pelos dois Record Types (Caminho A e Caminho B) — sem necessidade de criar layouts novos, já que esse layout já está atribuído a ambos via `layoutAssignments` (ver item 7 da execução original acima).
+3. **FLS:** concedida no profile Admin, no profile Standard (base dos 9 usuários) e no Permission Set Vendedor, como pedido.
+4. **Teste via Apex (`sf apex run`, script não commitado):** criada 1 Account + 2 Opportunities de teste, uma em cada Record Type (Caminho A e Caminho B), ambas com `PrecoFinal__c` e `CotacaoDolarReferencia__c` preenchidos — confirmado via SOQL que os valores foram gravados corretamente nos dois Record Types. Registros de teste removidos após validação.
+5. **Manifest:** `Opportunity` já era membro de `CustomObject` no manifest (desde a execução original desta demanda) — os 2 campos novos já foram cobertos automaticamente pelo retrieve completo, sem necessidade de alterar o manifest.
