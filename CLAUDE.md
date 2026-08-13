@@ -27,7 +27,7 @@ Nesta mesma pasta/repositório (`SQUAD_02_HACKATON_DDGROUP_2026`) convivem:
 - **Agentes, skills, conhecimento técnico e templates** copiados da Salesforce-AI-Base: `.claude/agents/`, `.claude/skills/`, `knowledge/`, `runbooks/`, `templates/` — ver seção "Recursos copiados da Salesforce-AI-Base" abaixo.
 - **Documentos corporativos (PDF):** `templates/documento-corporativo-cromatta.html` — ver [docs/como-gerar-documentos.md](docs/como-gerar-documentos.md).
 
-O trabalho é guiado pelos documentos de requisitos deste repositório: o **BRD oficial** (`entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf`, aprovado pelo cliente e pelo tech lead) é a fonte de verdade mais recente; `business-scenario.md` + `architecture.md` (derivados de `docs/transcricao.md`) são o resumo estruturado de apoio, atualizados para acompanhar o BRD onde há divergência. Não há mais prompts autocontidos separados em `demands/` (descontinuado). No lugar disso, cada unidade de trabalho é uma "demanda" local (ver seção "Fluxo de trabalho" abaixo).
+O trabalho é guiado pelos documentos de requisitos deste repositório: o **BRD oficial** (`entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf`, aprovado pelo cliente e pelo tech lead) é a fonte de verdade mais recente; `business-scenario.md` + `architecture.md` (derivados de `docs/transcricao.md`) são o resumo estruturado de apoio, atualizados para acompanhar o BRD onde há divergência. Não há mais prompts autocontidos separados em `demands/` (descontinuado). No lugar disso, cada unidade de trabalho é uma "demanda" local (ver seção "Fluxo de trabalho" abaixo).
 
 ## O que esta pasta não é
 

@@ -12,7 +12,7 @@ source_of_truth: true
 
 # Cenário de negócio
 
-> **Este cenário é REAL**, levantado com o cliente simulado do hackathon (role-play) na reunião de kickoff. Fonte completa, com todo o contexto e citações originais: [transcricao.md](transcricao.md). O **BRD oficial** — [entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf](entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf), v1.0, aprovado pelo cliente e pelo tech lead — é a fonte de verdade mais recente e **prevalece** sobre este resumo onde houver divergência (nomenclatura de campos, thresholds, prazos). Este documento aqui continua sendo o resumo estruturado de apoio.
+> **Este cenário é REAL**, levantado com o cliente simulado do hackathon (role-play) na reunião de kickoff. Fonte completa, com todo o contexto e citações originais: [transcricao.md](transcricao.md). O **BRD oficial** — [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf), v1.0, aprovado pelo cliente e pelo tech lead — é a fonte de verdade mais recente e **prevalece** sobre este resumo onde houver divergência (nomenclatura de campos, thresholds, prazos). Este documento aqui continua sendo o resumo estruturado de apoio.
 
 ## Empresa
 

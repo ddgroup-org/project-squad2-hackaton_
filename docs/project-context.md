@@ -19,7 +19,7 @@ Hackathon de **1 dia** para construir, do zero, uma solução Salesforce demonst
 - **Sales Cloud** — pipeline de vendas
 - **Service Cloud** — atendimento e suporte (fila de laboratório, casos de amostra e pós-venda)
 - para dois modelos de cliente: **PJ** e **PF** (mesmo objeto Account, distinguidos pelo campo `TipoPessoa__c` — ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md))
-- no cenário real da **Cromatta Química** (indústria química, cliente simulado do hackathon — ver [business-scenario.md](business-scenario.md), a transcrição completa da reunião de requisitos em [transcricao.md](transcricao.md), e o **BRD oficial** em [entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf](entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf))
+- no cenário real da **Cromatta Química** (indústria química, cliente simulado do hackathon — ver [business-scenario.md](business-scenario.md), a transcrição completa da reunião de requisitos em [transcricao.md](transcricao.md), e o **BRD oficial** em [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf))
 
 ## Papéis
 
@@ -37,7 +37,7 @@ Consequência direta: o tech lead não pode validar nada olhando a org. A única
 - **Regra de ouro do hackathon: tudo via Claude/IA, como padrão** — é o critério de maior peso na avaliação (25%). **Exceção explícita:** o que não for possível fazer via Claude pode ser feito direto na UI da org (a exceção é sobre viabilidade técnica, não preferência) — sempre registrando o que foi feito manualmente e por quê.
 - Dentro do que pode ser feito via Claude: prioriza-se configuração declarativa (campos, record types, Flows, layouts, relatórios) sobre código customizado (Apex/LWC). Código customizado só quando a automação for inviável de forma declarativa, com justificativa registrada.
 - **Org:** ainda não existe; será criada no início da execução (Developer Edition, Trailhead Playground ou Scratch Org). **Nunca** uma org de produção real ou com dados reais de clientes.
-- **Execução:** um único dev, sozinho, com base no documento de requisitos — o **BRD oficial** (`entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf`) é a fonte de verdade mais recente; `business-scenario.md` e `architecture.md` são o resumo estruturado de apoio, atualizados para refletir o BRD onde há divergência — não há trilhas paralelas de equipe.
+- **Execução:** um único dev, sozinho, com base no documento de requisitos — o **BRD oficial** (`entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf`) é a fonte de verdade mais recente; `business-scenario.md` e `architecture.md` são o resumo estruturado de apoio, atualizados para refletir o BRD onde há divergência — não há trilhas paralelas de equipe.
 - **Sem supervisão em tempo real do tech lead** — os documentos de requisitos precisam ser suficientemente específicos para que o agente decida sozinho dentro do escopo autorizado, em vez de travar esperando validação humana que não vai chegar a tempo.
 
 ## Critérios de avaliação do hackathon
@@ -52,7 +52,7 @@ Confirmados na reunião de kickoff (ver [transcricao.md](transcricao.md)):
 
 ## Entregáveis esperados pela organização do hackathon
 
-- **BRD** (documento de levantamento de requisitos) — [entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf](entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf), v1.0, aprovado pelo cliente e pelo tech lead.
+- **BRD** (documento de levantamento de requisitos) — [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf), v1.0, aprovado pelo cliente e pelo tech lead.
 - **Solution Design** — este repositório (`architecture.md`) cobre esse papel.
 - **Repositório GitHub** com evidência do uso do Claude — este mesmo repositório, pasta [`evidencias/`](evidencias/README.md) (gerada automaticamente pelo fluxo `/executar-demanda`, ver [docs/como-executar-demandas.md](docs/como-executar-demandas.md)).
 - **Backlog organizado** no Tarefai.

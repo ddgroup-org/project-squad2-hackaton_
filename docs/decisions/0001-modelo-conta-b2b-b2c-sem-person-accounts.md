@@ -9,7 +9,7 @@ applies_to:
   - quimicahackaton
 ---
 
-> **SUBSTITUÍDA por [ADR 0003](0003-account-sem-record-type-tipopessoa.md).** O BRD oficial (`entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf`, aprovado pelo cliente e pelo tech lead) define o modelo de Account de forma diferente da decisão abaixo — um único objeto com campo `TipoPessoa__c`, sem Record Type. Mantida aqui só como histórico do raciocínio original.
+> **SUBSTITUÍDA por [ADR 0003](0003-account-sem-record-type-tipopessoa.md).** O BRD oficial (`entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf`, aprovado pelo cliente e pelo tech lead) define o modelo de Account de forma diferente da decisão abaixo — um único objeto com campo `TipoPessoa__c`, sem Record Type. Mantida aqui só como histórico do raciocínio original.
 
 # ADR 0001 — Modelo de Account B2B/B2C sem Person Accounts
 

@@ -19,7 +19,7 @@ Todo entregável em PDF deste hackathon (Solution Design, BRD final, roteiro de 
 
 **Footer obrigatório em toda seção (exceto a capa):** nome de quem gerou o documento, cargo, empresa, data de geração e a marca "CONFIDENCIAL" — já vem como bloco `.footer-note` pronto no template, só preencher os placeholders (`{NOME_GERADOR}`, `{CARGO_GERADOR}`, `{EMPRESA_GERADOR}`, `{DATA_GERACAO}`). Valores padrão sugeridos no comentário do próprio template (Paulo Carvalho, Tech Lead, DDGroup) — ajustar se outra pessoa gerar o documento.
 
-Exemplo real e completo já implementado (capa, diagrama de objetos em SVG, tabelas, callouts): [`entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.html`](../entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.html) — este é o código-fonte que gerou o primeiro Solution Design; use como referência de como aplicar o modelo na prática, especialmente o padrão de diagrama SVG (caixas + setas coloridas por tipo de objeto).
+Exemplo real e completo já implementado (capa, diagrama de objetos em SVG, tabelas, callouts): [`entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.pdf`](../entregaveis/02_Solution_Design_Cromatta_Quimica_Squad02.pdf) — resultado final do primeiro Solution Design, use como referência visual de como aplicar o modelo na prática (o `.html` de trabalho que gerou este PDF não foi mantido no repositório — só o PDF final, conforme o passo 5 abaixo).
 
 ## Passo a passo
 

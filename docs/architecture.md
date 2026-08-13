@@ -12,7 +12,7 @@ source_of_truth: true
 
 # Arquitetura
 
-> Baseada nos requisitos reais levantados com o cliente (Cromatta Química) — ver [business-scenario.md](business-scenario.md), a fonte completa em [transcricao.md](transcricao.md), e o **BRD oficial aprovado** em [entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf](entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf) — o BRD prevalece onde houver divergência com versões anteriores deste documento (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md)).
+> Baseada nos requisitos reais levantados com o cliente (Cromatta Química) — ver [business-scenario.md](business-scenario.md), a fonte completa em [transcricao.md](transcricao.md), e o **BRD oficial aprovado** em [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf) — o BRD prevalece onde houver divergência com versões anteriores deste documento (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md)).
 
 ## Regra de implementação (herdada das regras do hackathon)
 

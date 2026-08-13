@@ -15,7 +15,7 @@ applies_to:
 
 A [ADR 0001](0001-modelo-conta-b2b-b2c-sem-person-accounts.md) decidiu modelar PJ/PF via dois Record Types em Account (Business Account / Individual Customer), descartando Person Accounts.
 
-O **BRD oficial** (`entregaveis/BRD_Cromatta_Quimica_Squad02_final.pdf`, v1.0, aprovado por Gabriel Jacob — cliente — e assinado com Paulo Carvalho como Tech Lead) define o modelo de Account de forma diferente, na seção 3.1: um único objeto Account, com um campo `TipoPessoa__c` (picklist PF/PJ) determinando o tipo de cliente — sem Record Type.
+O **BRD oficial** (`entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf`, v1.0, aprovado por Gabriel Jacob — cliente — e assinado com Paulo Carvalho como Tech Lead) define o modelo de Account de forma diferente, na seção 3.1: um único objeto Account, com um campo `TipoPessoa__c` (picklist PF/PJ) determinando o tipo de cliente — sem Record Type.
 
 Adicionalmente, uma reanálise arquitetural (agente `salesforce-architect`, ver [evidencias/demandas/reanalise-demanda-01.md](../evidencias/demandas/reanalise-demanda-01.md)) confirmou via consulta direta à org `cromatta-hackathon` que:
 
