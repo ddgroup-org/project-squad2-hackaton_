@@ -18,6 +18,8 @@ source_of_truth: true
 
 **Cromatta Química** — indústria química no interior do Ceará, no mercado desde 1980. 80% fabricação própria; matéria-prima importada (China, EUA, Europa) — preço final volátil por câmbio (USD) e custo de matéria-prima.
 
+**Volumetria confirmada pelo cliente:** 52 clientes ativos; ~18 casos (atendimentos) abertos por mês.
+
 ## Linhas de produto
 
 1. **Cromata** — tintas e vernizes, e dispersão de pigmento (matéria-prima para outros fabricantes de tinta).
@@ -77,7 +79,7 @@ Dois químicos respondem pela fila do laboratório: **Sérgio e André** — con
 
 ## Metas e gestão comercial (estrutura em 3 camadas)
 
-1. **Resultado (empresa):** crescimento de faturamento mensal, número de clientes novos, clientes inativos reativados/mês.
+1. **Resultado (empresa):** crescimento de faturamento mensal (**meta confirmada: R$ 2.000.000/mês**), número de clientes novos, clientes inativos reativados/mês.
 2. **Comercial (time, medido no CRM):** oportunidades abertas por semana/mês, propostas enviadas, amostras enviadas, taxa de conversão, tempo médio de ciclo.
 3. **Atividade (individual):** visitas/contatos por semana, amostras enviadas por semana/mês, clientes inativos reativados por semana.
 
@@ -87,7 +89,9 @@ Dois químicos respondem pela fila do laboratório: **Sérgio e André** — con
 
 ## Acessos
 
-Vendedores **veem todos os registros, mas só editam os próprios**. O dono da empresa (cliente) tem acesso total (visualização + validação de relatórios e preços).
+Vendedores **veem todos os registros, mas só editam os próprios**. O dono da empresa (cliente) tem acesso total (visualização + validação de relatórios e preços). Quem calcula o preço interno hoje **não terá acesso ao Salesforce** — o cálculo continua fora do sistema (confirmado pelo cliente).
+
+**Exceção — Ronaldo:** representante externo, não CLT, atende outras marcas. O cliente confirmou que ele deve ter **acesso somente aos próprios clientes**, não à leitura ampla do padrão "Vendedor". Requisito novo, ainda sem implementação.
 
 ## Pós-venda / atendimento (Service Cloud)
 
@@ -95,7 +99,7 @@ Vendedores **veem todos os registros, mas só editam os próprios**. O dono da e
 - **Caso de pós-venda:** tipo separado, para clientes recorrentes já ativos — reclamação de produto, lote entregue com defeito, etc. (raro, mas existe).
 - Sem time formal de atendimento ao cliente — hoje o próprio vendedor responde dúvidas via WhatsApp, baixo volume, não é prioridade modelar como fluxo formal no v1.
 - **SLA oficial (BRD 4.4):** 10 dias úteis para cobrança automática ao cliente sem retorno de teste de amostra; 5 dias para resposta em casos de pós-venda.
-- Priorização entre chamados comerciais e técnicos: **A CONFIRMAR** com o cliente (BRD 1.3.3, item 4) — premissa assumida no BRD: ordem de chegada combinada ao Indicador de Urgência, até confirmação formal.
+- Priorização entre chamados comerciais e técnicos: **confirmado pelo cliente — não existe critério oficial.** A premissa já assumida (fila única, ordem de chegada combinada ao Indicador de Urgência) passa a ser a regra definitiva, não mais pendência.
 
 ## Fora de escopo do v1 (ideias explícitas para v2)
 
@@ -107,17 +111,21 @@ Vendedores **veem todos os registros, mas só editam os próprios**. O dono da e
 
 ## Pendências a confirmar com o cliente
 
-Lista oficial (BRD 1.3.3) — substitui a lista anterior deste documento:
+Lista oficial (BRD 1.3.3), com as respostas do cliente (Gabriel Jacob, via Slack `#geral-duvidas-mentores`, 13/08/2026 ~12h46–12h54):
 
-| # | Item | Status |
-| --- | --- | --- |
-| 1 | Lista completa de produtos do catálogo técnico, com custos atuais | PENDENTE — catálogo de exemplo usado no v1 |
-| 2 | Campos obrigatórios de cadastro — PF (nome, CPF, e-mail) e PJ (CNPJ, razão social, e-mail financeiro, responsável pelo fechamento) | A CONFIRMAR |
-| 3 | Volumetria atual do negócio (clientes ativos, volume médio de casos/mês) | PENDENTE |
-| 4 | Critério oficial de priorização entre caso comercial e caso técnico simultâneos | A CONFIRMAR |
-| 5 | Quantidade mínima de produto ou prazo mínimo de contrato por cliente | PENDENTE |
-| 6 | Acesso ao Salesforce das pessoas que hoje calculam o preço interno | A CONFIRMAR |
-| 7 | Tipo de licença/perfil adequado para Ronaldo (representante externo, não CLT) | A CONFIRMAR |
-| 8 | Meta numérica de faturamento mensal da empresa | PENDENTE |
+| # | Item | Status | Resposta do cliente |
+| --- | --- | --- | --- |
+| 1 | Lista completa de produtos do catálogo técnico, com custos atuais | **PENDENTE** — cliente disse "já mando", mas ainda não enviou | — |
+| 2 | Campos obrigatórios de cadastro (PF e PJ) | **RESPONDIDO** | **PF: cliente não vai fazer** (ver nota de atenção abaixo — impacto a confirmar sobre o modelo `TipoPessoa__c` já deployado). **PJ:** CNPJ, razão social, nome, e-mail e telefone do responsável, e área dele na empresa (compras, comercial, etc.). |
+| 3 | Volumetria atual do negócio | **RESPONDIDO** | **52 clientes ativos**; **~18 casos (atendimentos) abertos por mês**. |
+| 4 | Critério oficial de priorização entre caso comercial e caso técnico simultâneos | **RESPONDIDO** | **Não existe critério oficial.** Confirma a premissa já assumida (fila única, ordem de chegada + Indicador de Urgência) — deixa de ser "a confirmar" e passa a ser a regra definitiva. |
+| 5 | Quantidade mínima de produto ou prazo mínimo de contrato por cliente | **RESPONDIDO** | **Não há.** |
+| 6 | Acesso ao Salesforce das pessoas que hoje calculam o preço interno | **RESPONDIDO** | **Não vão ter acesso** — o cálculo de preço continua sendo feito fora do Salesforce, confirma a ADR 0002. |
+| 7 | Tipo de licença/perfil adequado para Ronaldo (representante externo, não CLT) | **RESPONDIDO** | **Acesso somente aos clientes dele** — diferente do padrão "Vendedor" (que lê todos os registros); Ronaldo precisa de um modelo de acesso mais restrito (ver nota abaixo). |
+| 8 | Meta numérica de faturamento mensal da empresa | **RESPONDIDO** | **R$ 2.000.000/mês.** |
+
+**Nota de atenção — impacto arquitetural das respostas 2 e 7:**
+- **PF "não vamos fazer":** o modelo de Account já deployado (demanda 05) inclui `TipoPessoa__c` com valores PF/PJ. Não está claro se "não vamos fazer" significa (a) sem campos obrigatórios para PF, mas PF continua existindo no sistema, ou (b) excluir PF do escopo do v1. **Confirmar com o cliente antes de remover ou simplificar qualquer coisa relacionada a PF** — não presumir.
+- **Ronaldo — acesso restrito:** o Permission Set `Vendedor` já deployado dá leitura ampla (todos os registros) + edição do próprio. A resposta do cliente pede algo mais restrito só para Ronaldo (só os clientes dele). Isso exige uma regra de compartilhamento específica (ex.: um segundo Permission Set ou uma sharing rule baseada em critério/owner) — ainda não implementado, é uma demanda nova.
 
 Resolvidas desde a última versão: nomes dos químicos (Sérgio e André, confirmados no BRD) e identidade visual (assets criados, estão em `imgs/`).

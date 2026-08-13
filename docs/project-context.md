@@ -66,12 +66,12 @@ Confirmados na reunião de kickoff (ver [transcricao.md](transcricao.md)):
 
 ## Pendências abertas
 
-**Resolvido:** o repositório Git compartilhado para o projeto Salesforce já existe — [github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026](https://github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026), o mesmo repositório deste cofre. **Resolvido:** o desafio de negócio já é real (Cromatta Química), não mais fictício. **Resolvido:** o BRD oficial existe e confirmou os nomes dos químicos (Sérgio e André) e o threshold de concentração de receita (40%).
+**Resolvido:** o repositório Git compartilhado para o projeto Salesforce já existe — [github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026](https://github.com/inaldojunior-a11y/SQUAD_02_HACKATON_DDGROUP_2026), o mesmo repositório deste cofre. **Resolvido:** o desafio de negócio já é real (Cromatta Química), não mais fictício. **Resolvido:** o BRD oficial existe e confirmou os nomes dos químicos (Sérgio e André) e o threshold de concentração de receita (40%). **Resolvido:** Permission Set `Administrador Comercial` e Queue "Laboratório" já existem na org, com usuários atribuídos (demanda 02). **Resolvido:** 6 de 8 pendências do BRD 1.3.3 já têm resposta do cliente — ver [business-scenario.md](business-scenario.md#pendências-a-confirmar-com-o-cliente).
 
-Pendências específicas do cliente: ver tabela completa em [business-scenario.md](business-scenario.md#pendências-a-confirmar-com-o-cliente) (8 itens do BRD 1.3.3). Pendências de execução deste cofre:
+Pendências específicas do cliente que ainda restam: catálogo de produtos (cliente disse que ia enviar, ainda não chegou); escopo exato de "PF não vamos fazer" (impacto sobre o `TipoPessoa__c` já deployado). Pendências de execução deste cofre:
 
 | Pendência | Responsável por confirmar |
 | --- | --- |
 | Licenças disponíveis na org (Service Cloud etc.) | Dev executor, no início da execução |
-| Permission Set `Administrador Comercial` e Queue "Laboratório" — ainda não criados na org | Dev executor |
-| Atribuição de usuários aos Permission Sets `Vendedor`/`Laboratorio` (0 atribuições no momento) | Dev executor |
+| Modelo de acesso restrito para o Ronaldo (só os próprios clientes, diferente do Permission Set `Vendedor` padrão) — demanda nova, ainda sem implementação | Dev executor |
+| Confirmar com o cliente o escopo exato de "PF não vamos fazer" antes de alterar o modelo de Account | Tech lead / cliente |
