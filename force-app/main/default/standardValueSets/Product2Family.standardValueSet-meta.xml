@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>None</fullName>
+        <default>false</default>
+        <label>None</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Cromata</fullName>
+        <default>false</default>
+        <label>Cromata</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Flexa</fullName>
+        <default>false</default>
+        <label>Flexa</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Jato</fullName>
+        <default>false</default>
+        <label>Jato</label>
+    </standardValue>
+</StandardValueSet>

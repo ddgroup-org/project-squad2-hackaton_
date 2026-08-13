@@ -39,6 +39,8 @@
         <members>User</members>
         <members>Contact</members>
         <members>Lead</members>
+        <members>Product2</members>
+        <members>OpportunityLineItem</members>
         <name>CustomObject</name>
     </types>
     <types>
@@ -61,6 +63,8 @@
         <members>Contact-Contact Layout</members>
         <members>Lead-Lead Layout</members>
         <members>Opportunity-Opportunity Layout</members>
+        <members>Product2-Product Layout</members>
+        <members>OpportunityLineItem-Opportunity Product Layout</members>
         <name>Layout</name>
     </types>
     <types>
@@ -83,6 +87,7 @@
     </types>
     <types>
         <members>OpportunityStage</members>
+        <members>Product2Family</members>
         <name>StandardValueSet</name>
     </types>
     <version>67.0</version>
