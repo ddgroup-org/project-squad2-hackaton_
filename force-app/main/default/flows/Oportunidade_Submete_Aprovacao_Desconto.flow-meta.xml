@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <description>Submete a Oportunidade ao Approval Process Aprovacao_Desconto_Oportunidade. submitterId é setado explicitamente para $Record.OwnerId porque este Flow roda como Automated Process User (contexto de sistema), e allowedSubmitters=owner do Approval Process exige que o submitter seja o Owner do registro, não quem executa o Flow.</description>
+        <name>Submit_Aprovacao_Desconto</name>
+        <label>Submeter para Aprovação de Desconto</label>
+        <locationX>308</locationX>
+        <locationY>266</locationY>
+        <actionName>submit</actionName>
+        <actionType>submit</actionType>
+        <faultConnector>
+            <targetReference>Create_Task_Falha_Submissao</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>objectId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>processDefinitionNameOrId</name>
+            <value>
+                <stringValue>Aprovacao_Desconto_Oportunidade</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>submitterId</name>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>comment</name>
+            <value>
+                <stringValue>Submissão automática pelo Flow Oportunidade_Submete_Aprovacao_Desconto: Oportunidade no estágio &quot;Apresentação de Custo&quot; com PrecoFinal__c menor que Amount (desconto abaixo da margem mínima de 15%).</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>submit</nameSegment>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <description>O elemento Start só aceita valor literal (não é possível comparar PrecoFinal__c &lt; Amount diretamente no critério de entrada — erro de plataforma confirmado: &quot;O elemento Início não pode ter uma condição de filtro de registro que faça referência a um recurso ou elemento&quot;). Por isso a comparação de campo a campo (PrecoFinal__c &lt; Amount) e a verificação de duplicidade (StatusAprovacaoDesconto__c ainda em branco, ou seja, ainda não submetido/aprovado/rejeitado) ficam aqui. A verificação de StatusAprovacaoDesconto__c evita ressubmissão em toda gravação subsequente da Oportunidade enquanto ela permanecer no estágio (inclusive a gravação gerada pelo próprio Field Update do Approval Process ao submeter).</description>
+        <name>Decision_Desconto_Abaixo_Margem</name>
+        <label>Desconto abaixo da margem e ainda não submetido?</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <defaultConnectorLabel>Não — não submeter</defaultConnectorLabel>
+        <rules>
+            <name>Elegivel_Para_Aprovacao</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.PrecoFinal__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue>
+                    <elementReference>$Record.Amount</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.StatusAprovacaoDesconto__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Submit_Aprovacao_Desconto</targetReference>
+            </connector>
+            <label>Elegível para aprovação</label>
+        </rules>
+    </decisions>
+    <description>Auditoria (correção): a Oportunidade só era submetida ao Approval Process Aprovacao_Desconto_Oportunidade manualmente/via Apex (ver demanda-11), sem gatilho automático no estágio correto. Este Flow submete automaticamente para aprovação quando a Oportunidade está no estágio &quot;Apresentação de Custo&quot; com PrecoFinal__c &lt; Amount (desconto que viola a margem mínima de 15%, mesma regra do entryCriteria do Approval Process — ver demanda-11 e business-scenario.md/BRD 4.3) e ainda não foi submetida (StatusAprovacaoDesconto__c em branco). Ver Decision_Desconto_Abaixo_Margem para o motivo de a comparação de campos estar num Decision, não no critério de entrada.</description>
+    <environments>Default</environments>
+    <interviewLabel>Oportunidade Submete Aprovacao Desconto {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Oportunidade - Submete Aprovação de Desconto</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Fallback: cria Task de alerta para o Owner da Oportunidade quando a submissão automática ao Approval Process falha (ex.: já existe aprovação pendente), para que a falha não passe silenciosa — ver knowledge/flow-standards.md #7. Sem faultConnector próprio (elemento terminal, sem dependência de Get Records): risco residual aceito e documentado no relatório da demanda, mitigado pelo alerta de erro padrão do Process Automation Settings caso esta própria Task falhe.</description>
+        <name>Create_Task_Falha_Submissao</name>
+        <label>Criar Task de Falha na Submissão</label>
+        <locationX>440</locationX>
+        <locationY>398</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Falha ao submeter Oportunidade para aprovação de desconto — verificar manualmente</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Decision_Desconto_Abaixo_Margem</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>StageName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Apresentação de Custo</stringValue>
+            </value>
+        </filters>
+        <object>Opportunity</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

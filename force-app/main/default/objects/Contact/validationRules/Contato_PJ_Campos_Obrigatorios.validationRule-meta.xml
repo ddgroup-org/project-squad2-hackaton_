@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contato_PJ_Campos_Obrigatorios</fullName>
+    <active>true</active>
+    <description>Para contato de Conta Pessoa Jurídica (Account.TipoPessoa__c = PJ), exige Nome (LastName), Email, Phone e AreaResponsavel__c. Contato sem conta, ou de conta PF, não é validado nesta fase — ver ADR 0004.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Account.TipoPessoa__c, &quot;PJ&quot;),
+    OR(
+        ISBLANK(LastName),
+        ISBLANK(Email),
+        ISBLANK(Phone),
+        ISPICKVAL(AreaResponsavel__c, &quot;&quot;)
+    )
+)</errorConditionFormula>
+    <errorMessage>Para contato de cliente Pessoa Jurídica, Nome, E-mail, Telefone e Área do Responsável são obrigatórios.</errorMessage>
+</ValidationRule>

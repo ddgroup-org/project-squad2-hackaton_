@@ -84,15 +84,11 @@
     <picklistValues>
         <picklist>Type</picklist>
         <values>
-            <fullName>Feature Request</fullName>
+            <fullName>Envio e Teste de Amostra ou Pós-Venda</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Problem</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Question</fullName>
+            <fullName>Reclamação de Qualidade de Lote</fullName>
             <default>false</default>
         </values>
     </picklistValues>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Conta_PJ_Campos_Obrigatorios</fullName>
+    <active>true</active>
+    <description>Para Conta Pessoa Jurídica (TipoPessoa__c = PJ), exige CNPJ_CPF__c (CNPJ) e Name (Razão Social). Nenhuma exigência para PF nesta fase — ver ADR 0004.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(TipoPessoa__c, &quot;PJ&quot;),
+    OR(
+        ISBLANK(CNPJ_CPF__c),
+        ISBLANK(Name)
+    )
+)</errorConditionFormula>
+    <errorMessage>Para Conta Pessoa Jurídica, CNPJ (CNPJ_CPF__c) e Razão Social (Nome da Conta) são obrigatórios.</errorMessage>
+</ValidationRule>

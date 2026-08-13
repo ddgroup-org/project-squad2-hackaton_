@@ -100,6 +100,7 @@
         <members>Amostra_Cobranca_Retorno</members>
         <members>Lead_BeforeSave_PreencheCompany</members>
         <members>Alerta_Concentracao_Receita</members>
+        <members>Oportunidade_Submete_Aprovacao_Desconto</members>
         <name>Flow</name>
     </types>
     <types>

@@ -72,6 +72,21 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>LinhaDeProduto__c</picklist>
+        <values>
+            <fullName>Cromatta</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Flexa</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jato</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>MotivoDaPerda__c</picklist>
         <values>
             <fullName>Desistência por Demora</fullName>
