@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Caminho_B_Produto_Novo</fullName>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Ajustes</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed Lost</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed Won</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Desenvolvimento%2FEnvio de Amostra</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Formação de Preço</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Levantamento Técnico</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Prospecção</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

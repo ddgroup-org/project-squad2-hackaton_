@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Motivo_Da_Perda_Obrigatorio</fullName>
+    <active>true</active>
+    <description>Exige MotivoDaPerda__c sempre que StageName for alterado para Closed Lost — ver demanda-08 e business-scenario.md (&quot;Motivo de perda deve ser registrado sempre que uma oportunidade for marcada como perdida&quot;).</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(StageName, &quot;Closed Lost&quot;),
+    ISBLANK(TEXT(MotivoDaPerda__c))
+)</errorConditionFormula>
+    <errorMessage>Para fechar a Oportunidade como Perdida (Closed Lost), o Motivo da Perda é obrigatório.</errorMessage>
+</ValidationRule>
