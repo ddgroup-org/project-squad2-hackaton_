@@ -111,5 +111,25 @@
         <members>Opportunity</members>
         <name>Workflow</name>
     </types>
+    <types>
+        <members>Cromatta_Reports</members>
+        <name>ReportFolder</name>
+    </types>
+    <types>
+        <members>Cromatta_Reports/Fechamentos_Desde_Ontem</members>
+        <members>Cromatta_Reports/Oportunidades_Travadas</members>
+        <members>Cromatta_Reports/Amostras_Pendentes_Retorno</members>
+        <members>Cromatta_Reports/Concentracao_Receita_Por_Vendedor</members>
+        <members>Cromatta_Reports/Meta_Realizado_Mensal</members>
+        <name>Report</name>
+    </types>
+    <types>
+        <members>Cromatta_Dashboards</members>
+        <name>DashboardFolder</name>
+    </types>
+    <types>
+        <members>Cromatta_Dashboards/Reuniao_Diaria_Cromatta</members>
+        <name>Dashboard</name>
+    </types>
     <version>67.0</version>
 </Package>
