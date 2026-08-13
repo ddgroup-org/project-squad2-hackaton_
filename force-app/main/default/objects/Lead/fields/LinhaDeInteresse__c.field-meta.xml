@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LinhaDeInteresse__c</fullName>
+    <description>Linha de produto de interesse do Lead (Cromata, Flexa ou Jato) — grafia oficial do BRD (architecture.md), não a grafia usada por engano em demandas anteriores (User.Linha_de_Produto__c/Account.LinhaDeProduto__c, pendência de correção registrada em architecture.md). Ver demanda-06.</description>
+    <label>Linha de Interesse</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Cromata</fullName>
+                <default>false</default>
+                <label>Cromata</label>
+            </value>
+            <value>
+                <fullName>Flexa</fullName>
+                <default>false</default>
+                <label>Flexa</label>
+            </value>
+            <value>
+                <fullName>Jato</fullName>
+                <default>false</default>
+                <label>Jato</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
