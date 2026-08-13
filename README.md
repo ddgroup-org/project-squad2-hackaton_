@@ -1,9 +1,9 @@
 ---
 title: "quimicahackaton — Cofre do projeto"
-description: "Cofre individual de planejamento para o hackathon Salesforce Sales Cloud + Service Cloud, B2B e B2C, setor químico."
+description: "Cofre individual de planejamento para o hackathon Salesforce Sales Cloud + Service Cloud, cliente Cromatta Química."
 category: "index"
 status: "active"
-version: "1.1"
+version: "1.2"
 last_reviewed: "2026-08-13"
 owner: "Tech lead"
 tags:
@@ -20,9 +20,9 @@ source_of_truth: true
 
 # quimicahackaton
 
-Cofre individual de planejamento para o hackathon **quimicahackaton**: uma solução Salesforce cobrindo **Sales Cloud** e **Service Cloud**, para clientes **B2B** e **B2C**, no cenário de uma empresa do setor químico. Duração do hackathon: **1 dia**.
+Cofre individual de planejamento para o hackathon **quimicahackaton**: uma solução Salesforce cobrindo **Sales Cloud** e **Service Cloud**, para o cliente simulado **Cromatta Química** (indústria química — clientes PJ e PF). Duração do hackathon: **1 dia**.
 
-**Este repositório reúne duas coisas no mesmo lugar:** o planejamento (contexto, decisões) **e** o projeto Salesforce DX em si (`sfdx-project.json`, `force-app/`, `config/`, `manifest/`), que será populado pela execução real.
+**Este repositório reúne duas coisas no mesmo lugar:** o planejamento (contexto, requisitos, decisões) **e** o projeto Salesforce DX em si (`sfdx-project.json`, `force-app/`, `config/`, `manifest/`), que será populado pela execução real.
 
 Inspirado nas convenções da base global [Salesforce-AI-Base](../Salesforce-AI-Base/README.md), mas **não é um substituto dela nem uma cópia**: aqui vive apenas o que é específico deste projeto/evento.
 
@@ -35,13 +35,15 @@ Tech lead                                  Dev executor (outra pessoa)
 ─────────────────                          ───────────────────────────
 Sem acesso à org                            Com acesso à org Salesforce
 Usa este repositório para planejar          Roda o Claude Code neste mesmo
-e manter o documento de requisitos          repositório, populando force-app/
+e manter os requisitos atualizados          repositório, populando force-app/
                                              conforme executa o trabalho
 
-        documento de requisitos (a ser adicionado)
+        business-scenario.md + architecture.md
+        (requisitos, derivados de docs/transcricao.md)
                     │
                     ▼
-        dev executa, valida na org
+        dev executa — regra de ouro: tudo via Claude/IA,
+        nenhuma configuração manual na UI do Salesforce
                     │
                     ▼
         sf project retrieve start (sempre antes de dar push)
@@ -66,15 +68,17 @@ quimicahackaton/
 ├── .claude/
 │   └── agents/                            cópia fiel dos 7 agentes da Salesforce-AI-Base — ver nota abaixo
 └── docs/
-    ├── project-context.md                 objetivo do hackathon, papéis, restrições, critérios de sucesso
-    ├── business-scenario.md               cenário fictício da empresa química, B2B e B2C — AJUSTÁVEL
-    ├── architecture.md                    clouds, modelo de dados, decisões técnicas de alto nível
+    ├── project-context.md                 objetivo do hackathon, papéis, critérios de avaliação, entregáveis
+    ├── business-scenario.md               cenário REAL do cliente (Cromatta Química) — resumo estruturado
+    ├── transcricao.md                     transcrição condensada da reunião de levantamento de requisitos
+    ├── architecture.md                    clouds, modelo de dados, segurança, automações
     └── decisions/
         ├── README.md
-        └── 0001-modelo-conta-b2b-b2c-sem-person-accounts.md
+        ├── 0001-modelo-conta-b2b-b2c-sem-person-accounts.md
+        └── 0002-sem-integracao-erp-precificacao-v1.md
 ```
 
-Além disso, na raiz, o **projeto Salesforce DX** (mesmo repositório, gerado via `sf project generate`):
+Além disso, na raiz, o **projeto Salesforce DX** (mesmo repositório, gerado via `sf project generate`) e a pasta `imgs/` (assets de branding da Cromatta):
 
 ```text
 quimicahackaton/
@@ -83,6 +87,7 @@ quimicahackaton/
 ├── config/project-scratch-def.json
 ├── manifest/package.xml
 ├── scripts/                                apex/soql de apoio
+├── imgs/                                   logos, paleta de cores, moodboard da marca Cromatta
 └── package.json, .forceignore, .gitignore, .vscode/, etc. — tooling padrão SFDX
 ```
 
@@ -99,19 +104,18 @@ Por ora, **skills** (`start-salesforce-demand`, `review-apex`, etc.) não foram 
 ## Publicação (GitHub)
 
 - **Repositório:** [github.com/inaldojunior-a11y/Squad2-Cromatta-quimica](https://github.com/inaldojunior-a11y/Squad2-Cromatta-quimica)
-- **Visibilidade:** público — o conteúdo aqui é só planejamento e um cenário fictício, sem segredo real.
-- **Estrutura:** unificada — planejamento, decisões e o projeto Salesforce DX (`force-app/`, `sfdx-project.json`, `manifest/`) vivem no mesmo repositório e histórico Git, para que o tech lead revise tudo em um único lugar.
-- Contexto de negócio ainda fictício e rotulado como tal em `business-scenario.md` — ajustar se o desafio real for definido.
+- **Visibilidade:** público — o conteúdo é o levantamento de requisitos de um cliente simulado (role-play) do hackathon, não dados reais de produção.
+- **Estrutura:** unificada — planejamento, requisitos, decisões e o projeto Salesforce DX (`force-app/`, `sfdx-project.json`, `manifest/`) vivem no mesmo repositório e histórico Git, para que o tech lead revise tudo em um único lugar.
 
 ---
 
-## Premissa assumida — revisar antes de começar a execução
+## Requisitos do cliente — onde estão
 
-Como o desafio de negócio real não foi detalhado, este cofre assume um **cenário fictício rotulado como tal**: uma distribuidora química vendendo insumos a granel para empresas (B2B) e produtos de limpeza/piscina/jardim para consumidores finais (B2C). Está em [docs/business-scenario.md](docs/business-scenario.md).
+O desafio de negócio **já é real** (não mais uma suposição fictícia): foi levantado em reunião de kickoff com o cliente simulado do hackathon.
 
-**Se o hackathon já tem uma empresa/desafio real definido, ajustar `business-scenario.md` antes de começar.**
-
-Da mesma forma, a org ainda não existe — nenhum dado de ambiente real foi presumido além de "Developer Edition, Trailhead Playground ou Scratch Org, nunca produção".
+- **Resumo estruturado, pronto para uso na implementação:** [docs/business-scenario.md](docs/business-scenario.md) e [docs/architecture.md](docs/architecture.md).
+- **Fonte completa (transcrição condensada por tema):** [docs/transcricao.md](docs/transcricao.md) — usar quando o resumo estruturado parecer incompleto ou ambíguo.
+- A org ainda não existe — nenhum dado de ambiente real foi presumido além de "Developer Edition, Trailhead Playground ou Scratch Org, nunca produção".
 
 ---
 
