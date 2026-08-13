@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Preencher_Company_Automaticamente</name>
+        <label>Preencher Company automaticamente</label>
+        <locationX>176</locationX>
+        <locationY>270</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Company</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>NomeCompletoLead</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Company_Em_Branco</name>
+        <label>Company está em branco?</label>
+        <locationX>176</locationX>
+        <locationY>162</locationY>
+        <defaultConnectorLabel>Não fazer nada</defaultConnectorLabel>
+        <rules>
+            <name>Sim_Company_Em_Branco</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>CompanyEmBranco</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Preencher_Company_Automaticamente</targetReference>
+            </connector>
+            <label>Sim, Company em branco</label>
+        </rules>
+    </decisions>
+    <description>Evita que a conversão de Lead sem Company preenchido gere uma Person Account em vez da Account única com TipoPessoa__c (comportamento padrão do Salesforce quando Person Accounts está habilitado na org e o Lead não tem Company — ver ADR 0003/0004 e ADR 0005). Roda para QUALQUER Lead (não só TipoPessoa__c = PF): TipoPessoa__c não é campo obrigatório, então um Lead com TipoPessoa__c em branco e Company em branco também dispararia o bug se o critério de entrada fosse restrito a PF (achado crítico da revisão flow-reviewer, demanda-10). Leads PJ já têm Company obrigatório pela Validation Rule Lead_PJ_Campos_Obrigatorios, então este Flow é um no-op para eles. Não torna Company obrigatório (a Validation Rule Lead_PF_Campos_Obrigatorios da demanda-06 continua sem exigir Company para PF, corretamente) — só preenche automaticamente com o nome do Lead antes de salvar, garantindo que a conversão sempre crie uma Account normal. Contexto de execução padrão (sem alteração), avaliado como seguro: o Flow só escreve no próprio registro que está sendo salvo, em memória (sem Get/Create/Update/Delete), não acessa nem expõe dado de terceiros.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>CompanyEmBranco</name>
+        <dataType>Boolean</dataType>
+        <expression>ISBLANK({!$Record.Company})</expression>
+    </formulas>
+    <formulas>
+        <name>NomeCompletoLead</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.FirstName}), {!$Record.LastName}, TRIM({!$Record.FirstName} &amp; &quot; &quot; &amp; {!$Record.LastName}))</expression>
+    </formulas>
+    <interviewLabel>Lead preenche Company automático {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead preenche Company automático (before save)</label>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Company_Em_Branco</targetReference>
+        </connector>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

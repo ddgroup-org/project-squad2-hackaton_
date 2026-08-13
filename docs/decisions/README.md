@@ -21,3 +21,4 @@ Cada decisão relevante que não pode ser revertida sem custo, ou que um agente 
 | [0002](0002-sem-integracao-erp-precificacao-v1.md) | Sem integração de ERP nem motor de precificação automático no v1 | Ativa |
 | [0003](0003-account-sem-record-type-tipopessoa.md) | Account como objeto único com TipoPessoa__c, sem Record Type (segue o BRD oficial) | Ativa |
 | [0004](0004-reconciliacao-permissionsets-fora-do-fluxo.md) | Correção: Permission Sets da demanda 02 foram criados via Claude, não fora do fluxo | Retificada |
+| [0005](0005-lead-conversion-company-em-branco-vira-person-account.md) | Flow before-save evita Person Account indesejada quando Lead é convertido sem Company | Ativa |

@@ -35,6 +35,8 @@ Cada Lead/Oportunidade/Produto está associado a uma dessas três linhas.
 
 Mapeamento para o modelo de Account (BRD 3.1): **um único objeto Account**, com o campo `TipoPessoa__c` (PF | PJ) — sem Record Type (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md), que substitui a ADR 0001).
 
+**Nota técnica:** a conversão de Lead sem `Company` preenchido (comum em Lead PF, que não tem razão social) criava uma Person Account por comportamento padrão da plataforma, quebrando o modelo acima — corrigido por automação (Flow), ver [ADR 0005](decisions/0005-lead-conversion-company-em-branco-vira-person-account.md).
+
 ## Time comercial
 
 6 vendedores, sem carteira fixa por padrão — o cliente fica com quem o trouxe (vendedor que prospectou), dentro da linha correspondente:

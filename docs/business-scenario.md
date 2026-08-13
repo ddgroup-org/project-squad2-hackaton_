@@ -12,7 +12,7 @@ source_of_truth: true
 
 # Cenário de negócio
 
-> **Este cenário é REAL**, levantado com o cliente simulado do hackathon (role-play) na reunião de kickoff. Fonte completa, com todo o contexto e citações originais: [transcricao.md](transcricao.md). O **BRD oficial** — [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf), v1.0, aprovado pelo cliente e pelo tech lead — é a fonte de verdade mais recente e **prevalece** sobre este resumo onde houver divergência (nomenclatura de campos, thresholds, prazos). Este documento aqui continua sendo o resumo estruturado de apoio.
+> **Este cenário é REAL**, levantado com o cliente simulado do hackathon (role-play) na reunião de kickoff. Fonte completa, com todo o contexto e citações originais: [docs/transcricao.md](docs/transcricao.md). O **BRD oficial** — [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf), v1.0, aprovado pelo cliente e pelo tech lead — é a fonte de verdade mais recente e **prevalece** sobre este resumo onde houver divergência (nomenclatura de campos, thresholds, prazos). Este documento aqui continua sendo o resumo estruturado de apoio.
 
 ## Empresa
 
@@ -34,6 +34,8 @@ Cada Lead/Oportunidade/Produto está associado a uma dessas três linhas.
 - **PF (pessoa física):** venda direta via site próprio — volume menor, mas existe.
 
 Mapeamento para o modelo de Account (BRD 3.1): **um único objeto Account**, com o campo `TipoPessoa__c` (PF | PJ) — sem Record Type (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md), que substitui a ADR 0001).
+
+**Nota técnica:** a conversão de Lead sem `Company` preenchido (comum em Lead PF, que não tem razão social) criava uma Person Account por comportamento padrão da plataforma, quebrando o modelo acima — corrigido por automação (Flow), ver [ADR 0005](decisions/0005-lead-conversion-company-em-branco-vira-person-account.md).
 
 ## Time comercial
 

@@ -98,6 +98,7 @@
     <types>
         <members>Amostra_Reprovada_Cria_Case</members>
         <members>Amostra_Cobranca_Retorno</members>
+        <members>Lead_BeforeSave_PreencheCompany</members>
         <name>Flow</name>
     </types>
     <version>67.0</version>

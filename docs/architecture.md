@@ -12,7 +12,7 @@ source_of_truth: true
 
 # Arquitetura
 
-> Baseada nos requisitos reais levantados com o cliente (Cromatta Química) — ver [business-scenario.md](business-scenario.md), a fonte completa em [transcricao.md](transcricao.md), e o **BRD oficial aprovado** em [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf) — o BRD prevalece onde houver divergência com versões anteriores deste documento (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md)).
+> Baseada nos requisitos reais levantados com o cliente (Cromatta Química) — ver [business-scenario.md](business-scenario.md), a fonte completa em [docs/transcricao.md](docs/transcricao.md), e o **BRD oficial aprovado** em [entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf](entregaveis/01_BRD_Cromatta_Quimica_Squad02.pdf) — o BRD prevalece onde houver divergência com versões anteriores deste documento (ver [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md)).
 
 ## Regra de implementação (herdada das regras do hackathon)
 
@@ -38,6 +38,9 @@ Account (TipoPessoa__c: PF | PJ — sem Record Type, ver ADR 0003)
   │     campos: OrigemCadastro__c/LeadSource (Internet | Feira do Setor |
   │             Indicação | Prospecção Ativa), LinhaDeInteresse__c
   │             (Cromata | Flexa | Jato), CNPJ_CPF__c
+  │     Flow before-save preenche Company automaticamente quando em
+  │             branco (nome do Lead) — evita Person Account indesejada
+  │             na conversão; ver ADR 0005
   │     → convertido em Account + Contact + Opportunity
   │
   ├── Opportunity (RecordType: Caminho A — Produto Existente |
@@ -76,10 +79,13 @@ Decisões que sustentam este modelo:
 - Account como objeto único com `TipoPessoa__c`, sem Record Type — [ADR 0003](decisions/0003-account-sem-record-type-tipopessoa.md) (substitui a [ADR 0001](decisions/0001-modelo-conta-b2b-b2c-sem-person-accounts.md)).
 - Sem integração de ERP nem motor de precificação automático no v1 — [ADR 0002](decisions/0002-sem-integracao-erp-precificacao-v1.md).
 - Correção de registro sobre a origem dos Permission Sets (demanda 02, executada corretamente via Claude por Inaldo Junior) — [ADR 0004](decisions/0004-reconciliacao-permissionsets-fora-do-fluxo.md).
+- Flow before-save evita Person Account indesejada na conversão de Lead sem `Company` — [ADR 0005](decisions/0005-lead-conversion-company-em-branco-vira-person-account.md).
 
 **Pontos reais em aberto (não relacionados ao engano corrigido na ADR 0004):**
 - Record Type `Business_Account` existe na org, origem não identificada em nenhuma demanda registrada — órfão desde a ADR 0003, não usar em nova automação.
 - `User.Linha_de_Produto__c` (já deployado, demanda 02) usa a grafia "Flecha/Cromata"; o BRD oficial usa "Flexa/Cromata" — precisa de uma demanda de correção do picklist antes de mais dados serem cadastrados.
+- Flow `Lead_PF_Preenche_Company_Automatico` (versão substituída pela ADR 0005) ficou ativo na org e não pôde ser desativado via Metadata API — pendência de desativação manual via Setup UI, ver ADR 0005.
+- OWD de Account/Opportunity/Case está **Private** na org no momento desta demanda (esperado: Public Read Only, ver seção "Segurança e acessos" abaixo) — divergência real encontrada via retrieve, não relacionada a esta demanda; investigar antes de considerar o modelo de acessos concluído.
 
 ## Segurança e acessos
 
