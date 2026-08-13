@@ -47,9 +47,10 @@ Account (Record Type: Business Account [PJ] | Individual Customer [PF])
   │       - Compromisso de volume recorrente (checkbox + volume mínimo mensal)
   │       - Valor final de venda (preenchido manualmente pelo comercial — sem cálculo automático via câmbio no v1)
   │     ├── OpportunityLineItem → Product2 / PricebookEntry
-  │     └── registro de amostras enviadas (produto, quantidade, data de envio,
-  │           resultado, nº de tentativas, custo estimado) — objeto customizado
-  │           relacionado ou campos na própria Opportunity, decidir na implementação
+  │     └── Amostra__c (objeto customizado, Master-Detail em Opportunity,
+  │           Lookup em Product2) — produto, quantidade, data de envio,
+  │           resultado, nº da tentativa, custo estimado — decisão fechada
+  │           no Solution Design (entregaveis/02_Solution_Design_*.pdf)
   │
   └── Case (Record Type: Amostra/Teste | Pós-venda)
         - Amostra/Teste: criado quando uma amostra é reprovada; roteado para
@@ -86,7 +87,7 @@ Ordem de preferência sempre: 1) configuração declarativa → 2) Flow → 3) A
 
 1. **Approval Process de preço/desconto** na Opportunity — aprovação sempre do Gestor, tanto no preço-base do produto quanto no desconto por volume da oportunidade.
 2. **Validation Rule / Flow** exigindo Motivo de Perda ao marcar Opportunity como Closed Lost.
-3. **Record-Triggered Flow**: quando uma amostra registrada é marcada como reprovada → cria Case (Record Type Amostra/Teste), atribuído à Queue Laboratório, roteado ao químico da linha correspondente; se já for a 3ª+ tentativa, sinalizar (ex.: campo ou flag de atenção).
+3. **Record-Triggered Flow** (em `Amostra__c`): quando uma amostra registrada é marcada como reprovada → cria Case (Record Type Amostra/Teste), atribuído à Queue Laboratório, roteado ao químico da linha correspondente; se já for a 3ª+ tentativa, sinalizar (ex.: campo ou flag de atenção).
 4. **Assignment/roteamento** de Case por linha de produto → químico responsável.
 5. **Relatório/Dashboard de clientes inativos** — sem pedido há 60+ dias.
 6. **Alerta de concentração de risco** — quando um vendedor (ou cliente) concentra uma fatia desproporcional da receita (ex.: >50%), notificar o Gestor. Caminho mais simples: Flow agendado (scheduled) que calcula a % por vendedor/período e dispara Email Alert quando o limite é ultrapassado — validar esse limite com o cliente antes de fixar um número (hoje só sabemos que 60% já é tratado como alarmante).
