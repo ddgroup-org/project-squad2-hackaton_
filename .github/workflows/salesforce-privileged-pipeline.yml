@@ -1,0 +1,858 @@
+name: Salesforce Privileged Pipeline
+
+on:
+  workflow_run:
+    workflows:
+      - Salesforce PR Quality
+    types:
+      - completed
+
+  pull_request_review:
+    types:
+      - submitted
+      - dismissed
+
+  repository_dispatch:
+    types:
+      - salesforce-deploy-dispatch
+
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: Target branch whose READY queue must be processed
+        required: true
+        type: choice
+        options:
+          - developer
+          - main
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+
+env:
+  TRUSTED_BRANCH: ${{ github.event.repository.default_branch }}
+  REQUIRED_APPROVALS: '1'
+  SF_CLI_VERSION: '2.148.3'
+  SGD_VERSION: '7.4.0'
+
+
+jobs:
+  validate:
+    name: Salesforce Validate
+
+    if: >
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+
+    concurrency:
+      group: salesforce-validate-${{ github.event.workflow_run.pull_requests[0].base.ref }}
+      queue: max
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+      issues: write
+
+    outputs:
+      validated: ${{ steps.validation_complete.outputs.validated }}
+      target_branch: ${{ steps.pr.outputs.target_branch }}
+
+    steps:
+      - name: Resolve and Guard Pull Request
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
+          TRIGGER_HEAD_SHA="${{ github.event.workflow_run.pull_requests[0].head.sha }}"
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          PR_JSON=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER")
+
+          PR_STATE=$(echo "$PR_JSON" | jq -r '.state')
+          TARGET_BRANCH=$(echo "$PR_JSON" | jq -r '.base.ref')
+          HEAD_BRANCH=$(echo "$PR_JSON" | jq -r '.head.ref')
+          HEAD_SHA=$(echo "$PR_JSON" | jq -r '.head.sha')
+          HEAD_REPOSITORY=$(echo "$PR_JSON" | jq -r '.head.repo.full_name // empty')
+          IS_DRAFT=$(echo "$PR_JSON" | jq -r '.draft')
+
+          if [ "$PR_STATE" != "open" ] || [ "$IS_DRAFT" = "true" ]; then
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$HEAD_REPOSITORY" != "${{ github.repository }}" ]; then
+            echo "Privileged Salesforce validation does not process fork Pull Requests."
+            exit 1
+          fi
+
+          if [ -n "$TRIGGER_HEAD_SHA" ] && [ "$HEAD_SHA" != "$TRIGGER_HEAD_SHA" ]; then
+            echo "Quality result is stale because the Pull Request HEAD changed."
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ "$TARGET_BRANCH" == "main" && "$HEAD_BRANCH" != release/* && "$HEAD_BRANCH" != hotfix/* ]]; then
+            echo "Branch not allowed to validate against Production"
+            exit 1
+          fi
+
+          if [[ "$TARGET_BRANCH" == "developer" && "$HEAD_BRANCH" != feature/* && "$HEAD_BRANCH" != hotfix/* ]]; then
+            echo "Branch not allowed to validate against Homologation"
+            exit 1
+          fi
+
+          if [[ "$TARGET_BRANCH" != "developer" && "$TARGET_BRANCH" != "main" ]]; then
+            echo "Unsupported target branch"
+            exit 1
+          fi
+
+          echo "eligible=true" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "target_branch=$TARGET_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "head_branch=$HEAD_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout Trusted CI Scripts
+        if: steps.pr.outputs.eligible == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TRUSTED_BRANCH }}
+          path: .ci-trusted
+          sparse-checkout: |
+            .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Checkout Pull Request as Data
+        if: steps.pr.outputs.eligible == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ steps.pr.outputs.head_sha }}
+          path: workspace
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        if: steps.pr.outputs.eligible == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Setup Python
+        if: steps.pr.outputs.eligible == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Pinned Salesforce CLI
+        if: steps.pr.outputs.eligible == 'true'
+        run: |
+          npm install --global "@salesforce/cli@$SF_CLI_VERSION"
+          sf --version
+
+      - name: Install Pinned SGD
+        if: steps.pr.outputs.eligible == 'true'
+        run: |
+          echo y | sf plugins install "sfdx-git-delta@$SGD_VERSION"
+          sf plugins
+
+      - name: Fetch Current Target
+        if: steps.pr.outputs.eligible == 'true'
+        id: target
+        working-directory: workspace
+        env:
+          TARGET_BRANCH: ${{ steps.pr.outputs.target_branch }}
+        run: |
+          git fetch origin "$TARGET_BRANCH"
+
+          BASE_SHA=$(git rev-parse "origin/$TARGET_BRANCH")
+          HEAD_SHA=$(git rev-parse HEAD)
+
+          if [ "$HEAD_SHA" != "${{ steps.pr.outputs.head_sha }}" ]; then
+            echo "Pull Request HEAD changed after checkout"
+            exit 1
+          fi
+
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Create Virtual Merge
+        if: steps.pr.outputs.eligible == 'true'
+        working-directory: workspace
+        env:
+          TARGET_BRANCH: ${{ steps.pr.outputs.target_branch }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git merge \
+            --no-ff \
+            --no-edit \
+            "origin/$TARGET_BRANCH"
+
+      - name: Generate Delta
+        if: steps.pr.outputs.eligible == 'true'
+        working-directory: workspace
+        run: |
+          BASE_SHA="${{ steps.target.outputs.base_sha }}"
+
+          sf sgd source delta \
+            --to HEAD \
+            --from "$BASE_SHA" \
+            --output-dir .
+
+          cat package/package.xml
+
+          if [ -f "destructive/destructiveChanges.xml" ]; then
+            cat destructive/destructiveChanges.xml
+          fi
+
+      - name: Set Production Secret
+        if: >
+          steps.pr.outputs.eligible == 'true' &&
+          steps.pr.outputs.target_branch == 'main'
+        run: |
+          printf '%s' "${{ secrets.PRD_URL }}" > workspace/org_url
+
+      - name: Set Homologation Secret
+        if: >
+          steps.pr.outputs.eligible == 'true' &&
+          steps.pr.outputs.target_branch == 'developer'
+        run: |
+          printf '%s' "${{ secrets.HML_URL }}" > workspace/org_url
+
+      - name: Authorize Salesforce Org
+        if: steps.pr.outputs.eligible == 'true'
+        working-directory: workspace
+        env:
+          NODE_OPTIONS: "--no-warnings"
+        run: |
+          sf org login sfdx-url \
+            --sfdx-url-file ./org_url \
+            --set-default
+
+          rm -f ./org_url
+
+      - name: Validate Homologation
+        if: >
+          steps.pr.outputs.eligible == 'true' &&
+          steps.pr.outputs.target_branch == 'developer'
+        working-directory: workspace
+        run: |
+          if [ -f "destructive/destructiveChanges.xml" ]; then
+            RESULT=$(
+              sf project deploy start \
+                --dry-run \
+                --manifest package/package.xml \
+                --post-destructive-changes destructive/destructiveChanges.xml \
+                --test-level RunRelevantTests \
+                --async \
+                --json
+            )
+          else
+            RESULT=$(
+              sf project deploy start \
+                --dry-run \
+                --manifest package/package.xml \
+                --test-level RunRelevantTests \
+                --async \
+                --json
+            )
+          fi
+
+          VALIDATION_ID=$(echo "$RESULT" | jq -r '.result.id // empty')
+
+          if [ -z "$VALIDATION_ID" ]; then
+            echo "$RESULT"
+            exit 1
+          fi
+
+          echo "$VALIDATION_ID" > validation_id.txt
+
+          sf project deploy resume \
+            --job-id "$VALIDATION_ID" \
+            --verbose \
+            --wait 180
+
+      - name: Validate Production
+        if: >
+          steps.pr.outputs.eligible == 'true' &&
+          steps.pr.outputs.target_branch == 'main'
+        working-directory: workspace
+        run: |
+          if [ -f "destructive/destructiveChanges.xml" ]; then
+            RESULT=$(
+              sf project deploy validate \
+                --manifest package/package.xml \
+                --post-destructive-changes destructive/destructiveChanges.xml \
+                --test-level RunLocalTests \
+                --async \
+                --json
+            )
+          else
+            RESULT=$(
+              sf project deploy validate \
+                --manifest package/package.xml \
+                --test-level RunLocalTests \
+                --async \
+                --json
+            )
+          fi
+
+          VALIDATION_ID=$(echo "$RESULT" | jq -r '.result.id // empty')
+
+          if [ -z "$VALIDATION_ID" ]; then
+            echo "$RESULT"
+            exit 1
+          fi
+
+          echo "$VALIDATION_ID" > validation_id.txt
+
+          sf project deploy resume \
+            --job-id "$VALIDATION_ID" \
+            --verbose \
+            --wait 180
+
+      - name: Record Validation State
+        if: steps.pr.outputs.eligible == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python .ci-trusted/.github/scripts/queue_orchestrator.py \
+            record-validation \
+            --pr "${{ steps.pr.outputs.pr_number }}" \
+            --target-branch "${{ steps.pr.outputs.target_branch }}" \
+            --head-sha "${{ steps.target.outputs.head_sha }}" \
+            --base-sha "${{ steps.target.outputs.base_sha }}" \
+            --validation-id "$(cat workspace/validation_id.txt)"
+
+          python .ci-trusted/.github/scripts/queue_orchestrator.py \
+            sync-ready \
+            --pr "${{ steps.pr.outputs.pr_number }}"
+
+      - name: Mark Validation Complete
+        id: validation_complete
+        if: >
+          steps.pr.outputs.eligible == 'true' &&
+          success()
+        run: |
+          echo "validated=true" >> "$GITHUB_OUTPUT"
+
+      - name: Cancel Validation
+        if: >
+          cancelled() &&
+          steps.pr.outputs.eligible == 'true'
+        working-directory: workspace
+        run: |
+          if [ -f "validation_id.txt" ]; then
+            sf project deploy cancel \
+              --job-id "$(cat validation_id.txt)" \
+              --wait 10
+          fi
+
+
+  deploy_dispatcher:
+    name: Salesforce Deploy Dispatcher
+
+    needs:
+      - validate
+
+    if: >
+      always() &&
+      (
+        github.event_name == 'pull_request_review' ||
+        github.event_name == 'repository_dispatch' ||
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event_name == 'workflow_run' &&
+          needs.validate.outputs.validated == 'true'
+        )
+      )
+
+    concurrency:
+      group: salesforce-deploy-${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_branch || github.event_name == 'pull_request_review' && github.event.pull_request.base.ref || github.event_name == 'workflow_dispatch' && inputs.target_branch || needs.validate.outputs.target_branch }}
+      queue: max
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      actions: read
+      pull-requests: write
+      issues: write
+
+    env:
+      TARGET_BRANCH: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_branch || github.event_name == 'pull_request_review' && github.event.pull_request.base.ref || github.event_name == 'workflow_dispatch' && inputs.target_branch || needs.validate.outputs.target_branch }}
+
+    steps:
+      - name: Validate Target Branch
+        run: |
+          if [[ "$TARGET_BRANCH" != "developer" && "$TARGET_BRANCH" != "main" ]]; then
+            echo "Unsupported target branch: $TARGET_BRANCH"
+            exit 1
+          fi
+
+      - name: Checkout Trusted CI Scripts
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TRUSTED_BRANCH }}
+          path: .ci-trusted
+          sparse-checkout: |
+            .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Sync Review State
+        if: github.event_name == 'pull_request_review'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python .ci-trusted/.github/scripts/queue_orchestrator.py \
+            sync-ready \
+            --pr "${{ github.event.pull_request.number }}"
+
+      - name: Select Next Pull Request
+        id: next
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python .ci-trusted/.github/scripts/queue_orchestrator.py \
+            select-next \
+            --target-branch "$TARGET_BRANCH" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Show Queue Selection
+        run: |
+          echo "Found: ${{ steps.next.outputs.found }}"
+          echo "PR: ${{ steps.next.outputs.pr_number }}"
+          echo "HEAD: ${{ steps.next.outputs.head_sha }}"
+          echo "Ready At: ${{ steps.next.outputs.ready_at }}"
+          echo "Validated Base: ${{ steps.next.outputs.validated_base_sha }}"
+
+      - name: Queue Empty
+        if: steps.next.outputs.found != 'true'
+        run: |
+          echo "No Pull Request ready for deployment"
+
+      - name: Checkout Selected Pull Request as Data
+        if: steps.next.outputs.found == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ steps.next.outputs.head_sha }}
+          path: workspace
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        if: steps.next.outputs.found == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Install Pinned Salesforce CLI
+        if: steps.next.outputs.found == 'true'
+        run: |
+          npm install --global "@salesforce/cli@$SF_CLI_VERSION"
+          sf --version
+
+      - name: Install Pinned SGD
+        if: steps.next.outputs.found == 'true'
+        run: |
+          echo y | sf plugins install "sfdx-git-delta@$SGD_VERSION"
+          sf plugins
+
+      - name: Fetch Current Target
+        if: steps.next.outputs.found == 'true'
+        id: current
+        working-directory: workspace
+        run: |
+          git fetch origin "$TARGET_BRANCH"
+
+          CURRENT_BASE_SHA=$(git rev-parse "origin/$TARGET_BRANCH")
+          CURRENT_HEAD_SHA=$(git rev-parse HEAD)
+
+          if [ "$CURRENT_HEAD_SHA" != "${{ steps.next.outputs.head_sha }}" ]; then
+            echo "Pull Request HEAD changed after queue selection"
+            exit 1
+          fi
+
+          echo "base_sha=$CURRENT_BASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$CURRENT_HEAD_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Create Current Virtual Merge
+        if: steps.next.outputs.found == 'true'
+        working-directory: workspace
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git merge \
+            --no-ff \
+            --no-edit \
+            "origin/$TARGET_BRANCH"
+
+      - name: Generate Fresh Delta
+        if: steps.next.outputs.found == 'true'
+        working-directory: workspace
+        run: |
+          BASE_SHA="${{ steps.current.outputs.base_sha }}"
+
+          sf sgd source delta \
+            --to HEAD \
+            --from "$BASE_SHA" \
+            --output-dir .
+
+          cat package/package.xml
+
+          if [ -f "destructive/destructiveChanges.xml" ]; then
+            cat destructive/destructiveChanges.xml
+          fi
+
+      - name: Set Production Secret
+        if: >
+          steps.next.outputs.found == 'true' &&
+          env.TARGET_BRANCH == 'main'
+        run: |
+          printf '%s' "${{ secrets.PRD_URL }}" > workspace/org_url
+
+      - name: Set Homologation Secret
+        if: >
+          steps.next.outputs.found == 'true' &&
+          env.TARGET_BRANCH == 'developer'
+        run: |
+          printf '%s' "${{ secrets.HML_URL }}" > workspace/org_url
+
+      - name: Authorize Salesforce Org
+        if: steps.next.outputs.found == 'true'
+        working-directory: workspace
+        env:
+          NODE_OPTIONS: "--no-warnings"
+        run: |
+          sf org login sfdx-url \
+            --sfdx-url-file ./org_url \
+            --set-default
+
+          rm -f ./org_url
+
+      - name: Verify Target Immediately Before Deploy
+        if: steps.next.outputs.found == 'true'
+        id: predeploy_guard
+        working-directory: workspace
+        run: |
+          git fetch origin "$TARGET_BRANCH"
+
+          NOW_BASE_SHA=$(git rev-parse "origin/$TARGET_BRANCH")
+          EXPECTED_BASE_SHA="${{ steps.current.outputs.base_sha }}"
+
+          if [ "$NOW_BASE_SHA" != "$EXPECTED_BASE_SHA" ]; then
+            echo "Target changed before Salesforce deployment; queue will retry against the new target."
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "stale=false" >> "$GITHUB_OUTPUT"
+
+      - name: Start Existing Quick Deploy
+        if: >
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true' &&
+          env.TARGET_BRANCH == 'main' &&
+          steps.next.outputs.validation_id != '' &&
+          steps.next.outputs.validated_base_sha == steps.current.outputs.base_sha
+        id: quick_start
+        continue-on-error: true
+        working-directory: workspace
+        run: |
+          RESULT=$(
+            sf project deploy quick \
+              --job-id "${{ steps.next.outputs.validation_id }}" \
+              --async \
+              --json
+          )
+
+          DEPLOY_ID=$(echo "$RESULT" | jq -r '.result.id // empty')
+
+          if [ -z "$DEPLOY_ID" ]; then
+            echo "$RESULT"
+            exit 1
+          fi
+
+          echo "$DEPLOY_ID" > active_job_id.txt
+          echo "deploy_id=$DEPLOY_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Resume Existing Quick Deploy
+        if: >
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true' &&
+          env.TARGET_BRANCH == 'main' &&
+          steps.quick_start.outcome == 'success'
+        working-directory: workspace
+        run: |
+          sf project deploy resume \
+            --job-id "${{ steps.quick_start.outputs.deploy_id }}" \
+            --verbose \
+            --wait 180
+
+      - name: Deploy Homologation
+        if: >
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true' &&
+          env.TARGET_BRANCH == 'developer'
+        working-directory: workspace
+        run: |
+          if [ -f "destructive/destructiveChanges.xml" ]; then
+            RESULT=$(
+              sf project deploy start \
+                --manifest package/package.xml \
+                --post-destructive-changes destructive/destructiveChanges.xml \
+                --test-level RunRelevantTests \
+                --async \
+                --json
+            )
+          else
+            RESULT=$(
+              sf project deploy start \
+                --manifest package/package.xml \
+                --test-level RunRelevantTests \
+                --async \
+                --json
+            )
+          fi
+
+          DEPLOY_ID=$(echo "$RESULT" | jq -r '.result.id // empty')
+
+          if [ -z "$DEPLOY_ID" ]; then
+            echo "$RESULT"
+            exit 1
+          fi
+
+          echo "$DEPLOY_ID" > active_job_id.txt
+
+          sf project deploy resume \
+            --job-id "$DEPLOY_ID" \
+            --verbose \
+            --wait 180
+
+      - name: Final Validate Production
+        if: >
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true' &&
+          env.TARGET_BRANCH == 'main' &&
+          steps.quick_start.outcome != 'success'
+        id: final_validation
+        working-directory: workspace
+        run: |
+          if [ -f "destructive/destructiveChanges.xml" ]; then
+            RESULT=$(
+              sf project deploy validate \
+                --manifest package/package.xml \
+                --post-destructive-changes destructive/destructiveChanges.xml \
+                --test-level RunLocalTests \
+                --async \
+                --json
+            )
+          else
+            RESULT=$(
+              sf project deploy validate \
+                --manifest package/package.xml \
+                --test-level RunLocalTests \
+                --async \
+                --json
+            )
+          fi
+
+          VALIDATION_ID=$(echo "$RESULT" | jq -r '.result.id // empty')
+
+          if [ -z "$VALIDATION_ID" ]; then
+            echo "$RESULT"
+            exit 1
+          fi
+
+          echo "$VALIDATION_ID" > active_job_id.txt
+          echo "validation_id=$VALIDATION_ID" >> "$GITHUB_OUTPUT"
+
+          sf project deploy resume \
+            --job-id "$VALIDATION_ID" \
+            --verbose \
+            --wait 180
+
+      - name: Final Quick Deploy Production
+        if: >
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true' &&
+          env.TARGET_BRANCH == 'main' &&
+          steps.quick_start.outcome != 'success'
+        working-directory: workspace
+        run: |
+          RESULT=$(
+            sf project deploy quick \
+              --job-id "${{ steps.final_validation.outputs.validation_id }}" \
+              --async \
+              --json
+          )
+
+          DEPLOY_ID=$(echo "$RESULT" | jq -r '.result.id // empty')
+
+          if [ -z "$DEPLOY_ID" ]; then
+            echo "$RESULT"
+            exit 1
+          fi
+
+          echo "$DEPLOY_ID" > active_job_id.txt
+
+          sf project deploy resume \
+            --job-id "$DEPLOY_ID" \
+            --verbose \
+            --wait 180
+
+      - name: Mark Deployment Completed
+        if: >
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true' &&
+          success()
+        id: deployment_state
+        run: |
+          echo "done=true" >> "$GITHUB_OUTPUT"
+
+      - name: Verify Target Before GitHub Merge
+        if: steps.deployment_state.outputs.done == 'true'
+        id: postdeploy_guard
+        working-directory: workspace
+        run: |
+          git fetch origin "$TARGET_BRANCH"
+
+          NOW_BASE_SHA=$(git rev-parse "origin/$TARGET_BRANCH")
+          EXPECTED_BASE_SHA="${{ steps.current.outputs.base_sha }}"
+
+          if [ "$NOW_BASE_SHA" != "$EXPECTED_BASE_SHA" ]; then
+            echo "Salesforce deployment completed, but the target branch changed before GitHub merge. Manual reconciliation is required."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Merge Selected Pull Request
+        if: >
+          steps.deployment_state.outputs.done == 'true' &&
+          success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr merge "${{ steps.next.outputs.pr_number }}" \
+            --repo "${{ github.repository }}" \
+            --squash \
+            --delete-branch \
+            --match-head-commit "${{ steps.next.outputs.head_sha }}"
+
+      - name: Defer Failed Pull Request
+        if: >
+          failure() &&
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ steps.deployment_state.outputs.done }}" = "true" ]; then
+            if [ "${{ steps.postdeploy_guard.outputs.changed }}" = "true" ]; then
+              REASON="post_deploy_target_changed"
+            else
+              REASON="post_deploy_merge_failure"
+            fi
+          else
+            REASON="validation_or_deploy_failure"
+          fi
+
+          python .ci-trusted/.github/scripts/queue_orchestrator.py \
+            defer \
+            --pr "${{ steps.next.outputs.pr_number }}" \
+            --reason "$REASON"
+
+      - name: Continue Queue After Stale Target
+        if: >
+          steps.next.outputs.found == 'true' &&
+          steps.predeploy_guard.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          jq -n \
+            --arg target "$TARGET_BRANCH" \
+            '{
+              event_type: "salesforce-deploy-dispatch",
+              client_payload: {
+                target_branch: $target
+              }
+            }' |
+          gh api \
+            "repos/${{ github.repository }}/dispatches" \
+            --method POST \
+            --input -
+
+      - name: Continue Queue After Success
+        if: >
+          success() &&
+          steps.deployment_state.outputs.done == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          jq -n \
+            --arg target "$TARGET_BRANCH" \
+            '{
+              event_type: "salesforce-deploy-dispatch",
+              client_payload: {
+                target_branch: $target
+              }
+            }' |
+          gh api \
+            "repos/${{ github.repository }}/dispatches" \
+            --method POST \
+            --input -
+
+      - name: Continue Queue After Pre-Deploy Failure
+        if: >
+          failure() &&
+          steps.next.outputs.found == 'true' &&
+          steps.deployment_state.outputs.done != 'true' &&
+          steps.predeploy_guard.outputs.stale != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          jq -n \
+            --arg target "$TARGET_BRANCH" \
+            '{
+              event_type: "salesforce-deploy-dispatch",
+              client_payload: {
+                target_branch: $target
+              }
+            }' |
+          gh api \
+            "repos/${{ github.repository }}/dispatches" \
+            --method POST \
+            --input -
+
+      - name: Cancel Salesforce Job
+        if: >
+          cancelled() &&
+          steps.next.outputs.found == 'true'
+        working-directory: workspace
+        run: |
+          if [ -f "active_job_id.txt" ]; then
+            sf project deploy cancel \
+              --job-id "$(cat active_job_id.txt)" \
+              --wait 10
+          fi

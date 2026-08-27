@@ -1,0 +1,121 @@
+name: Salesforce PR Quality
+
+on:
+  pull_request:
+    branches:
+      - developer
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
+concurrency:
+  group: salesforce-quality-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality Gate
+
+    if: github.event.pull_request.draft == false
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Pull Request
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Fetch Target Branch
+        id: target
+        run: |
+          DEST_BRANCH="${{ github.event.pull_request.base.ref }}"
+
+          git fetch origin "$DEST_BRANCH"
+
+          BASE_SHA=$(git rev-parse "origin/$DEST_BRANCH")
+
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Check Formatting
+        run: |
+          BASE_SHA="${{ steps.target.outputs.base_sha }}"
+
+          mapfile -t FILES < <(
+            git diff \
+              --name-only \
+              --diff-filter=ACMR \
+              "$BASE_SHA"...HEAD |
+            grep -E '\.(js|mjs|cjs|ts|html|css|json|ya?ml|md)$' || true
+          )
+
+          if [ ${#FILES[@]} -gt 0 ]; then
+            npx --yes prettier@3.9.6 \
+              --check \
+              "${FILES[@]}"
+          fi
+
+      - name: Run Lint
+        id: lint
+        uses: forcedotcom/run-code-analyzer@v2
+        with:
+          run-arguments: >
+            --workspace .
+            --rule-selector eslint:Recommended
+            --view detail
+            --output-file sfca_lint.html
+            --output-file sfca_lint.json
+          results-artifact-name: salesforce-lint-${{ github.event.pull_request.number }}-${{ github.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Lint Quality Gate
+        if: >
+          steps.lint.outputs.exit-code > 0 ||
+          steps.lint.outputs.num-sev1-violations-in-changed-files > 0 ||
+          steps.lint.outputs.num-sev2-violations-in-changed-files > 0
+        run: exit 1
+
+      - name: Remove Lint Output
+        if: always()
+        run: |
+          rm -f sfca_lint.html
+          rm -f sfca_lint.json
+
+      - name: Run Salesforce Code Analyzer
+        id: analyzer
+        uses: forcedotcom/run-code-analyzer@v2
+        with:
+          run-arguments: >
+            --workspace .
+            --view detail
+            --output-file sfca_results.html
+            --output-file sfca_results.json
+          results-artifact-name: salesforce-code-analyzer-${{ github.event.pull_request.number }}-${{ github.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Salesforce Code Analyzer Quality Gate
+        if: >
+          steps.analyzer.outputs.exit-code > 0 ||
+          steps.analyzer.outputs.num-sev1-violations-in-changed-files > 0 ||
+          steps.analyzer.outputs.num-sev2-violations-in-changed-files > 0
+        run: exit 1
