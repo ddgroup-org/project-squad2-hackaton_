@@ -57,6 +57,9 @@ jobs:
 
           echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
 
+      - name: Install Dependencies
+        run: npm install
+
       - name: Check Formatting
         run: |
           BASE_SHA="${{ steps.target.outputs.base_sha }}"
@@ -70,7 +73,7 @@ jobs:
           )
 
           if [ ${#FILES[@]} -gt 0 ]; then
-            npx --yes prettier@3.9.6 \
+            npx prettier \
               --check \
               "${FILES[@]}"
           fi
