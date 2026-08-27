@@ -2,8 +2,8 @@
 title: "Decisões arquiteturais — quimicahackaton"
 category: "decisions"
 status: "active"
-version: "1.0"
-last_reviewed: "2026-08-13"
+version: "1.1"
+last_reviewed: "2026-08-27"
 owner: "Tech lead"
 applies_to:
   - quimicahackaton
@@ -23,3 +23,4 @@ Cada decisão relevante que não pode ser revertida sem custo, ou que um agente 
 | [0004](0004-reconciliacao-permissionsets-fora-do-fluxo.md) | Correção: Permission Sets da demanda 02 foram criados via Claude, não fora do fluxo | Retificada |
 | [0005](0005-owd-revertido-para-private-fora-do-fluxo.md) | OWD de Account/Opportunity/Case revertido para Private fora do fluxo — restaurado para Public Read Only | Ativa |
 | [0006](0006-lead-conversion-company-em-branco-vira-person-account.md) | Flow before-save evita Person Account indesejada quando Lead é convertido sem Company | Ativa |
+| [0007](0007-cicd-multiambiente-com-fila-segura.md) | CI/CD multiambiente com promoção por fila segura entre `developer`/HML e `main`/PRD | Ativa |

@@ -2,8 +2,8 @@
 title: "quimicahackaton — Instruções para sessão de IA neste cofre"
 category: "instructions"
 status: "active"
-version: "1.2"
-last_reviewed: "2026-08-13"
+version: "1.3"
+last_reviewed: "2026-08-27"
 owner: "Tech lead"
 applies_to:
   - quimicahackaton
@@ -65,7 +65,7 @@ Para não recriar do zero o que a base global já resolve bem, foram copiados (n
 - `runbooks/` — recuperação de operações Git/metadata que deram errado.
 - `templates/` — modelo genérico de análise técnica e templates de Pull Request da base (referência; o modelo de documento deste projeto é `documento-corporativo-cromatta.html`, não estes).
 
-**Precedência — importante:** esses arquivos foram escritos para um modelo enterprise com múltiplos ambientes (dev/UAT/produção), feature branches e Pull Requests. **Este hackathon usa uma única branch (`main`) e uma única org** (`cromatta-hackathon`) — não há UAT, não há Produção, não há branch por demanda. Onde o conteúdo copiado mencionar branch-base, promoção, UAT ou Pull Request, isso **não se aplica aqui**; as regras deste `CLAUDE.md` e o fluxo `demanda.md` → `/executar-demanda` prevalecem (mesmo princípio de `knowledge/instruction-precedence.md`: regra do projeto > regra global). O valor real desses arquivos aqui está nos padrões técnicos (Apex/Flow/LWC/testes/segurança) e no espírito de preflight/validação de escopo — não no modelo de branches.
+**Precedência — importante:** o projeto adotou o modelo multiambiente da [ADR 0007](decisions/0007-cicd-multiambiente-com-fila-segura.md): `feature/*` e `hotfix/*` promovem exclusivamente para `developer`/HML; Produção recebe exclusivamente PR `developer` → `main`. Gates de deploy, destructive changes e merge são humanos e separados, conforme [docs/ci-cd.md](docs/ci-cd.md) e as políticas em `knowledge/`. O fluxo `demanda.md` → `/executar-demanda` continua sendo a regra local de execução e evidência; para entrega remota, ele é seguido pelo fluxo de Pull Request e promoção da ADR. Onde um padrão global divergir desses nomes ou deste desenho, prevalece a decisão específica do projeto, sem reduzir as regras globais de segurança (mesmo princípio de `knowledge/instruction-precedence.md`: regra do projeto pode adaptar processo, nunca remover controles inegociáveis).
 
 ## Onde salvar o que for produzido durante o hackathon
 
