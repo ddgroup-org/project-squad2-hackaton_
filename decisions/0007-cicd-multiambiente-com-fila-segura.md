@@ -59,14 +59,14 @@ Qualquer ausência ou divergência interrompe a operação. Alias, nome do Envir
 
 Os gates humanos são implementados com GitHub Environments protegidos, required reviewers e prevenção de autoaprovação:
 
-| Environment | Finalidade |
-| --- | --- |
-| `salesforce-homologation` | autorizar operação Salesforce em HML |
-| `salesforce-production` | autorizar operação Salesforce em PRD |
+| Environment                           | Finalidade                                           |
+| ------------------------------------- | ---------------------------------------------------- |
+| `salesforce-homologation`             | autorizar operação Salesforce em HML                 |
+| `salesforce-production`               | autorizar operação Salesforce em PRD                 |
 | `salesforce-homologation-destructive` | aprovação adicional e explícita para remoções em HML |
-| `salesforce-production-destructive` | aprovação adicional e explícita para remoções em PRD |
-| `salesforce-github-merge` | autorização humana separada para o merge |
-| `salesforce-queue-recovery` | recuperação manual e auditável de uma fila bloqueada |
+| `salesforce-production-destructive`   | aprovação adicional e explícita para remoções em PRD |
+| `salesforce-github-merge`             | autorização humana separada para o merge             |
+| `salesforce-queue-recovery`           | recuperação manual e auditável de uma fila bloqueada |
 
 Um deploy com remoção requer tanto a aprovação do ambiente de destino quanto a aprovação destructive correspondente. Aprovação de PR, validação bem-sucedida, aprovação de deploy, aprovação destructive e autorização de merge são decisões distintas.
 
@@ -116,12 +116,11 @@ O procedimento completo e os pré-requisitos externos estão em [docs/ci-cd.md](
 
 ## Alternativas descartadas
 
-| Alternativa | Por que foi descartada |
-| --- | --- |
-| Continuar com uma branch e uma org | não separa homologação de Produção nem oferece promoção auditável |
-| Permitir `hotfix/*` diretamente em `main` | ignora homologação e cria um segundo caminho produtivo menos controlado |
-| Usar somente `concurrency` do GitHub | serializa execuções, mas não modela elegibilidade, obsolescência, idempotência nem recuperação após escrita parcial |
-| Retentar deploy automaticamente | uma falha pode ter produzido efeito parcial; nova escrita sem conhecer o estado viola a política operacional |
-| Tratar aprovação de PR como autorização de deploy e merge | agrega decisões com impactos diferentes e viola a matriz de aprovação humana |
-| Confiar no alias para escolher a org | alias é local e reatribuível; não comprova username, Organization ID nem tipo de ambiente |
-
+| Alternativa                                               | Por que foi descartada                                                                                              |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Continuar com uma branch e uma org                        | não separa homologação de Produção nem oferece promoção auditável                                                   |
+| Permitir `hotfix/*` diretamente em `main`                 | ignora homologação e cria um segundo caminho produtivo menos controlado                                             |
+| Usar somente `concurrency` do GitHub                      | serializa execuções, mas não modela elegibilidade, obsolescência, idempotência nem recuperação após escrita parcial |
+| Retentar deploy automaticamente                           | uma falha pode ter produzido efeito parcial; nova escrita sem conhecer o estado viola a política operacional        |
+| Tratar aprovação de PR como autorização de deploy e merge | agrega decisões com impactos diferentes e viola a matriz de aprovação humana                                        |
+| Confiar no alias para escolher a org                      | alias é local e reatribuível; não comprova username, Organization ID nem tipo de ambiente                           |

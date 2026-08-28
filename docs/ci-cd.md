@@ -17,11 +17,11 @@ Explicar como ativar e operar a esteira definida pela [ADR 0007](../decisions/00
 
 ## Fluxo autorizado
 
-| Origem | Destino do PR | Ambiente | Regra |
-| --- | --- | --- | --- |
-| `feature/*` | `developer` | HML | caminho normal de demanda |
-| `hotfix/*` | `developer` | HML | caminho emergencial, sem pular homologação |
-| `developer` | `main` | PRD | única promoção permitida para Produção |
+| Origem      | Destino do PR | Ambiente | Regra                                      |
+| ----------- | ------------- | -------- | ------------------------------------------ |
+| `feature/*` | `developer`   | HML      | caminho normal de demanda                  |
+| `hotfix/*`  | `developer`   | HML      | caminho emergencial, sem pular homologação |
+| `developer` | `main`        | PRD      | única promoção permitida para Produção     |
 
 Qualquer outra combinação é inelegível. Em especial, PR para `main` cuja origem não seja `developer` deve falhar antes de acessar segredo ou org. Push direto para `developer` ou `main` deve ser impedido por proteção de branch.
 
@@ -60,14 +60,14 @@ Uma alteração no PR, troca de base, fechamento/reabertura, perda de aprovaçã
 
 Criar os seguintes Environments. Em todos, habilitar required reviewers adequados e **prevent self-review**. Wait timers e regras corporativas mais restritivas podem ser adicionados.
 
-| Environment | Conteúdo | Aprovação |
-| --- | --- | --- |
-| `salesforce-homologation` | credencial e identidade esperada de HML | operação Salesforce em HML |
-| `salesforce-production` | credencial e identidade esperada de PRD | operação Salesforce em PRD |
-| `salesforce-homologation-destructive` | credencial/identidade de HML, quando o job de remoção precisar acessá-las | adicional para destructive changes em HML |
-| `salesforce-production-destructive` | credencial/identidade de PRD, quando o job de remoção precisar acessá-las | adicional para destructive changes em PRD |
-| `salesforce-github-merge` | nenhum segredo Salesforce | merge separado do deploy |
-| `salesforce-queue-recovery` | nenhum segredo Salesforce | liberar ou reconciliar hard lock após investigação |
+| Environment                           | Conteúdo                                                                  | Aprovação                                          |
+| ------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
+| `salesforce-homologation`             | credencial e identidade esperada de HML                                   | operação Salesforce em HML                         |
+| `salesforce-production`               | credencial e identidade esperada de PRD                                   | operação Salesforce em PRD                         |
+| `salesforce-homologation-destructive` | credencial/identidade de HML, quando o job de remoção precisar acessá-las | adicional para destructive changes em HML          |
+| `salesforce-production-destructive`   | credencial/identidade de PRD, quando o job de remoção precisar acessá-las | adicional para destructive changes em PRD          |
+| `salesforce-github-merge`             | nenhum segredo Salesforce                                                 | merge separado do deploy                           |
+| `salesforce-queue-recovery`           | nenhum segredo Salesforce                                                 | liberar ou reconciliar hard lock após investigação |
 
 Os Environments destructive não substituem o gate normal de destino: um delta com exclusão precisa das duas decisões humanas. Se a implementação separar aprovação e execução em jobs diferentes, o job de aprovação destructive não deve expor credenciais desnecessariamente.
 
@@ -75,12 +75,12 @@ Os Environments destructive não substituem o gate normal de destino: um delta c
 
 Nos Environments que executam comandos Salesforce, configurar:
 
-| Tipo | Nome | Valor esperado |
-| --- | --- | --- |
-| secret | `SFDX_AUTH_URL` | URL de autenticação da conta de integração daquele ambiente |
-| variable | `SF_ORG_USERNAME` | username exato da conta autenticada |
-| variable | `SF_ORG_ID` | Organization ID exato, sem inferência por alias |
-| variable | `SF_ORG_IS_SANDBOX` | `true` para HML e `false` para PRD |
+| Tipo     | Nome                | Valor esperado                                              |
+| -------- | ------------------- | ----------------------------------------------------------- |
+| secret   | `SFDX_AUTH_URL`     | URL de autenticação da conta de integração daquele ambiente |
+| variable | `SF_ORG_USERNAME`   | username exato da conta autenticada                         |
+| variable | `SF_ORG_ID`         | Organization ID exato, sem inferência por alias             |
+| variable | `SF_ORG_IS_SANDBOX` | `true` para HML e `false` para PRD                          |
 
 Nunca salvar `SFDX_AUTH_URL` como secret de repositório compartilhado entre ambientes, escrever seu valor em log ou expô-lo a workflow executado a partir do código do PR. A conta de integração deve ter o menor privilégio compatível com validate/deploy e não deve ser reutilizada para tarefas administrativas gerais.
 
@@ -182,4 +182,3 @@ Não há retentativa automática de remoção. Um delta sem tipos no `package.xm
 ## Limites e responsabilidades
 
 A fila reduz concorrência; não transforma deploy + merge em uma transação atômica. Por isso existe o hard lock. GitHub Environments aplicam gates, mas os administradores do repositório continuam responsáveis por reviewers, proteções e bypasses. A esteira não cria credenciais, não cria orgs, não cria ambientes e não substitui a validação humana exigida pela política operacional.
-

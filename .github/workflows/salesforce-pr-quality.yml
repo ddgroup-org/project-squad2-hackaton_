@@ -40,7 +40,7 @@ jobs:
         # actions/setup-node v6
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
-          node-version: '24'
+          node-version: "24"
           cache: npm
 
       - name: Setup Java
@@ -48,13 +48,13 @@ jobs:
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - name: Setup Python
         # actions/setup-python v6
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Guard Promotion Route
         env:
@@ -137,11 +137,13 @@ jobs:
         run: npm run lint
 
       - name: Run LWC Unit Tests
-        run: npm test -- --runInBand
+        # `npm test -- …` would stop at the nested `npm run test:unit` and npm
+        # would swallow the flag as one of its own settings.
+        run: npm run test:unit -- --runInBand
 
       - name: Run Queue Orchestrator Tests
         env:
-          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONDONTWRITEBYTECODE: "1"
         run: |
           python -m unittest discover \
             -s .github/scripts/tests \
@@ -150,8 +152,8 @@ jobs:
 
       - name: Install Pinned Salesforce Code Analyzer
         env:
-          SF_CLI_VERSION: '2.148.3'
-          SF_CODE_ANALYZER_VERSION: '5.16.0'
+          SF_CLI_VERSION: "2.148.3"
+          SF_CODE_ANALYZER_VERSION: "5.16.0"
         run: |
           set -euo pipefail
           npm install --global --ignore-scripts --no-audit --no-fund \
