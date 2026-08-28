@@ -1,0 +1,223 @@
+name: Salesforce PR Quality
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - ready_for_review
+      - converted_to_draft
+
+permissions:
+  contents: read
+
+concurrency:
+  group: salesforce-quality-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality Gate
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Pull Request
+        # actions/checkout v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        # actions/setup-node v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Setup Java
+        # actions/setup-java v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Python
+        # actions/setup-python v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: "3.12"
+
+      - name: Guard Promotion Route
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+
+          git cat-file -e "${BASE_SHA}^{commit}"
+
+          if [[ "$TARGET_BRANCH" == "dev" ]]; then
+            if [[ "$HEAD_BRANCH" != feature/* && "$HEAD_BRANCH" != hotfix/* ]]; then
+              echo "dev accepts only feature/* or hotfix/* Pull Requests."
+              exit 1
+            fi
+            exit 0
+          fi
+
+          if [[ "$TARGET_BRANCH" != "main" ]]; then
+            echo "Unsupported target branch: $TARGET_BRANCH"
+            exit 1
+          fi
+
+          if [[ "$HEAD_BRANCH" == "dev" ]]; then
+            exit 0
+          fi
+
+          # One-time bootstrap: before the trusted workflow exists on main, a
+          # CI-only branch may introduce it. This exception disappears after
+          # the first merge because the marker file then exists in BASE_SHA.
+          if git cat-file -e \
+            "$BASE_SHA:.github/workflows/salesforce-privileged-pipeline.yml" \
+            2>/dev/null; then
+            echo "main accepts only Pull Requests from dev."
+            exit 1
+          fi
+
+          if [[ "$HEAD_BRANCH" != ci/* && "$HEAD_BRANCH" != ci-* ]]; then
+            echo "Only a ci/* or ci-* branch can bootstrap the pipeline."
+            exit 1
+          fi
+
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              force-app/* | destructiveChanges/* | manifest/*)
+                echo "The bootstrap Pull Request cannot change Salesforce metadata: $file"
+                exit 1
+                ;;
+            esac
+          done < <(git diff --name-only --diff-filter=ACMR -z "$BASE_SHA"...HEAD)
+
+      - name: Install JavaScript Dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Check Changed File Formatting
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          declare -a files=()
+
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              *.cls | *.cmp | *.component | *.css | *.html | *.js | *.json | \
+                *.md | *.mjs | *.cjs | *.page | *.trigger | *.ts | *.xml | \
+                *.yaml | *.yml)
+                files+=("$file")
+                ;;
+            esac
+          done < <(git diff --name-only --diff-filter=ACMR -z "$BASE_SHA"...HEAD)
+
+          if (( ${#files[@]} > 0 )); then
+            npx --no-install prettier --check --ignore-unknown "${files[@]}"
+          else
+            echo "No changed files supported by Prettier."
+          fi
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run LWC Unit Tests
+        # `npm test -- …` would stop at the nested `npm run test:unit` and npm
+        # would swallow the flag as one of its own settings.
+        run: npm run test:unit -- --runInBand
+
+      - name: Run Queue Orchestrator Tests
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python -m unittest discover \
+            -s .github/scripts/tests \
+            -p 'test_*.py' \
+            -v
+
+      - name: Collect Changed Salesforce Source
+        id: sfsource
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          : > analyzer_targets.txt
+
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              force-app/*.cls | force-app/*.trigger | force-app/*.js | \
+                force-app/*.ts | force-app/*.html | force-app/*.css | \
+                force-app/*.xml | force-app/*.page | \
+                force-app/*.component | force-app/*.cmp)
+                printf '%s\n' "$file" >> analyzer_targets.txt
+                ;;
+            esac
+          done < <(git diff --name-only --diff-filter=ACMR -z "$BASE_SHA"...HEAD)
+
+          count=$(wc -l < analyzer_targets.txt | tr -d '[:space:]')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Changed Salesforce source files: $count"
+          cat analyzer_targets.txt
+
+      - name: Install Pinned Salesforce Code Analyzer
+        if: steps.sfsource.outputs.count != '0'
+        env:
+          SF_CLI_VERSION: "2.148.3"
+          SF_CODE_ANALYZER_VERSION: "5.16.0"
+        run: |
+          set -euo pipefail
+          npm install --global --ignore-scripts --no-audit --no-fund \
+            "@salesforce/cli@$SF_CLI_VERSION"
+          printf 'y\n' | sf plugins install \
+            "code-analyzer@$SF_CODE_ANALYZER_VERSION"
+          sf --version
+          sf plugins --core
+
+      - name: Analyze Changed Salesforce Source
+        if: steps.sfsource.outputs.count != '0'
+        run: |
+          set -euo pipefail
+          declare -a analyzer_targets=()
+
+          while IFS= read -r file; do
+            [ -n "$file" ] && analyzer_targets+=(--target "$file")
+          done < analyzer_targets.txt
+
+          set +e
+          sf code-analyzer run \
+            --workspace . \
+            "${analyzer_targets[@]}" \
+            --rule-selector Recommended \
+            --severity-threshold 2 \
+            --view detail \
+            > analyzer.out 2> analyzer.err
+          analyzer_status=$?
+          set -e
+
+          cat analyzer.out
+          cat analyzer.err >&2
+
+          # A file the parser cannot read produces no violations at all — it is
+          # silently skipped, so Apex that does not even compile scores zero and
+          # the gate goes green. Treat an unparseable target as a failure.
+          if grep -qE 'ParseException|Failed to parse' analyzer.err; then
+            echo "::error::Code Analyzer could not parse a changed file; fix the syntax error above."
+            exit 1
+          fi
+
+          exit "$analyzer_status"
