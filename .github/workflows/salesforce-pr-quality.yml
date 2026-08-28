@@ -150,7 +150,32 @@ jobs:
             -p 'test_*.py' \
             -v
 
+      - name: Collect Changed Salesforce Source
+        id: sfsource
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          : > analyzer_targets.txt
+
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              force-app/*.cls | force-app/*.trigger | force-app/*.js | \
+                force-app/*.ts | force-app/*.html | force-app/*.css | \
+                force-app/*.xml | force-app/*.page | \
+                force-app/*.component | force-app/*.cmp)
+                printf '%s\n' "$file" >> analyzer_targets.txt
+                ;;
+            esac
+          done < <(git diff --name-only --diff-filter=ACMR -z "$BASE_SHA"...HEAD)
+
+          count=$(wc -l < analyzer_targets.txt | tr -d '[:space:]')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Changed Salesforce source files: $count"
+          cat analyzer_targets.txt
+
       - name: Install Pinned Salesforce Code Analyzer
+        if: steps.sfsource.outputs.count != '0'
         env:
           SF_CLI_VERSION: "2.148.3"
           SF_CODE_ANALYZER_VERSION: "5.16.0"
@@ -164,30 +189,35 @@ jobs:
           sf plugins --core
 
       - name: Analyze Changed Salesforce Source
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        if: steps.sfsource.outputs.count != '0'
         run: |
           set -euo pipefail
           declare -a analyzer_targets=()
 
-          while IFS= read -r -d '' file; do
-            case "$file" in
-              force-app/*.cls | force-app/*.trigger | force-app/*.js | \
-                force-app/*.ts | force-app/*.html | force-app/*.css | \
-                force-app/*.xml)
-                analyzer_targets+=(--target "$file")
-                ;;
-            esac
-          done < <(git diff --name-only --diff-filter=ACMR -z "$BASE_SHA"...HEAD)
+          while IFS= read -r file; do
+            [ -n "$file" ] && analyzer_targets+=(--target "$file")
+          done < analyzer_targets.txt
 
-          if (( ${#analyzer_targets[@]} == 0 )); then
-            echo "No changed Salesforce source supported by Code Analyzer."
-            exit 0
-          fi
-
+          set +e
           sf code-analyzer run \
             --workspace . \
             "${analyzer_targets[@]}" \
             --rule-selector Recommended \
             --severity-threshold 2 \
-            --view detail
+            --view detail \
+            > analyzer.out 2> analyzer.err
+          analyzer_status=$?
+          set -e
+
+          cat analyzer.out
+          cat analyzer.err >&2
+
+          # A file the parser cannot read produces no violations at all — it is
+          # silently skipped, so Apex that does not even compile scores zero and
+          # the gate goes green. Treat an unparseable target as a failure.
+          if grep -qE 'ParseException|Failed to parse' analyzer.err; then
+            echo "::error::Code Analyzer could not parse a changed file; fix the syntax error above."
+            exit 1
+          fi
+
+          exit "$analyzer_status"

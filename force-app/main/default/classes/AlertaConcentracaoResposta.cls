@@ -4,7 +4,7 @@
  * "The element has an invalid reference to Loop_Resultados.descricao" ao tentar isso).
  * Ver demanda-11.
  */
-public class AlertaConcentracaoResposta {x
+public class AlertaConcentracaoResposta {
     @InvocableVariable(label='Há concentração acima do limite?')
     public Boolean temAlerta;
 
