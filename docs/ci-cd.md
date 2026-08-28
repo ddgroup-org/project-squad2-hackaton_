@@ -19,23 +19,23 @@ Explicar como ativar e operar a esteira definida pela [ADR 0007](../decisions/00
 
 | Origem      | Destino do PR | Ambiente | Regra                                      |
 | ----------- | ------------- | -------- | ------------------------------------------ |
-| `feature/*` | `developer`   | HML      | caminho normal de demanda                  |
-| `hotfix/*`  | `developer`   | HML      | caminho emergencial, sem pular homologação |
-| `developer` | `main`        | PRD      | única promoção permitida para Produção     |
+| `feature/*` | `dev`         | HML      | caminho normal de demanda                  |
+| `hotfix/*`  | `dev`         | HML      | caminho emergencial, sem pular homologação |
+| `dev`       | `main`        | PRD      | única promoção permitida para Produção     |
 
-Qualquer outra combinação é inelegível. Em especial, PR para `main` cuja origem não seja `developer` deve falhar antes de acessar segredo ou org. Push direto para `developer` ou `main` deve ser impedido por proteção de branch.
+Qualquer outra combinação é inelegível. Em especial, PR para `main` cuja origem não seja `dev` deve falhar antes de acessar segredo ou org. Push direto para `dev` ou `main` deve ser impedido por proteção de branch.
 
 ```text
 feature/* ou hotfix/*
           │
           ▼
-     PR → developer ── gate HML ── deploy HML ── gate de merge
+     PR → dev ── gate HML ── deploy HML ── gate de merge
                                                   │
                                                   ▼
-                                             developer
+                                             dev
                                                   │
                                                   ▼
-                                    PR developer → main
+                                    PR dev → main
                                                   │
                                                   ▼
                                   gate PRD ── deploy PRD ── gate de merge
@@ -88,7 +88,7 @@ A autenticação é necessária, mas insuficiente. Antes de cada operação, a e
 
 ### 3. Proteções de branch
 
-Configurar rulesets ou branch protection para `developer` e `main`:
+Configurar rulesets ou branch protection para `dev` e `main`:
 
 - exigir Pull Request e pelo menos a quantidade de aprovações definida pelo time;
 - dispensar aprovações obsoletas quando houver novo commit;
@@ -99,7 +99,7 @@ Configurar rulesets ou branch protection para `developer` e `main`:
 - restringir push direto, inclusive para automações que não façam parte da esteira;
 - usar squash merge e impedir que o merge ignore o `head SHA` verificado.
 
-Adicionar a `main` uma regra de origem na própria esteira: somente `developer` é elegível. Branch protection nativa não expressa sozinha todas as combinações de origem/destino, portanto essa validação continua obrigatória no workflow confiável.
+Adicionar a `main` uma regra de origem na própria esteira: somente `dev` é elegível. Branch protection nativa não expressa sozinha todas as combinações de origem/destino, portanto essa validação continua obrigatória no workflow confiável.
 
 ### 4. Permissões de Actions
 
@@ -115,15 +115,15 @@ O bootstrap resolve o problema de confiança inicial: um workflow privilegiado a
 2. Confirmar que esse PR não altera metadata Salesforce e não executa qualquer comando com `SFDX_AUTH_URL`.
 3. Rodar os checks não privilegiados e revisar o diff manualmente.
 4. Obter autorização humana explícita e fazer o merge manual; não usar o orquestrador ainda.
-5. Criar `developer` a partir do SHA aprovado de `main`.
+5. Criar `dev` a partir do SHA aprovado de `main`.
 6. Criar os GitHub Environments, segredos, variáveis e required reviewers descritos acima.
-7. Aplicar as proteções de `developer` e `main`, incluindo os checks realmente publicados após o bootstrap.
+7. Aplicar as proteções de `dev` e `main`, incluindo os checks realmente publicados após o bootstrap.
 8. Confirmar que workflows têm somente as permissões mínimas necessárias.
 9. Executar um smoke test sem delta Salesforce para cada destino; confirmar resolução do PR, fila, gates e merge bloqueado até aprovação.
 10. Executar uma validação controlada e não destrutiva em HML antes de habilitar o caminho de PRD.
 11. Registrar os responsáveis, IDs esperados das orgs e evidências da ativação sem registrar segredos.
 
-Depois do passo 5, a exceção termina. Toda promoção futura para `main` parte de `developer`, inclusive correções urgentes.
+Depois do passo 5, a exceção termina. Toda promoção futura para `main` parte de `dev`, inclusive correções urgentes.
 
 ## Operação da fila
 
@@ -167,9 +167,9 @@ Não há retentativa automática de remoção. Um delta sem tipos no `package.xm
 
 ## Checklist de prontidão
 
-- [ ] `developer` existe a partir do `main` aprovado.
-- [ ] `developer` e `main` estão protegidas contra push direto, force push e exclusão.
-- [ ] A esteira rejeita qualquer origem diferente de `developer` em PR para `main`.
+- [ ] `dev` existe a partir do `main` aprovado.
+- [ ] `dev` e `main` estão protegidas contra push direto, force push e exclusão.
+- [ ] A esteira rejeita qualquer origem diferente de `dev` em PR para `main`.
 - [ ] Todos os seis GitHub Environments existem com reviewers e prevenção de autoaprovação.
 - [ ] Credenciais ficam somente nos Environments Salesforce correspondentes.
 - [ ] `SF_ORG_USERNAME`, `SF_ORG_ID` e `SF_ORG_IS_SANDBOX` foram obtidos e revisados para cada org.

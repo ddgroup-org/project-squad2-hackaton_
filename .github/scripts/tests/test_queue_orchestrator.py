@@ -31,7 +31,7 @@ def make_state(**overrides):
     state = {
         "schema_version": qo.STATE_SCHEMA_VERSION,
         "pr": 7,
-        "target_branch": "developer",
+        "target_branch": "dev",
         "head_sha": SHA_A,
         "base_sha": SHA_B,
         "validation_id": JOB_ID,
@@ -164,7 +164,7 @@ class FieldValidatorTests(unittest.TestCase):
 
     def test_target_branch_allowlist(self):
         self.assertEqual(qo._target("main"), "main")
-        for value in ("Main", "developer2", "", None):
+        for value in ("Main", "dev2", "", None):
             with self.subTest(value=value):
                 with self.assertRaises(qo.StateError):
                     qo._target(value)
@@ -197,7 +197,7 @@ class ValidateStateTests(unittest.TestCase):
         state = {
             "schema_version": qo.STATE_SCHEMA_VERSION,
             "pr": 7,
-            "target_branch": "developer",
+            "target_branch": "dev",
             "head_sha": SHA_A,
             "base_sha": SHA_B,
             "status": "READY",
@@ -210,7 +210,7 @@ class ValidateStateTests(unittest.TestCase):
         state = {
             "schema_version": qo.STATE_SCHEMA_VERSION,
             "pr": 7,
-            "target_branch": "developer",
+            "target_branch": "dev",
             "head_sha": SHA_A,
             "base_sha": SHA_B,
             "status": "WAITING_VALIDATION",
@@ -524,18 +524,18 @@ class WriteOutputTests(unittest.TestCase):
 
 class RuntimeArgumentTests(unittest.TestCase):
     def test_select_next_fills_run_identity_from_the_environment(self):
-        args = qo.build_parser().parse_args(["select-next", "--target-branch", "developer"])
+        args = qo.build_parser().parse_args(["select-next", "--target-branch", "dev"])
         qo._resolve_runtime_args(args, {"GITHUB_RUN_ID": "55", "GITHUB_RUN_ATTEMPT": "2"})
         self.assertEqual((args.run_id, args.run_attempt), (55, 2))
         self.assertEqual(args.method, "select_next")
 
     def test_missing_run_identity_is_a_configuration_error(self):
-        args = qo.build_parser().parse_args(["select-next", "--target-branch", "developer"])
+        args = qo.build_parser().parse_args(["select-next", "--target-branch", "dev"])
         with self.assertRaises(qo.ConfigurationError):
             qo._resolve_runtime_args(args, {})
 
     def test_non_integer_run_id_is_a_configuration_error(self):
-        args = qo.build_parser().parse_args(["select-next", "--target-branch", "developer"])
+        args = qo.build_parser().parse_args(["select-next", "--target-branch", "dev"])
         with self.assertRaises(qo.ConfigurationError):
             qo._resolve_runtime_args(args, {"GITHUB_RUN_ID": "abc"})
 
@@ -578,13 +578,13 @@ class RuntimeArgumentTests(unittest.TestCase):
         commands = {
             "record-validation": [
                 "--pr", "7",
-                "--target-branch", "developer",
+                "--target-branch", "dev",
                 "--head-sha", SHA_A,
                 "--base-sha", SHA_B,
                 "--validation-id", JOB_ID,
             ],
             "sync-ready": ["--pr", "7"],
-            "select-next": ["--target-branch", "developer"],
+            "select-next": ["--target-branch", "dev"],
             "verify-selected": [
                 "--pr", "7",
                 "--expected-head-sha", SHA_A,

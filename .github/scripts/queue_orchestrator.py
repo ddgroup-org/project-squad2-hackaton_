@@ -34,7 +34,7 @@ QUALITY_JOB_NAME = "Quality Gate"
 VALIDATION_JOB_NAME = "Salesforce Validate"
 VALIDATION_CHECK_PREFIX = "Salesforce Validation / "
 
-ALLOWED_TARGET_BRANCHES = frozenset({"developer", "main"})
+ALLOWED_TARGET_BRANCHES = frozenset({"dev", "main"})
 ALLOWED_MERGE_STATES = frozenset({"CLEAN", "HAS_HOOKS"})
 DECISIVE_REVIEW_STATES = frozenset({"APPROVED", "CHANGES_REQUESTED", "DISMISSED"})
 TRUSTED_REVIEW_ASSOCIATIONS = frozenset({"OWNER", "MEMBER", "COLLABORATOR"})

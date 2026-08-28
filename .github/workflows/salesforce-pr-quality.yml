@@ -3,7 +3,7 @@ name: Salesforce PR Quality
 on:
   pull_request:
     branches:
-      - developer
+      - dev
       - main
     types:
       - opened
@@ -66,9 +66,9 @@ jobs:
 
           git cat-file -e "${BASE_SHA}^{commit}"
 
-          if [[ "$TARGET_BRANCH" == "developer" ]]; then
+          if [[ "$TARGET_BRANCH" == "dev" ]]; then
             if [[ "$HEAD_BRANCH" != feature/* && "$HEAD_BRANCH" != hotfix/* ]]; then
-              echo "developer accepts only feature/* or hotfix/* Pull Requests."
+              echo "dev accepts only feature/* or hotfix/* Pull Requests."
               exit 1
             fi
             exit 0
@@ -79,7 +79,7 @@ jobs:
             exit 1
           fi
 
-          if [[ "$HEAD_BRANCH" == "developer" ]]; then
+          if [[ "$HEAD_BRANCH" == "dev" ]]; then
             exit 0
           fi
 
@@ -89,7 +89,7 @@ jobs:
           if git cat-file -e \
             "$BASE_SHA:.github/workflows/salesforce-privileged-pipeline.yml" \
             2>/dev/null; then
-            echo "main accepts only Pull Requests from developer."
+            echo "main accepts only Pull Requests from dev."
             exit 1
           fi
 

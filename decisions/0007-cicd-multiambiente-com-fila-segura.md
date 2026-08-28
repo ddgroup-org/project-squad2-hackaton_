@@ -23,16 +23,16 @@ Adotar o seguinte fluxo de promoção:
 
 ```text
 feature/* ─┐
-           ├─ PR → developer → homologação (HML)
+           ├─ PR → dev → homologação (HML)
 hotfix/* ──┘
 
-developer ─── PR → main → Produção (PRD)
+dev ─── PR → main → Produção (PRD)
 ```
 
-- `developer` é a única branch de destino para `feature/*` e `hotfix/*`.
-- `developer` é a única branch de origem admitida em PR para `main`.
+- `dev` é a única branch de destino para `feature/*` e `hotfix/*`.
+- `dev` é a única branch de origem admitida em PR para `main`.
 - Hotfix não ignora homologação nem abre caminho direto para `main`.
-- Push direto em `developer` e `main` é proibido; ambas devem ser protegidas.
+- Push direto em `dev` e `main` é proibido; ambas devem ser protegidas.
 - O merge padrão é squash, preservando um commit auditável por PR.
 
 ### Qualidade e validação
@@ -72,7 +72,7 @@ Um deploy com remoção requer tanto a aprovação do ambiente de destino quanto
 
 ### Fila e concorrência
 
-Cada destino (`developer`/HML e `main`/PRD) tem uma fila FIFO independente. Um item só fica pronto depois que todas as verificações e aprovações anteriores à fila estiverem válidas. A ordem é definida pelo instante confiável de prontidão, com o número do PR como desempate estável.
+Cada destino (`dev`/HML e `main`/PRD) tem uma fila FIFO independente. Um item só fica pronto depois que todas as verificações e aprovações anteriores à fila estiverem válidas. A ordem é definida pelo instante confiável de prontidão, com o número do PR como desempate estável.
 
 O orquestrador Python é a fonte da decisão de fila e deve:
 
@@ -89,7 +89,7 @@ Se o deploy concluir e o merge não concluir, a fila também fica em hard lock, 
 
 ### Produção
 
-O PR `developer` → `main` usa validação de Produção associada ao mesmo delta e aos mesmos SHAs. O deploy rápido só pode reutilizar uma validação ainda válida e confirmada para a org produtiva correta. Imediatamente antes do deploy e do merge, a esteira reconfirma os SHAs e a identidade da org.
+O PR `dev` → `main` usa validação de Produção associada ao mesmo delta e aos mesmos SHAs. O deploy rápido só pode reutilizar uma validação ainda válida e confirmada para a org produtiva correta. Imediatamente antes do deploy e do merge, a esteira reconfirma os SHAs e a identidade da org.
 
 Nenhuma automação desta ADR concede autorização permanente para Produção. Cada execução continua sujeita aos gates humanos e à matriz de aprovação do projeto.
 
@@ -100,8 +100,8 @@ Workflows privilegiados só são confiáveis depois que sua versão revisada exi
 1. um PR de bootstrap pode levar somente a esteira, seu orquestrador, testes, dependências fixadas e esta documentação diretamente a `main`;
 2. esse PR não executa deploy, merge automático nem lê credenciais Salesforce;
 3. revisão e merge são manuais e exigem autorização explícita;
-4. após o merge, cria-se `developer` a partir do `main` vigente, configuram-se Environments e proteções, e executa-se um smoke test sem escrita;
-5. concluído o bootstrap, a exceção deixa de existir e todo PR para `main` deve vir de `developer`.
+4. após o merge, cria-se `dev` a partir do `main` vigente, configuram-se Environments e proteções, e executa-se um smoke test sem escrita;
+5. concluído o bootstrap, a exceção deixa de existir e todo PR para `main` deve vir de `dev`.
 
 O procedimento completo e os pré-requisitos externos estão em [docs/ci-cd.md](../docs/ci-cd.md).
 
@@ -111,7 +111,7 @@ O procedimento completo e os pré-requisitos externos estão em [docs/ci-cd.md](
 - Deploys para a mesma org são serializados; falha ambígua favorece interrupção e investigação, não throughput.
 - A ativação depende de configuração externa no GitHub e de credenciais/identidades confirmadas; versionar os workflows, sozinho, não ativa a esteira.
 - O tempo de entrega inclui aprovações humanas distintas para operação na org, remoções e merge.
-- A branch `main` continua sendo a fonte versionada de Produção, enquanto `developer` representa o estado promovido para homologação.
+- A branch `main` continua sendo a fonte versionada de Produção, enquanto `dev` representa o estado promovido para homologação.
 - O fluxo local `demanda.md` → `/executar-demanda` continua válido para execução e evidências, mas a entrega remota passa obrigatoriamente pelo modelo de branches desta ADR.
 
 ## Alternativas descartadas

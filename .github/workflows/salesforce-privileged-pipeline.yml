@@ -23,7 +23,7 @@ on:
         required: true
         type: choice
         options:
-          - developer
+          - dev
           - main
 
 permissions:
@@ -110,12 +110,12 @@ jobs:
             exit 1
           fi
 
-          if [[ "$TARGET_BRANCH" == "developer" && "$HEAD_BRANCH" != feature/* && "$HEAD_BRANCH" != hotfix/* ]]; then
+          if [[ "$TARGET_BRANCH" == "dev" && "$HEAD_BRANCH" != feature/* && "$HEAD_BRANCH" != hotfix/* ]]; then
             echo "Branch not allowed to validate against Homologation"
             exit 1
           fi
 
-          if [[ "$TARGET_BRANCH" != "developer" && "$TARGET_BRANCH" != "main" ]]; then
+          if [[ "$TARGET_BRANCH" != "dev" && "$TARGET_BRANCH" != "main" ]]; then
             echo "Unsupported target branch"
             exit 1
           fi
@@ -230,7 +230,7 @@ jobs:
       - name: Set Homologation Secret
         if: >
           steps.pr.outputs.eligible == 'true' &&
-          steps.pr.outputs.target_branch == 'developer'
+          steps.pr.outputs.target_branch == 'dev'
         run: |
           printf '%s' "${{ secrets.HML_URL }}" > workspace/org_url
 
@@ -249,7 +249,7 @@ jobs:
       - name: Validate Homologation
         if: >
           steps.pr.outputs.eligible == 'true' &&
-          steps.pr.outputs.target_branch == 'developer'
+          steps.pr.outputs.target_branch == 'dev'
         working-directory: workspace
         run: |
           if [ -f "destructive/destructiveChanges.xml" ]; then
@@ -399,7 +399,7 @@ jobs:
     steps:
       - name: Validate Target Branch
         run: |
-          if [[ "$TARGET_BRANCH" != "developer" && "$TARGET_BRANCH" != "main" ]]; then
+          if [[ "$TARGET_BRANCH" != "dev" && "$TARGET_BRANCH" != "main" ]]; then
             echo "Unsupported target branch: $TARGET_BRANCH"
             exit 1
           fi
@@ -534,7 +534,7 @@ jobs:
       - name: Set Homologation Secret
         if: >
           steps.next.outputs.found == 'true' &&
-          env.TARGET_BRANCH == 'developer'
+          env.TARGET_BRANCH == 'dev'
         run: |
           printf '%s' "${{ secrets.HML_URL }}" > workspace/org_url
 
@@ -613,7 +613,7 @@ jobs:
         if: >
           steps.next.outputs.found == 'true' &&
           steps.predeploy_guard.outputs.stale != 'true' &&
-          env.TARGET_BRANCH == 'developer'
+          env.TARGET_BRANCH == 'dev'
         working-directory: workspace
         run: |
           if [ -f "destructive/destructiveChanges.xml" ]; then
